@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">TowerDefense</string>
-    <string name="logcatKey" />
+    <string name="logcatKey">TowerDefense</string>
 </resources>
