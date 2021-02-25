@@ -10,10 +10,16 @@ import android.media.Image;
  */
 public abstract class AbstractMapObject {
 
-    private Point location; // represents the location of the object on the screen
-    private Image image;    // represents the image/shape of the object
+    /**
+     * represents the location of the object on the screen
+     */
+    private Point location;
+    /**
+     * represents the image/shape of the object
+     */
+    private Image image;
 
-    public AbstractMapObject(Point someLocation, Image someImage){
+    public AbstractMapObject(Point someLocation, Image someImage) {
         this.setLocation(someLocation);
         this.setImage(someImage);
     }
@@ -21,7 +27,7 @@ public abstract class AbstractMapObject {
     /**
      * @param delta amount of time that has passed between updates
      */
-    protected abstract void update(double delta);
+    protected abstract void update(Game game, double delta);
 
     /**
      * @param lerp interpolation factor

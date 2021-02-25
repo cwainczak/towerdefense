@@ -2,26 +2,38 @@ package com.wsu.towerdefense;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Game extends AbstractGame {
 
-  public Game(Context context, int displayWidth, int displayHeight) {
-    super(context, displayWidth, displayHeight);
-  }
+    private List<AbstractMapObject> objects;
 
-  @Override
-  protected void update(double delta) {
+    private final Map map;
 
-  }
+    public Game(Context context, int displayWidth, int displayHeight) {
+        super(context, displayWidth, displayHeight);
 
-  @Override
-  protected void render(double lerp, Canvas canvas, Paint paint) {
+        objects = new ArrayList<>();
+        map = Map.get("test");
+    }
 
-  }
+    @Override
+    protected void update(double delta) {
+        for (AbstractMapObject obj : objects) {
+            obj.update(this, delta);
+        }
+    }
+
+    @Override
+    protected void render(double lerp, Canvas canvas, Paint paint) {
+        for (AbstractMapObject obj : objects) {
+            obj.render(lerp, canvas, paint);
+        }
+    }
+
+    public Map getMap() {
+        return map;
+    }
 }

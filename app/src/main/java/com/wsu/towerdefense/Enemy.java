@@ -14,22 +14,11 @@ public class Enemy extends AbstractMapObject {
         super(someLocation, someImage);
     }
 
-    /**
-     * @param delta amount of time that has passed between updates
-     */
     @Override
-    protected void update(double delta) {
-
+    protected void update(Game game, double delta) {
     }
 
-    /**
-     * @param lerp   interpolation factor
-     * @param canvas
-     * @param paint
-     */
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-
     }
-
 }
