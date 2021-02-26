@@ -16,12 +16,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the play button is clicked.
+     * This method is for when the play button is clicked. When the play button clicked, it
+     * goes to the GameActivity.
      *
      * @param view view
      */
     public void playButtonClicked(View view) {
-        // go to game activity until menu is made
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
