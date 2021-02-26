@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // go to game activity until menu is made
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, GameActivity.class);
+        //startActivity(intent);
     }
 }
