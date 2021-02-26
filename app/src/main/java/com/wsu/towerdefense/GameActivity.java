@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -17,7 +18,12 @@ public class GameActivity extends AppCompatActivity {
         Point displaySize = new Point();
         display.getSize(displaySize);
 
-        game = new Game(this, displaySize.x, displaySize.y);
+        try {
+            game = new Game(this, displaySize.x, displaySize.y);
+        } catch (Exception e) {
+            // redirect game errors to logcat
+            Log.e(getString(R.string.logcatKey), Log.getStackTraceString(e));
+        }
         setContentView(game);
     }
 }
