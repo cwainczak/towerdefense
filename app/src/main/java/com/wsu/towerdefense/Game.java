@@ -3,12 +3,15 @@ package com.wsu.towerdefense;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
+import com.wsu.towerdefense.map.Map;
+import com.wsu.towerdefense.map.MapReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game extends AbstractGame {
 
-    private List<AbstractMapObject> objects;
+    private final List<AbstractMapObject> objects;
 
     private final Map map;
 
@@ -16,7 +19,9 @@ public class Game extends AbstractGame {
         super(context, displayWidth, displayHeight);
 
         objects = new ArrayList<>();
-        map = Map.get("test");
+        map = MapReader.get("map1");
+
+        Log.i(context.getString(R.string.logcatKey), "Started game with map '" + map.getName() + "'");
     }
 
     @Override
