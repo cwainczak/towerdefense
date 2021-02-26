@@ -12,6 +12,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();   // hide the title bar
 
         Display display = getWindowManager().getDefaultDisplay();
         Point displaySize = new Point();
