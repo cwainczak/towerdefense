@@ -1,9 +1,9 @@
 package com.wsu.towerdefense;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.media.Image;
+import android.graphics.PointF;
 
 /**
  * Base class for MapObjects, such as Tower and Enemy Objects
@@ -13,15 +13,15 @@ public abstract class AbstractMapObject {
     /**
      * represents the location of the object on the screen
      */
-    private Point location;
+    protected PointF location;
     /**
      * represents the image/shape of the object
      */
-    private Image image;
+    protected Bitmap bitmap;
 
-    public AbstractMapObject(Point someLocation, Image someImage) {
+    public AbstractMapObject(PointF someLocation, Bitmap someBitmap) {
         this.setLocation(someLocation);
-        this.setImage(someImage);
+        this.setBitmap(someBitmap);
     }
 
     /**
@@ -34,19 +34,19 @@ public abstract class AbstractMapObject {
      */
     protected abstract void render(double lerp, Canvas canvas, Paint paint);
 
-    public Point getLocation() {
+    public PointF getLocation() {
         return this.location;
     }
 
-    public void setLocation(Point location) {
+    public void setLocation(PointF location) {
         this.location = location;
     }
 
-    public Image getImage() {
-        return this.image;
+    public Bitmap getBitmap() {
+        return this.bitmap;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 }
