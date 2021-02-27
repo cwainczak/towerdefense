@@ -37,7 +37,7 @@
         android:layout_marginTop="233dp"
         android:layout_marginBottom="130dp"
         android:backgroundTint="#4CAF50"
-        android:onClick="playButtonClicked"
+        android:onClick="btnStartClicked"
         android:text="@string/start"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"

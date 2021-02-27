@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view view
      */
-    public void playButtonClicked(View view) {
+    public void btnStartClicked(View view) {
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
