@@ -16,8 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the play button is clicked. When the play button clicked, it
-     * goes to the GameActivity.
+     * This method is for when the start button is clicked. When the start button clicked, it
+     * goes to the MapSelectionActivity.
      *
      * @param view view
      */
