@@ -26,4 +26,16 @@ public class MapSelectionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     * This method is for when the back button is clicked. When the back button clicked, it
+     * goes to the MainActivity.
+     *
+     * @param view view
+     */
+    public void btnBackClicked(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
 }
