@@ -41,84 +41,93 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/img_Map1"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_1" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/img_Map2"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_2" />
 
             <ImageView
-                android:id="@+id/imageView7"
+                android:id="@+id/img_Map3"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_3" />
 
             <ImageView
-                android:id="@+id/imageView8"
+                android:id="@+id/img_Map4"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_4" />
 
             <ImageView
-                android:id="@+id/imageView9"
+                android:id="@+id/img_Map5"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_5" />
 
             <ImageView
-                android:id="@+id/imageView10"
+                android:id="@+id/img_Map6"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_6" />
 
             <ImageView
-                android:id="@+id/imageView11"
+                android:id="@+id/img_Map7"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_7" />
 
             <ImageView
-                android:id="@+id/imageView12"
+                android:id="@+id/img_Map8"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_8" />
 
             <ImageView
-                android:id="@+id/imageView13"
+                android:id="@+id/img_Map9"
                 android:layout_width="275.33dp"
                 android:layout_height="177.33dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
                 android:contentDescription="@string/todo"
+                android:onClick="mapSelected"
                 app:srcCompat="@drawable/map_9" />
 
         </LinearLayout>
@@ -148,6 +157,17 @@
         android:onClick="btnBackClicked"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_mapName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="@string/map_name"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

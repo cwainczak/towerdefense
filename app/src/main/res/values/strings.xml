@@ -9,4 +9,5 @@
     <string name="play">play</string>
     <string name="select_a_map">Select a Map</string>
     <string name="back">back</string>
+    <string name="map_name">Map Name</string>
 </resources>
