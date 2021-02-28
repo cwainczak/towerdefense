@@ -131,6 +131,7 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#4CAF50"
+        android:onClick="btnPlayClicked"
         android:text="@string/play"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
