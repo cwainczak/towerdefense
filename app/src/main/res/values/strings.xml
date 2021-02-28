@@ -6,4 +6,7 @@
     <string name="scores">Scores</string>
     <string name="todo">TODO</string>
     <string name="tower_defense">Tower Defense</string>
+    <string name="play">play</string>
+    <string name="select_a_map">Select a Map</string>
+    <string name="back">back</string>
 </resources>
