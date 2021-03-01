@@ -10,4 +10,6 @@
     <string name="select_a_map">Select a Map</string>
     <string name="back">back</string>
     <string name="map_name">Map Name</string>
+    <string name="new_game">new game</string>
+    <string name="resume_game">resume game</string>
 </resources>
