@@ -9,11 +9,15 @@ import android.graphics.PointF;
  * Class that controls the Enemy objects on the Map
  */
 public class Enemy extends AbstractMapObject {
+
     private float velocityX;    // Enemy's velocity in the x direction
     private float velocityY;    // Enemy's velocity in the y direction
 
+    boolean isAlive;    // Is the enemy alive
+    private int hp = 100; // Enemy's hit points
+
     /**
-     * @param location  A PointF representing the location of the Enemy bitmap's top left corner
+     * @param location  A PointF representing the location of the Enemy bitmap's center
      * @param bitmap    A bitmap image of the Enemy object
      * @param velocityX The Enemy's velocity in the x direction
      * @param velocityY The Enemy's velocity in the y direction
@@ -22,6 +26,7 @@ public class Enemy extends AbstractMapObject {
         super(location, bitmap);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+        this.isAlive = true;
     }
 
     /**
@@ -33,7 +38,7 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void update(Game game, double delta) {
-        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() || location.x < 0) {
+        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() / 2 || location.x < bitmap.getWidth() / 2) {
             velocityX *= -1;
         }
         location.x += velocityX * delta;
@@ -53,6 +58,22 @@ public class Enemy extends AbstractMapObject {
         float x = (float) Math.round(location.x + velocityX * lerp);
         float y = (float) Math.round(location.y + velocityY * lerp);
 
-        canvas.drawBitmap(bitmap, x, y, null);
+        canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2, y - bitmap.getHeight() / 2, null);
     }
+
+    public void takeDamage(int damage) {
+        this.hp -= damage;
+        if (this.hp <= 0) {
+            this.isAlive = false;
+        }
+    }
+
+    public float getVelocityX() {
+        return velocityX;
+    }
+
+    public float getVelocityY() {
+        return velocityY;
+    }
+
 }
