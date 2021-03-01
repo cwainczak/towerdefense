@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:backgroundTint="#009688"
+        android:onClick="btnSettingsClicked"
         android:text="@string/settings"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"

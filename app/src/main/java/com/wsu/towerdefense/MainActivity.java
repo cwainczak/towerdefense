@@ -26,4 +26,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     * This method is for when the settings button is clicked. When the settings button is clicked,
+     * it goes to the SettingsActivity.
+     *
+     * @param view view
+     */
+    public void btnSettingsClicked(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
 }
