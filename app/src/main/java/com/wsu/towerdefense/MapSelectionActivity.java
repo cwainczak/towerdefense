@@ -50,14 +50,20 @@ public class MapSelectionActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the play button is clicked. When the play button is clicked, it
-     * goes to the GameActivity.
+     * This method is for when the play button is clicked. If the play button is clicked before a
+     * map is selected, the txt_mapName displays an error message. Otherwise it goes to the
+     * GameActivity
      *
      * @param view view
      */
     public void btnPlayClicked(View view) {
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
+        if (txt_mapName.getText().equals("Map Name") || txt_mapName.getText().equals("Select a Map")) {
+            txt_mapName.setText("Select a Map");
+            txt_mapName.setVisibility(View.VISIBLE);
+        } else {
+            Intent intent = new Intent(this, GameActivity.class);
+            startActivity(intent);
+        }
     }
 
 
