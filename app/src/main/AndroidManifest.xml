@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TowerDefense">
-        <activity android:name=".GameSelectionActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".GameSelectionActivity" />
         <activity android:name=".MapSelectionActivity" />
         <activity android:name=".GameActivity" />
         <activity android:name=".MainActivity">
