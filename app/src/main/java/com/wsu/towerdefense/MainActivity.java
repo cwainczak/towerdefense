@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnStartClicked(View view) {
-        Intent intent = new Intent(this, MapSelectionActivity.class);
+        Intent intent = new Intent(this, GameSelectionActivity.class);
         startActivity(intent);
     }
 
