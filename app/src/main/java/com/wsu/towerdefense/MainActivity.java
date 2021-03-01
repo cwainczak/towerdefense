@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the start button is clicked. When the start button clicked, it
+     * This method is for when the start button is clicked. When the start button is clicked, it
      * goes to the MapSelectionActivity.
      *
      * @param view view

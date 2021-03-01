@@ -16,13 +16,25 @@ public class GameSelectionActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the nee game button is clicked. When the new game button clicked, it
-     * goes to the MapSelectionActivity.
+     * This method is for when the new game button is clicked. When the new game button is clicked,
+     * it goes to the MapSelectionActivity.
      *
      * @param view view
      */
     public void btnNewGameClicked(View view) {
         Intent intent = new Intent(this, MapSelectionActivity.class);
+        startActivity(intent);
+    }
+
+
+    /**
+     * This method is for when the nee resume game button is clicked. When the resume game button
+     * is clicked, it goes to the GameActivity.
+     *
+     * @param view view
+     */
+    public void btnResumeGameClicked(View view) {
+        Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
 

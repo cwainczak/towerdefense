@@ -50,7 +50,7 @@ public class MapSelectionActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the play button is clicked. When the play button clicked, it
+     * This method is for when the play button is clicked. When the play button is clicked, it
      * goes to the GameActivity.
      *
      * @param view view
@@ -62,7 +62,7 @@ public class MapSelectionActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the back button is clicked. When the back button clicked, it
+     * This method is for when the back button is clicked. When the back button is clicked, it
      * goes to the MainActivity.
      *
      * @param view view
