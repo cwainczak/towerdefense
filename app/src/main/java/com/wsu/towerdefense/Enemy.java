@@ -12,7 +12,7 @@ public class Enemy extends AbstractMapObject {
     private float velocityY;    // Enemy's velocity in the y direction
 
     boolean isAlive;    // Is the enemy alive
-    private int hp; // Enemy's hit points
+    private int hp;     // Enemy's hit points
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path
@@ -62,23 +62,25 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-        float x = (float) Math.round(location.x + velocityX * lerp);
-        float y = (float) Math.round(location.y + velocityY * lerp);
+        if (hp > 0) {
+            float x = (float) Math.round(location.x + velocityX * lerp);
+            float y = (float) Math.round(location.y + velocityY * lerp);
 
-        // Draw the Enemy bitmap image
-        canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
+            // Draw the Enemy bitmap image
+            canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
 
-        // Draw the Enemy hp above the bitmap
-        float textSize = paint.getTextSize();
-        int textScale = 4;
-        int offset = 10;
+            // Draw the Enemy hp above the bitmap
+            float textSize = paint.getTextSize();
+            int textScale = 4;
+            int offset = 10;
 
-        paint.setColor(Color.RED);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(textSize * textScale);
+            paint.setColor(Color.RED);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(textSize * textScale);
 
-        canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
-        paint.setTextSize(textSize);
+            canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
+            paint.setTextSize(textSize);
+        }
     }
 
     /**
@@ -108,13 +110,4 @@ public class Enemy extends AbstractMapObject {
                 y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
                 y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
-
-    public float getVelocityX() {
-        return velocityX;
-    }
-
-    public float getVelocityY() {
-        return velocityY;
-    }
-
 }

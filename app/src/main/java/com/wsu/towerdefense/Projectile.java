@@ -9,6 +9,12 @@ import static com.google.android.material.math.MathUtils.lerp;
 
 public class Projectile extends AbstractMapObject {
 
+    // What percent of the bitmap height will be used for the hitbox
+    static private final float hitboxScaleY = 0.8f;
+
+    // What percent of the bitmap width will be used for the hitbox
+    static private final float hitboxScaleX = 0.8f;
+
     float velocity;
     Enemy target;
 
@@ -69,7 +75,8 @@ public class Projectile extends AbstractMapObject {
     }
 
     private boolean hitTarget(float x, float y) {
-        return target.collides(x, y, bitmap.getWidth() * 4 / 5f, bitmap.getHeight() * 4 / 5f);
+        return target.collides(x, y, bitmap.getWidth() * hitboxScaleX,
+                bitmap.getHeight() * hitboxScaleY);
     }
 
     /**

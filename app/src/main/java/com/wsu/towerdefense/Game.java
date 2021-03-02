@@ -17,7 +17,6 @@ import java.util.List;
 
 public class Game extends AbstractGame {
 
-    //private final List<AbstractMapObject> objects;    <- Is this needed any more?
     private final List<Tower> towers;
     private final List<Enemy> enemies;
 
@@ -26,7 +25,6 @@ public class Game extends AbstractGame {
     public Game(Context context, int displayWidth, int displayHeight) {
         super(context, displayWidth, displayHeight);
 
-        //objects = new ArrayList<>();
         towers = new ArrayList<>();     // Keeps track of all Towers in the Game
         enemies = new ArrayList<>();    // Keeps track of all Enemies in the Game
 
@@ -41,11 +39,6 @@ public class Game extends AbstractGame {
     @Override
     protected void update(double delta) {
 
-        // Update the Towers
-        for (Tower t : towers) {
-            t.update(this, delta);
-        }
-
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
@@ -57,12 +50,11 @@ public class Game extends AbstractGame {
                 enemyIt.remove();
             }
         }
-        /*
-        // Update anything else
-        for (AbstractMapObject obj : objects) {
-            obj.update(this, delta);
+
+        // Update the Towers
+        for (Tower t : towers) {
+            t.update(this, delta);
         }
-*/
 
         //TESTING
         // Add enemies whenever all enemies are killed
@@ -88,11 +80,6 @@ public class Game extends AbstractGame {
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
-/*
-        // Draw anything else
-        for (AbstractMapObject obj : objects) {
-            obj.render(lerp, canvas, paint);
-        }*/
     }
 
     public Map getMap() {
