@@ -2,30 +2,34 @@ package com.wsu.towerdefense;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-/**
- * Class that controls the Enemy objects on the Map
- */
 public class Enemy extends AbstractMapObject {
 
     private float velocityX;    // Enemy's velocity in the x direction
     private float velocityY;    // Enemy's velocity in the y direction
 
     boolean isAlive;    // Is the enemy alive
-    private int hp = 100; // Enemy's hit points
+    private int hp; // Enemy's hit points
 
     /**
+     * An Enemy is a movable Map object. Enemies will move along a predetermined path
+     * defined by the Map they are placed on. They will continue moving along the path
+     * until they reach the end or are killed by a Projectile.
+     *
      * @param location  A PointF representing the location of the Enemy bitmap's center
      * @param bitmap    A bitmap image of the Enemy object
      * @param velocityX The Enemy's velocity in the x direction
      * @param velocityY The Enemy's velocity in the y direction
+     * @param hp        The amount of hit points this Enemy has
      */
-    public Enemy(PointF location, Bitmap bitmap, float velocityX, float velocityY) {
+    public Enemy(PointF location, Bitmap bitmap, float velocityX, float velocityY, int hp) {
         super(location, bitmap);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+        this.hp = hp;
         this.isAlive = true;
     }
 
@@ -38,8 +42,11 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void update(Game game, double delta) {
-        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() / 2 || location.x < bitmap.getWidth() / 2) {
+        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() / 2f || location.x < bitmap.getWidth() / 2f) {
             velocityX *= -1;
+        }
+        if (location.y >= game.getDisplayHeight() - bitmap.getHeight() / 2f || location.y < bitmap.getHeight() / 2f) {
+            velocityY *= -1;
         }
         location.x += velocityX * delta;
         location.y += velocityY * delta;
@@ -58,14 +65,48 @@ public class Enemy extends AbstractMapObject {
         float x = (float) Math.round(location.x + velocityX * lerp);
         float y = (float) Math.round(location.y + velocityY * lerp);
 
-        canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2, y - bitmap.getHeight() / 2, null);
+        // Draw the Enemy bitmap image
+        canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
+
+        // Draw the Enemy hp above the bitmap
+        float textSize = paint.getTextSize();
+        int textScale = 4;
+        int offset = 10;
+
+        paint.setColor(Color.RED);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(textSize * textScale);
+
+        canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
+        paint.setTextSize(textSize);
     }
 
+    /**
+     * A method to remove hp from the Enemy
+     *
+     * @param damage The amount of hp to remove
+     */
     public void takeDamage(int damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
             this.isAlive = false;
         }
+    }
+
+    /**
+     * A method to determine whether or not a given hitbox collides with the Enemy's hitbox.
+     *
+     * @param x      The x coordinate of the hitbox center
+     * @param y      The y coordinate of the hitbox center
+     * @param width  The width of the hitbox
+     * @param height The height of the hitbox
+     * @return true if the given hitbox overlaps the Enemy's hitbox
+     */
+    public boolean collides(float x, float y, float width, float height) {
+        return x - width / 2 <= this.location.x + bitmap.getWidth() / 2f &&
+                x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
+                y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
+                y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
 
     public float getVelocityX() {

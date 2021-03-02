@@ -10,32 +10,37 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
- * dealing damage to the Enemy until it either dies or moves out of range.
- */
 public class Tower extends AbstractMapObject {
 
     private int radius;
     private Enemy target;   // The Enemy this Tower will shoot at
 
     private Bitmap projectileBmp;
-    private List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
+    private final List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private double fireRate = 1; // Time (in seconds) between firing of projectiles
     private double timeSinceShot = 0.0;
     private int damage;
-    private float projectileVelocity = 1000;
+    private float projectileVelocity;
 
     /**
-     * @param location         A PointF representing the location of the towerBitmap's center
-     * @param towerBitmap      A bitmap image of this Tower object
-     * @param radius           The radius of this Tower's detection range
-     * @param projectileBitmap A bitmap image of the projectiles shot by this Tower
+     * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
+     * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot
+     * by a Tower will track the Enemy they were shot at even if the Enemy is no longer in the
+     * Tower's range.
+     *
+     * @param location           A PointF representing the location of the towerBitmap's center
+     * @param towerBitmap        A bitmap image of this Tower object
+     * @param radius             The radius of this Tower's detection range
+     * @param projectileBitmap   A bitmap image of the projectiles shot by this Tower
+     * @param projectileVelocity The velocity of this Tower's Projectiles
+     * @param damage             The amount of damage each projectile from this Tower deals to an Enemy
      */
-    public Tower(PointF location, Bitmap towerBitmap, int radius, Bitmap projectileBitmap, int damage) {
+    public Tower(PointF location, Bitmap towerBitmap, int radius, Bitmap projectileBitmap,
+                 float projectileVelocity, int damage) {
         super(location, towerBitmap);
         this.radius = radius;
         this.projectileBmp = projectileBitmap;
+        this.projectileVelocity = projectileVelocity;
         this.damage = damage;
         this.projectiles = new ArrayList<>();
     }
@@ -74,37 +79,26 @@ public class Tower extends AbstractMapObject {
             timeSinceShot = 0;
         }
 
-        // Update the position of each projectile
+        // Update each projectile
         for (Iterator<Projectile> projectileIt = projectiles.iterator(); projectileIt.hasNext(); ) {
             Projectile p = projectileIt.next();
             p.update(game, delta);
 
-            // If the projectile hits the target deal damage to the target
+            // If the projectile hits its target deal damage to the target
             if (p.hitTarget()) {
                 p.damageTarget(damage);
 
-                // If p's target died remove all projectiles that were targeting the same Enemy
-                if (!p.target.isAlive) {
-                    // Use a local copy of current projectile's target. This is needed in case
-                    // the Tower is currently targeting a different Enemy or if the Enemy the
-                    // Tower was targeting moved out of range after the projectile was shot.
-                    Enemy e = p.target;
-                    Iterator<Projectile> innerProjectileIt = projectiles.iterator();
-                    while (innerProjectileIt.hasNext()) {
-                        Projectile innerP = innerProjectileIt.next();
-
-                        // Remove projectiles that target the now dead Enemy
-                        if (innerP.target.equals(e)) {
-                            innerProjectileIt.remove();
-                        }
-                    }
-                    target = null;
-                } else {
-                    // Remove only the current projectile
-                    projectileIt.remove();
-                }
+                // Remove the projectile from the projectile list
+                projectileIt.remove();
+            } else if (!p.target.isAlive) {
+                // If the current projectile did not hit its target, but a previous projectile
+                // hit and killed its target remove the current projectile
+                projectileIt.remove();
             }
         }
+
+        // If the target died stop targeting it
+        if (target != null && !target.isAlive) target = null;
     }
 
     /**
@@ -117,7 +111,7 @@ public class Tower extends AbstractMapObject {
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
         // Draw the Tower's bitmap image
-        canvas.drawBitmap(bitmap, location.x - bitmap.getWidth() / 2, location.y - bitmap.getHeight() / 2,
+        canvas.drawBitmap(bitmap, location.x - bitmap.getWidth() / 2f, location.y - bitmap.getHeight() / 2f,
                 null);
 
         // Draw each projectile
@@ -125,13 +119,13 @@ public class Tower extends AbstractMapObject {
             p.render(lerp, canvas, paint);
         }
 
-        // FOR TESTING / DEBUG
-
+        //TESTING
         // Draw the Tower's range
         drawRange(canvas, paint);
 
+        //TESTING
         // Draw a line to the target Enemy, interpolating Enemy position
-        if (target != null) {
+        /*if (target != null) {
             float width = paint.getStrokeWidth();
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(width + 6);
@@ -139,7 +133,7 @@ public class Tower extends AbstractMapObject {
                     (float) (target.location.x + target.getVelocityX() * lerp),
                     (float) (target.location.y + target.getVelocityY() * lerp), paint);
             paint.setStrokeWidth(width);
-        }
+        }*/
 
     }
 
@@ -177,13 +171,5 @@ public class Tower extends AbstractMapObject {
         paint.setAlpha(255);
         paint.setStrokeWidth(width);
         paint.setStyle(Paint.Style.FILL);
-    }
-
-    public void setTarget(Enemy target) {
-        this.target = target;
-    }
-
-    public Enemy getTarget() {
-        return target;
     }
 }

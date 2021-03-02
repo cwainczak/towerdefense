@@ -27,10 +27,8 @@ public class Projectile extends AbstractMapObject {
     }
 
     public void update(Game game, double delta) {
-        float a = Math.abs(location.x - target.location.x);
-        float b = Math.abs(location.y - target.location.y);
-
-        double distanceToTarget = Math.hypot(a, b);
+        double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
+                Math.abs(location.y - target.location.y));
         double distanceMoved = velocity * delta;
 
         // If the projectile moved far enough to reach the target set it at the target location
@@ -38,31 +36,56 @@ public class Projectile extends AbstractMapObject {
             location.set(target.location);
         } else {
             // Otherwise move the projectile towards the target
-            float amount = (float) (distanceMoved / distanceToTarget);
-
-            float newX = lerp(location.x, target.location.x, amount);
-            float newY = lerp(location.y, target.location.y, amount);
-
-            location.set(newX, newY);
+            location.set(calculateNewLocation(delta));
         }
-    }
-
-    public boolean hitTarget() {
-        return location.x + bitmap.getWidth() / 3 >= target.location.x - target.bitmap.getWidth() / 2 &&
-                location.x - bitmap.getWidth() / 3 <= target.location.x + target.bitmap.getWidth() / 2 &&
-                location.y + bitmap.getHeight() / 3 <= target.location.y + target.bitmap.getHeight() / 2 &&
-                location.y - bitmap.getHeight() / 3 >= target.location.y - target.bitmap.getHeight() / 2;
-    }
-
-    public void damageTarget(int damage) {
-        target.takeDamage(damage);
     }
 
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-        float x = (float) Math.round(location.x);
-        float y = (float) Math.round(location.y);
+        PointF newLoc = calculateNewLocation(lerp);
+        if (!hitTarget(newLoc.x, newLoc.y)) {
+            canvas.drawBitmap(bitmap, newLoc.x - bitmap.getWidth() / 2f,
+                    newLoc.y - bitmap.getHeight() / 2f, null);
+        }
+    }
 
-        canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2, y - bitmap.getHeight() / 2, null);
+    /**
+     * Deals damage to this Projectile's target.
+     *
+     * @param damage The amount of damage to deal.
+     */
+    public void damageTarget(int damage) {
+        target.takeDamage(damage);
+    }
+
+    /**
+     * A method that checks whether the hitbox of this Projectile overlaps with the
+     * hitbox of the Enemy this Projectile is targeting.
+     *
+     * @return true if this Projectile hit its target, otherwise false
+     */
+    public boolean hitTarget() {
+        return hitTarget(location.x, location.y);
+    }
+
+    private boolean hitTarget(float x, float y) {
+        return target.collides(x, y, bitmap.getWidth() * 4 / 5f, bitmap.getHeight() * 4 / 5f);
+    }
+
+    /**
+     * Calculates the Projectile's new position given a change in time
+     *
+     * @param delta The change in time since this Projectile's location has been updated
+     * @return The new location this Projectile should move to
+     */
+    private PointF calculateNewLocation(double delta) {
+        double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
+                Math.abs(location.y - target.location.y));
+        double distanceMoved = velocity * delta;
+
+        float amount = (float) (distanceMoved / distanceToTarget);
+
+        return new PointF(lerp(location.x, target.location.x, amount),
+                lerp(location.y, target.location.y, amount));
     }
 }

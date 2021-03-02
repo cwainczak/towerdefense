@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import android.util.Log;
 
 import com.wsu.towerdefense.map.Map;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class Game extends AbstractGame {
 
-    private final List<AbstractMapObject> objects;
+    //private final List<AbstractMapObject> objects;    <- Is this needed any more?
     private final List<Tower> towers;
     private final List<Enemy> enemies;
 
@@ -27,15 +26,16 @@ public class Game extends AbstractGame {
     public Game(Context context, int displayWidth, int displayHeight) {
         super(context, displayWidth, displayHeight);
 
-        objects = new ArrayList<>();
-        towers = new ArrayList<>();
-        enemies = new ArrayList<>();
+        //objects = new ArrayList<>();
+        towers = new ArrayList<>();     // Keeps track of all Towers in the Game
+        enemies = new ArrayList<>();    // Keeps track of all Enemies in the Game
 
         map = MapReader.get("map1");
 
         Log.i(context.getString(R.string.logcatKey), "Started game with map '" + map.getName() + "'");
 
         setup();
+        Log.i(context.getString(R.string.logcatKey), "Set up game objects");
     }
 
     @Override
@@ -46,21 +46,32 @@ public class Game extends AbstractGame {
             t.update(this, delta);
         }
 
-        // Update the Enemies
+        // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
-            e.update(this, delta);
 
-            // If Enemy dies
-            if (!e.isAlive) {
+            if (e.isAlive) {
+                e.update(this, delta);
+
+            } else {    // Remove dead Enemies
                 enemyIt.remove();
             }
         }
-
+        /*
         // Update anything else
         for (AbstractMapObject obj : objects) {
             obj.update(this, delta);
         }
+*/
+
+        //TESTING
+        // Add enemies whenever all enemies are killed
+        if (enemies.size() == 0) {
+            addEnemy(200, 320, 300, 0, 100);
+            addEnemy(2000, 720, 300, 0, 100);
+            addEnemy(200, 1120, 300, 0, 100);
+        }
+
     }
 
     @Override
@@ -77,11 +88,11 @@ public class Game extends AbstractGame {
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
-
+/*
         // Draw anything else
         for (AbstractMapObject obj : objects) {
             obj.render(lerp, canvas, paint);
-        }
+        }*/
     }
 
     public Map getMap() {
@@ -93,25 +104,36 @@ public class Game extends AbstractGame {
     }
 
     /**
-     * Used to set up some of the Game's objects.
+     * A method used to set up some of the Game's objects.
      */
     private void setup() {
-
-        // Currently used for testing purposes
-        // Add Enemies
-        enemies.add(new Enemy(new PointF(200, 720),
-                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
-                300.0f, 0.0f));
-        enemies.add(new Enemy(new PointF(600, 720),
-                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
-                300.0f, 0.0f));
-
+        //TESTING
         // Add Towers
         towers.add(new Tower(new PointF(1000, 580),
                 BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 10));
+                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
         towers.add(new Tower(new PointF(1400, 860),
                 BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 10));
+                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
+
+        //TESTING
+        // Add Enemies
+        addEnemy(200, 320, 300, 0, 100);
+        addEnemy(2000, 720, 300, 0, 100);
+        addEnemy(200, 1120, 300, 0, 100);
+    }
+
+    /**
+     * A helper method to reduce complexity and size of main Game methods (update, setup)
+     *
+     * @param x         Enemy center x location
+     * @param y         Enemy center y location
+     * @param velocityX Velocity in the x direction
+     * @param velocityY Velocity in the y direction
+     */
+    private void addEnemy(float x, float y, float velocityX, float velocityY, int hp) {
+        enemies.add(new Enemy(new PointF(x, y),
+                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
+                velocityX, velocityY, hp));
     }
 }
