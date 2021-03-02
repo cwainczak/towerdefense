@@ -125,7 +125,6 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
         try {
             thread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
             Log.e(getContext().getString(R.string.logcatKey), Log.getStackTraceString(e));
         }
     }
@@ -159,11 +158,11 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
         displayHeight = height;
     }
 
-    protected int getDisplayWidth() {
+    int getDisplayWidth() {
         return displayWidth;
     }
 
-    protected int getDisplayHeight() {
+    int getDisplayHeight() {
         return displayHeight;
     }
 
