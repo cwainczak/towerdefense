@@ -97,11 +97,11 @@
         app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
     <androidx.gridlayout.widget.GridLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="125dp"
+        android:layout_marginStart="170dp"
         android:layout_marginTop="260dp"
-        android:layout_marginEnd="125dp"
+        android:layout_marginEnd="170dp"
         app:columnCount="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +114,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/amir_elrahep"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView17"
@@ -123,7 +123,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/christopher_mee"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView21"
@@ -132,7 +132,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/cooper_wainczak"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView19"
@@ -141,7 +141,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/davin_procopio"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView22"
@@ -150,7 +150,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/edward_klimoshenko"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textView20"
@@ -159,7 +159,20 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/tyler_lafleur"
-            android:textSize="24sp" />
+            android:textSize="18sp" />
     </androidx.gridlayout.widget.GridLayout>
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#009688"
+        android:text="@string/back"
+        app:icon="@drawable/back"
+        app:iconSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
