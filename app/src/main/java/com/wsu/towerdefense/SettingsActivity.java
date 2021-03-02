@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    TextView tv_versionNumber;
     SeekBar sb_music;
     SeekBar sb_soundFx;
 
@@ -17,6 +19,9 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        tv_versionNumber = findViewById(R.id.tv_versionNumber);
+        tv_versionNumber.setText("Version 1.0");
 
         sb_music = findViewById(R.id.sb_music);
         sb_soundFx = findViewById(R.id.sb_soundFx);
