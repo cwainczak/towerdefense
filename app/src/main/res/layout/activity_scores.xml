@@ -37,6 +37,7 @@
         android:backgroundTint="#009688"
         android:onClick="btnBackClicked"
         android:text="@string/back"
+        android:textSize="18sp"
         app:icon="@drawable/back"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
