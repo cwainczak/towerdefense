@@ -155,7 +155,6 @@
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#009688"
-        android:foregroundTint="#4CAF50"
         android:onClick="btnBackClicked"
         android:text="@string/back"
         app:icon="@drawable/back"

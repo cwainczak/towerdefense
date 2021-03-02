@@ -28,6 +28,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
+     * This method is for when the scores button is clicked. When the scores button is clicked,
+     * it goes to the ScoresActivity.
+     *
+     * @param view view
+     */
+    public void btnScoresClicked(View view) {
+        Intent intent = new Intent(this, ScoresActivity.class);
+        startActivity(intent);
+    }
+
+
+    /**
      * This method is for when the settings button is clicked. When the settings button is clicked,
      * it goes to the SettingsActivity.
      *

@@ -64,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:backgroundTint="#009688"
+        android:onClick="btnScoresClicked"
         android:text="@string/scores"
         android:textSize="18sp"
         app:icon="@drawable/leaderboard"
