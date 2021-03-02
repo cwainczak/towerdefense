@@ -46,24 +46,28 @@
 
     <Button
         android:id="@+id/btn_settings"
-        android:layout_width="150dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:backgroundTint="#009688"
         android:onClick="btnSettingsClicked"
         android:text="@string/settings"
         android:textSize="18sp"
+        app:icon="@drawable/settings"
+        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_start" />
 
     <Button
         android:id="@+id/btn_scores"
-        android:layout_width="150dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:backgroundTint="#009688"
         android:text="@string/scores"
         android:textSize="18sp"
+        app:icon="@drawable/leaderboard"
+        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_start" />
 

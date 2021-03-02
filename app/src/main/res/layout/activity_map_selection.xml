@@ -143,6 +143,8 @@
         android:onClick="btnPlayClicked"
         android:text="@string/play"
         android:textSize="18sp"
+        app:icon="@drawable/play"
+        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -156,6 +158,8 @@
         android:foregroundTint="#4CAF50"
         android:onClick="btnBackClicked"
         android:text="@string/back"
+        app:icon="@drawable/back"
+        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
