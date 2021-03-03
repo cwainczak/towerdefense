@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -21,13 +22,13 @@ public class Projectile extends AbstractMapObject {
     /**
      * A projectile shot by Towers at Enemies
      *
-     * @param location A PointF representing the location of the bitmap's center
-     * @param velocity The Projectile's velocity
-     * @param bitmap   A bitmap image of this Projectile object
-     * @param target   The Enemy this projectile is targeting
+     * @param location   A PointF representing the location of the bitmap's center
+     * @param velocity   The Projectile's velocity
+     * @param resourceID The resource ID of the image of this Projectile object
+     * @param target     The Enemy this projectile is targeting
      */
-    public Projectile(PointF location, float velocity, Bitmap bitmap, Enemy target) {
-        super(location, bitmap);
+    public Projectile(PointF location, int resourceID, float velocity, Enemy target) {
+        super(location, resourceID);
         this.velocity = velocity;
         this.target = target;
     }

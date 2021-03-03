@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,13 +33,12 @@ public class Enemy extends AbstractMapObject {
      * are killed by a Projectile.
      *
      * @param location  A PointF representing the location of the Enemy bitmap's center
-     * @param bitmap    A bitmap image of the Enemy object
      * @param velocityX The Enemy's velocity in the x direction
      * @param velocityY The Enemy's velocity in the y direction
      * @param hp        The amount of hit points this Enemy has
      */
-    public Enemy(PointF location, Bitmap bitmap, float velocityX, float velocityY, int hp) {
-        super(location, bitmap);
+    public Enemy(PointF location, float velocityX, float velocityY, int hp) {
+        super(location, R.drawable.enemy);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.hp = hp;

@@ -1,22 +1,29 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
+import android.util.Log;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Tower extends AbstractMapObject {
+public class Tower extends AbstractMapObject implements Serializable {
 
     private int radius;
-    private Enemy target;   // The Enemy this Tower will shoot at
+    private transient Enemy target;   // The Enemy this Tower will shoot at
 
-    private Bitmap projectileBmp;
-    private final List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
+    private final int projectileResourceID;
+    private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private double fireRate = 1; // Time (in seconds) between firing of projectiles
     private double timeSinceShot = 0.0;
     private int damage;
@@ -29,18 +36,15 @@ public class Tower extends AbstractMapObject {
      * range.
      *
      * @param location           A PointF representing the location of the towerBitmap's center
-     * @param towerBitmap        A bitmap image of this Tower object
      * @param radius             The radius of this Tower's detection range
-     * @param projectileBitmap   A bitmap image of the projectiles shot by this Tower
      * @param projectileVelocity The velocity of this Tower's Projectiles
      * @param damage             The amount of damage each projectile from this Tower deals to an
      *                           Enemy
      */
-    public Tower(PointF location, Bitmap towerBitmap, int radius, Bitmap projectileBitmap,
-        float projectileVelocity, int damage) {
-        super(location, towerBitmap);
+    public Tower(PointF location, int radius, float projectileVelocity, int damage) {
+        super(location, R.drawable.tower);
         this.radius = radius;
-        this.projectileBmp = projectileBitmap;
+        this.projectileResourceID = R.drawable.projectile;
         this.projectileVelocity = projectileVelocity;
         this.damage = damage;
         this.projectiles = new ArrayList<>();
@@ -77,7 +81,7 @@ public class Tower extends AbstractMapObject {
         // Shoot another projectile if there is a target and enough time has passed
         if (target != null && timeSinceShot >= fireRate) {
             projectiles.add(new Projectile(new PointF(location.x, location.y),
-                projectileVelocity, projectileBmp, target));
+                projectileResourceID, projectileVelocity, target));
             timeSinceShot = 0;
         }
 
@@ -180,5 +184,15 @@ public class Tower extends AbstractMapObject {
         paint.setAlpha(255);
         paint.setStrokeWidth(width);
         paint.setStyle(Paint.Style.FILL);
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
+        this.projectiles = new ArrayList<>();
     }
 }
