@@ -41,15 +41,15 @@ public class Enemy extends AbstractMapObject {
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param hp        The amount of hit points this Enemy has
      * @param path     A List of Points for the current location to move towards
      * @param cellSize Dimensions of each cell in the grid making up the map area
+     * @param hp        The amount of hit points this Enemy has
      * @param velocity The Enemy's velocity
      */
-    public Enemy(List<Point> path, PointF cellSize,
-                 int hp, float velocity) {
+    public Enemy(List<Point> path, PointF cellSize, int hp, float velocity) {
         super(new PointF(path.get(0).x * cellSize.x + (cellSize.x/2),
                 path.get(0).y * cellSize.y + (cellSize.y/2)), R.mipmap.enemy);
+
         this.velocity = velocity;
         this.cellSize = cellSize;
         this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
@@ -149,8 +149,8 @@ public class Enemy extends AbstractMapObject {
 
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
-        if (Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y) <= Math.abs(velocity * delta)
-                && path.hasNext()) {
+        if (Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y)
+                <= Math.abs(velocity * delta) && path.hasNext()) {
 
             //set location to target, and update target
             location = pixTarget;

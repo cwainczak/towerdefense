@@ -40,6 +40,12 @@ public class Map {
         }
     }
 
+    /**
+     * Generates a RectF of size cellSize for each cell along the path
+     * Note: only works with horizontal and vertical movement. Angled movement will not work
+     *
+     * @param cellSize size of each cell within the grid
+     */
     public void generateTiles(PointF cellSize){
         int x;
         int y;

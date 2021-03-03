@@ -136,6 +136,13 @@ public class Game extends AbstractGame implements Serializable {
         }
     }
 
+
+    /**
+     * Calculates the number of columns based on screen dimensions and space reserved for
+     * towerMenu, then calculates the height and width of each cell within the grid
+     *
+     * @return PointF containing the width and height of each cell within the grid
+     */
     protected PointF getCellSize () {
         float screenXActual = (float) getDisplayWidth() * (1f - towerMenuWidth);
         float screenYActual = getDisplayHeight();
@@ -146,6 +153,12 @@ public class Game extends AbstractGame implements Serializable {
         return (new PointF(x, y));
     }
 
+    /**
+     * draws the grid onto the screen for debugging purposes
+     *
+     * @param canvas    Canvas to draw the lines on
+     * @param paint     Paint to draw the lines with
+     */
     private void drawGridLines (Canvas canvas, Paint paint){
         paint.setColor(Color.RED);
         for (int i = 0; i < rows; i++) {
