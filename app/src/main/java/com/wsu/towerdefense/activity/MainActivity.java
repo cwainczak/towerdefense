@@ -1,4 +1,4 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.activity;
 
 import android.content.Intent;
 import android.util.Log;
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.map.MapReader;
 
 import java.io.IOException;
@@ -18,15 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // initialize maps
-        try {
-            MapReader.init(this);
-        } catch (IOException e) {
-            Log.e(getString(R.string.logcatKey), "Error while initializing maps", e);
-        }
     }
-
 
     /**
      * This method is for when the start button is clicked. When the start button is clicked, it
@@ -41,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * This method is for when the scores button is clicked. When the scores button is clicked,
-     * it goes to the ScoresActivity.
+     * This method is for when the scores button is clicked. When the scores button is clicked, it
+     * goes to the ScoresActivity.
      *
      * @param view view
      */

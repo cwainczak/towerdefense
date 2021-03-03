@@ -24,19 +24,20 @@ public class Tower extends AbstractMapObject {
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
-     * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot
-     * by a Tower will track the Enemy they were shot at even if the Enemy is no longer in the
-     * Tower's range.
+     * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
+     * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
+     * range.
      *
      * @param location           A PointF representing the location of the towerBitmap's center
      * @param towerBitmap        A bitmap image of this Tower object
      * @param radius             The radius of this Tower's detection range
      * @param projectileBitmap   A bitmap image of the projectiles shot by this Tower
      * @param projectileVelocity The velocity of this Tower's Projectiles
-     * @param damage             The amount of damage each projectile from this Tower deals to an Enemy
+     * @param damage             The amount of damage each projectile from this Tower deals to an
+     *                           Enemy
      */
     public Tower(PointF location, Bitmap towerBitmap, int radius, Bitmap projectileBitmap,
-                 float projectileVelocity, int damage) {
+        float projectileVelocity, int damage) {
         super(location, towerBitmap);
         this.radius = radius;
         this.projectileBmp = projectileBitmap;
@@ -46,8 +47,7 @@ public class Tower extends AbstractMapObject {
     }
 
     /**
-     * Updates the Tower based on the the change in time
-     * since the Tower was last updated.
+     * Updates the Tower based on the the change in time since the Tower was last updated.
      *
      * @param game  the Game object this Tower belongs to
      * @param delta amount of time that has passed between updates
@@ -55,7 +55,9 @@ public class Tower extends AbstractMapObject {
     @Override
     protected void update(Game game, double delta) {
         // Remove target if it goes out of range
-        if (distanceToEnemy(target) > radius) target = null;
+        if (distanceToEnemy(target) > radius) {
+            target = null;
+        }
 
         // Look for new target if there is no current target
         if (target == null) {
@@ -75,7 +77,7 @@ public class Tower extends AbstractMapObject {
         // Shoot another projectile if there is a target and enough time has passed
         if (target != null && timeSinceShot >= fireRate) {
             projectiles.add(new Projectile(new PointF(location.x, location.y),
-                    projectileVelocity, projectileBmp, target));
+                projectileVelocity, projectileBmp, target));
             timeSinceShot = 0;
         }
 
@@ -98,7 +100,9 @@ public class Tower extends AbstractMapObject {
         }
 
         // If the target died stop targeting it
-        if (target != null && !target.isAlive) target = null;
+        if (target != null && !target.isAlive) {
+            target = null;
+        }
     }
 
     /**
@@ -111,8 +115,12 @@ public class Tower extends AbstractMapObject {
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
         // Draw the Tower's bitmap image
-        canvas.drawBitmap(bitmap, location.x - bitmap.getWidth() / 2f, location.y - bitmap.getHeight() / 2f,
-                null);
+        canvas.drawBitmap(
+            bitmap,
+            location.x - bitmap.getWidth() / 2f,
+            location.y - bitmap.getHeight() / 2f,
+            null
+        );
 
         // Draw each projectile
         for (Projectile p : projectiles) {
@@ -138,14 +146,16 @@ public class Tower extends AbstractMapObject {
     }
 
     /**
-     * A helper method that calculates the distance from the center of this Tower to
-     * the center of a given Enemy
+     * A helper method that calculates the distance from the center of this Tower to the center of a
+     * given Enemy
      *
      * @param enemy The Enemy object to calculate the distance to
      * @return A double representing the distance to the enemy
      */
     private double distanceToEnemy(Enemy enemy) {
-        if (enemy == null) return -1;
+        if (enemy == null) {
+            return -1;
+        }
 
         float a = Math.abs(location.x - enemy.location.x);
         float b = Math.abs(location.y - enemy.location.y);
@@ -153,8 +163,7 @@ public class Tower extends AbstractMapObject {
     }
 
     /**
-     * A helper method that draws a circular outline representing the range
-     * of this Tower.
+     * A helper method that draws a circular outline representing the range of this Tower.
      *
      * @param canvas The Canvas to draw the range on.
      * @param paint  The Paint used to draw the range.

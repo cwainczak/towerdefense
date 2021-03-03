@@ -17,7 +17,13 @@ import java.util.List;
 
 public class Game extends AbstractGame {
 
+    /**
+     * Keeps track of all Towers in the Game
+     */
     private final List<Tower> towers;
+    /**
+     * Keeps track of all Enemies in the Game
+     */
     private final List<Enemy> enemies;
 
     private final Map map;
@@ -25,12 +31,13 @@ public class Game extends AbstractGame {
     public Game(Context context, int displayWidth, int displayHeight) {
         super(context, displayWidth, displayHeight);
 
-        towers = new ArrayList<>();     // Keeps track of all Towers in the Game
-        enemies = new ArrayList<>();    // Keeps track of all Enemies in the Game
+        towers = new ArrayList<>();
+        enemies = new ArrayList<>();
 
         map = MapReader.get("map1");
 
-        Log.i(context.getString(R.string.logcatKey), "Started game with map '" + map.getName() + "'");
+        Log.i(context.getString(R.string.logcatKey),
+            "Started game with map '" + map.getName() + "'");
 
         setup();
         Log.i(context.getString(R.string.logcatKey), "Set up game objects");
@@ -46,7 +53,8 @@ public class Game extends AbstractGame {
             if (e.isAlive) {
                 e.update(this, delta);
 
-            } else {    // Remove dead Enemies
+            } else {
+                // Remove dead Enemies
                 enemyIt.remove();
             }
         }
@@ -97,11 +105,11 @@ public class Game extends AbstractGame {
         //TESTING
         // Add Towers
         towers.add(new Tower(new PointF(1000, 580),
-                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
+            BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
+            BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
         towers.add(new Tower(new PointF(1400, 860),
-                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
+            BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
+            BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
 
         //TESTING
         // Add Enemies
@@ -120,7 +128,7 @@ public class Game extends AbstractGame {
      */
     private void addEnemy(float x, float y, float velocityX, float velocityY, int hp) {
         enemies.add(new Enemy(new PointF(x, y),
-                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
-                velocityX, velocityY, hp));
+            BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
+            velocityX, velocityY, hp));
     }
 }

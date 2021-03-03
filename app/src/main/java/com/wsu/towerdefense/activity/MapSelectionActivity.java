@@ -1,4 +1,4 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wsu.towerdefense.R;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +27,6 @@ public class MapSelectionActivity extends AppCompatActivity {
     List<ImageView> mapList;
 
     TextView txt_mapName;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

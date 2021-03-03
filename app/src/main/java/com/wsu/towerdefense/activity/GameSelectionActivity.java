@@ -1,10 +1,11 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import com.wsu.towerdefense.R;
 
 public class GameSelectionActivity extends AppCompatActivity {
 

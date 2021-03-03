@@ -34,7 +34,7 @@ public class Projectile extends AbstractMapObject {
 
     public void update(Game game, double delta) {
         double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
-                Math.abs(location.y - target.location.y));
+            Math.abs(location.y - target.location.y));
         double distanceMoved = velocity * delta;
 
         // If the projectile moved far enough to reach the target set it at the target location
@@ -50,8 +50,10 @@ public class Projectile extends AbstractMapObject {
     protected void render(double lerp, Canvas canvas, Paint paint) {
         PointF newLoc = calculateNewLocation(lerp);
         if (!hitTarget(newLoc.x, newLoc.y)) {
-            canvas.drawBitmap(bitmap, newLoc.x - bitmap.getWidth() / 2f,
-                    newLoc.y - bitmap.getHeight() / 2f, null);
+            canvas.drawBitmap(bitmap,
+                newLoc.x - bitmap.getWidth() / 2f,
+                newLoc.y - bitmap.getHeight() / 2f,
+                null);
         }
     }
 
@@ -65,8 +67,8 @@ public class Projectile extends AbstractMapObject {
     }
 
     /**
-     * A method that checks whether the hitbox of this Projectile overlaps with the
-     * hitbox of the Enemy this Projectile is targeting.
+     * A method that checks whether the hitbox of this Projectile overlaps with the hitbox of the
+     * Enemy this Projectile is targeting.
      *
      * @return true if this Projectile hit its target, otherwise false
      */
@@ -75,8 +77,10 @@ public class Projectile extends AbstractMapObject {
     }
 
     private boolean hitTarget(float x, float y) {
-        return target.collides(x, y, bitmap.getWidth() * hitboxScaleX,
-                bitmap.getHeight() * hitboxScaleY);
+        return target.collides(x, y,
+            bitmap.getWidth() * hitboxScaleX,
+            bitmap.getHeight() * hitboxScaleY
+        );
     }
 
     /**
@@ -86,13 +90,17 @@ public class Projectile extends AbstractMapObject {
      * @return The new location this Projectile should move to
      */
     private PointF calculateNewLocation(double delta) {
-        double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
-                Math.abs(location.y - target.location.y));
+        double distanceToTarget = Math.hypot(
+            Math.abs(location.x - target.location.x),
+            Math.abs(location.y - target.location.y)
+        );
         double distanceMoved = velocity * delta;
 
         float amount = (float) (distanceMoved / distanceToTarget);
 
-        return new PointF(lerp(location.x, target.location.x, amount),
-                lerp(location.y, target.location.y, amount));
+        return new PointF(
+            lerp(location.x, target.location.x, amount),
+            lerp(location.y, target.location.y, amount)
+        );
     }
 }

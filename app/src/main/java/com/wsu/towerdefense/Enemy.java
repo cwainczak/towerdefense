@@ -8,16 +8,28 @@ import android.graphics.PointF;
 
 public class Enemy extends AbstractMapObject {
 
-    private float velocityX;    // Enemy's velocity in the x direction
-    private float velocityY;    // Enemy's velocity in the y direction
-
-    boolean isAlive;    // Is the enemy alive
-    private int hp;     // Enemy's hit points
+    /**
+     * Enemy's velocity in the x direction
+     */
+    private float velocityX;
+    /**
+     * Enemy's velocity in the y direction
+     */
+    private float velocityY;
 
     /**
-     * An Enemy is a movable Map object. Enemies will move along a predetermined path
-     * defined by the Map they are placed on. They will continue moving along the path
-     * until they reach the end or are killed by a Projectile.
+     * Is the enemy alive
+     */
+    boolean isAlive;
+    /**
+     * Enemy's hit points
+     */
+    private int hp;
+
+    /**
+     * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
+     * Map they are placed on. They will continue moving along the path until they reach the end or
+     * are killed by a Projectile.
      *
      * @param location  A PointF representing the location of the Enemy bitmap's center
      * @param bitmap    A bitmap image of the Enemy object
@@ -34,18 +46,20 @@ public class Enemy extends AbstractMapObject {
     }
 
     /**
-     * Updates the Enemy's location based on the Enemy's velocity and the change in time
-     * since the location was last updated.
+     * Updates the Enemy's location based on the Enemy's velocity and the change in time since the
+     * location was last updated.
      *
      * @param game  the Game object this Enemy belongs to
      * @param delta amount of time that has passed between updates
      */
     @Override
     protected void update(Game game, double delta) {
-        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() / 2f || location.x < bitmap.getWidth() / 2f) {
+        if (location.x >= game.getDisplayWidth() - bitmap.getWidth() / 2f
+            || location.x < bitmap.getWidth() / 2f) {
             velocityX *= -1;
         }
-        if (location.y >= game.getDisplayHeight() - bitmap.getHeight() / 2f || location.y < bitmap.getHeight() / 2f) {
+        if (location.y >= game.getDisplayHeight() - bitmap.getHeight() / 2f
+            || location.y < bitmap.getHeight() / 2f) {
             velocityY *= -1;
         }
         location.x += velocityX * delta;
@@ -53,8 +67,8 @@ public class Enemy extends AbstractMapObject {
     }
 
     /**
-     * Draws this Enemy's Bitmap image to the provided Canvas, interpolating changes in position
-     * to maintain smooth movement regardless of updates since last drawn.
+     * Draws this Enemy's Bitmap image to the provided Canvas, interpolating changes in position to
+     * maintain smooth movement regardless of updates since last drawn.
      *
      * @param lerp   interpolation factor
      * @param canvas the canvas this Enemy will be drawn on
@@ -67,7 +81,8 @@ public class Enemy extends AbstractMapObject {
             float y = (float) Math.round(location.y + velocityY * lerp);
 
             // Draw the Enemy bitmap image
-            canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
+            canvas
+                .drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
 
             // Draw the Enemy hp above the bitmap
             float textSize = paint.getTextSize();
@@ -106,8 +121,8 @@ public class Enemy extends AbstractMapObject {
      */
     public boolean collides(float x, float y, float width, float height) {
         return x - width / 2 <= this.location.x + bitmap.getWidth() / 2f &&
-                x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
-                y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
-                y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
+            x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
+            y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
+            y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
 }
