@@ -45,14 +45,19 @@ public class Enemy extends AbstractMapObject {
      */
     public Enemy(List<Point> path, PointF cellSize, Bitmap bitmap,
                  int hp, float velocity) {
-        super(new PointF(path.get(0).x * cellSize.x , path.get(0).y * cellSize.y), bitmap);
+        super(new PointF(path.get(0).x * cellSize.x, path.get(0).y * cellSize.y), bitmap);
+        Log.i("--contrtuct--", "constructor called");
         this.velocity = velocity;
         this.cellSize = cellSize;
 
+        // generate path
         List<Point> tempPath = path;
-        for(Point p : tempPath) {
+        for (Point p : tempPath) {
+            Log.i("--size     --", path.size() + "");
+            Log.i("--regpath  --", p.x + " " + p.y);
             p.x *= cellSize.x;
             p.y *= cellSize.y;
+            Log.i("--pixpath  --", p.x + " " + p.y);
         }
         this.path = tempPath.listIterator();
         this.target = this.path.next();
@@ -61,6 +66,7 @@ public class Enemy extends AbstractMapObject {
 
         this.hp = hp;
         this.isAlive = true;
+    }
 
     /**
      * Updates the Enemy's location based on the Enemy's velocity and the change in time since the
@@ -71,6 +77,7 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void update(Game game, double delta) {
+        Log.i("--update   --", "updating enemy");
         moveEnemy(delta);
     }
 
@@ -89,8 +96,8 @@ public class Enemy extends AbstractMapObject {
             float y = (float) Math.round(location.y + velocityY * lerp);
 
             // Draw the Enemy bitmap image
-            canvas
-                .drawBitmap(bitmap, x - bitmap.getWidth() / 2f, y - bitmap.getHeight() / 2f, null);
+            canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f,
+                    y - bitmap.getHeight() / 2f, null);
 
             // Draw the Enemy hp above the bitmap
             float textSize = paint.getTextSize();
@@ -142,6 +149,10 @@ public class Enemy extends AbstractMapObject {
      * @param delta Time since last update
      */
     private void moveEnemy(double delta) {
+        Log.i("--location --", location.toString());
+        Log.i("--target   --", target.toString());
+        Log.i("--angle    --", angle + "");
+
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
         if (Math.hypot(location.x - target.x, location.y - target.y) <= Math.abs(velocity * delta)

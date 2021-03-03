@@ -47,9 +47,7 @@ public class Map {
             y = path.get(i).y;
 
             if (i + 1 < path.size()) {
-                Log.i("--generating tile   --", tiles.size() + "");
                 while (x != path.get(i + 1).x || y != path.get(i + 1).y) {
-                    Log.i("--start       end--", x + " " + y + " " + path.get(i + 1));
                     //add rect at cell
                     tiles.add(new RectF(x * cellSize.x, y * cellSize.y,
                             (x * cellSize.x) + cellSize.x,

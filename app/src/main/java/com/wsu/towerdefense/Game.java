@@ -39,22 +39,14 @@ public class Game extends AbstractGame {
 
         cellSize = getCellSize();
 
-        objects = new ArrayList<>();
         towers = new ArrayList<>();
         enemies = new ArrayList<>();
 
         map = MapReader.get("map1");
         map.generateTiles(cellSize);
 
-        // Add a single Enemy at the first point of the map
-        objects.add(new Enemy(map.getPath(), cellSize,
-                BitmapFactory.decodeResource(getResources(), R.drawable.enemy), 500f));
-
-        // Add a single tower at the center of the map
-        objects.add(new Tower(new PointF(displayWidth / 2, displayHeight / 2),
-                BitmapFactory.decodeResource(getResources(), R.drawable.tower)));
         Log.i(context.getString(R.string.logcatKey),
-            "Started game with map '" + map.getName() + "'");
+                "Started game with map '" + map.getName() + "'");
 
         setup();
         Log.i(context.getString(R.string.logcatKey), "Set up game objects");
@@ -65,6 +57,7 @@ public class Game extends AbstractGame {
 
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
+            Log.i("--enemy   --", "processing enemy");
             Enemy e = enemyIt.next();
 
             if (e.isAlive) {
@@ -84,9 +77,9 @@ public class Game extends AbstractGame {
         //TESTING
         // Add enemies whenever all enemies are killed
         if (enemies.size() == 0) {
-            addEnemy(200, 320, 300, 0, 100);
-            addEnemy(2000, 720, 300, 0, 100);
-            addEnemy(200, 1120, 300, 0, 100);
+            addEnemy(200, 1000);
+            addEnemy(200, 1000);
+            addEnemy(200, 1000);
         }
 
     }
@@ -101,8 +94,6 @@ public class Game extends AbstractGame {
 
         drawGridLines(canvas, paint);
 
-        for (AbstractMapObject obj : objects) {
-            obj.render(lerp, canvas, paint);
         // Draw the Towers
         for (Tower t : towers) {
             t.render(lerp, canvas, paint);
@@ -114,26 +105,27 @@ public class Game extends AbstractGame {
         }
     }
 
-    protected PointF getCellSize() {
-        float screenXActual = (float)getDisplayWidth() * (1f - towerMenuWidth);
+    protected PointF getCellSize () {
+        float screenXActual = (float) getDisplayWidth() * (1f - towerMenuWidth);
         float screenYActual = getDisplayHeight();
         cols = rows * (screenXActual / screenYActual);
-        float y = screenXActual  / cols;
+        float y = screenXActual / cols;
         float x = getDisplayHeight() / rows;
 
+        Log.i("--cellsize --", x + " " + y);
         return (new PointF(x, y));
     }
 
-    private void drawGridLines(Canvas canvas, Paint paint){
+    private void drawGridLines (Canvas canvas, Paint paint){
         paint.setColor(Color.RED);
-        for(float i = 0; i < rows; i++){
+        for (float i = 0; i < rows; i++) {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
                     cols * cellSize.x, i * cellSize.y, paint);
         }
 
-        for(float i = 0; i < cols; i++){
+        for (float i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
@@ -141,45 +133,44 @@ public class Game extends AbstractGame {
         }
     }
 
-    public Map getMap() {
+    public Map getMap () {
         return map;
     }
 
-    public List<Enemy> getEnemies() {
+    public List<Enemy> getEnemies () {
         return enemies;
     }
 
     /**
      * A method used to set up some of the Game's objects.
      */
-    private void setup() {
+    private void setup () {
         //TESTING
         // Add Towers
         towers.add(new Tower(new PointF(1000, 580),
-            BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-            BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
+                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
+                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
         towers.add(new Tower(new PointF(1400, 860),
-            BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-            BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
+                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
+                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
 
         //TESTING
         // Add Enemies
-        addEnemy(200, 320, 300, 0, 100);
-        addEnemy(2000, 720, 300, 0, 100);
-        addEnemy(200, 1120, 300, 0, 100);
+        addEnemy(200, 1000);
+        addEnemy(200, 1000);
+        addEnemy(200, 1000);
     }
 
     /**
      * A helper method to reduce complexity and size of main Game methods (update, setup)
      *
-     * @param x         Enemy center x location
-     * @param y         Enemy center y location
-     * @param velocityX Velocity in the x direction
-     * @param velocityY Velocity in the y direction
+     * @param velocity  Enemy velocity
+     * @param hp        Enemy hp
      */
-    private void addEnemy(float x, float y, float velocityX, float velocityY, int hp) {
-        enemies.add(new Enemy(new PointF(x, y),
-            BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
-            velocityX, velocityY, hp));
+    private void addEnemy ( float velocity, int hp){
+        enemies.add(new Enemy(map.getPath(), cellSize,
+                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
+                200, 1000));
     }
 }
+
