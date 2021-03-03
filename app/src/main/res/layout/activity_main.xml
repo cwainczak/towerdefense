@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/main_menu_background" />
+        app:srcCompat="@mipmap/main_menu_background" />
 
     <TextView
         android:id="@+id/textView"
@@ -53,7 +53,7 @@
         android:onClick="btnSettingsClicked"
         android:text="@string/settings"
         android:textSize="18sp"
-        app:icon="@drawable/settings"
+        app:icon="@mipmap/settings"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_start" />
@@ -67,7 +67,7 @@
         android:onClick="btnScoresClicked"
         android:text="@string/scores"
         android:textSize="18sp"
-        app:icon="@drawable/leaderboard"
+        app:icon="@mipmap/leaderboard"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_start" />

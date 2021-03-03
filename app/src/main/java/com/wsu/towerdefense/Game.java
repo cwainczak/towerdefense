@@ -12,29 +12,33 @@ import android.util.Log;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 
+import com.wsu.towerdefense.save.SaveState;
+import com.wsu.towerdefense.save.Serializer;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Game extends AbstractGame {
+public class Game extends AbstractGame implements Serializable {
 
     /**
      * Keeps track of all Towers in the Game
      */
-    private final List<Tower> towers;
+    private List<Tower> towers;
     /**
      * Keeps track of all Enemies in the Game
      */
-    private final List<Enemy> enemies;
+    private transient final List<Enemy> enemies;
 
-    private final Map map;
+    private Map map;
 
     private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private PointF cellSize;
 
-    public Game(Context context, int displayWidth, int displayHeight) {
+    public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
 
         cellSize = getCellSize();
@@ -42,14 +46,43 @@ public class Game extends AbstractGame {
         towers = new ArrayList<>();
         enemies = new ArrayList<>();
 
-        map = MapReader.get("map1");
-        map.generateTiles(cellSize);
+        init(context, saveState);
 
         Log.i(context.getString(R.string.logcatKey),
-                "Started game with map '" + map.getName() + "'");
+            "Started game with map '" + map.getName() + "'"
+        );
+    }
 
-        setup();
-        Log.i(context.getString(R.string.logcatKey), "Set up game objects");
+    private void init(Context context, SaveState saveState) {
+        // load save
+        if (saveState != null) {
+            Log.i(context.getString(R.string.logcatKey),
+                "Loading save file '" + saveState.saveFile + "'"
+            );
+
+            map = MapReader.get(saveState.mapName);
+            towers = saveState.towers;
+        }
+        // default state
+        else {
+            map = MapReader.get("map1");
+
+            // TESTING
+            towers.add(new Tower(new PointF(1000, 580), 384, 750f, 10));
+            towers.add(new Tower(new PointF(1400, 860), 384, 750f, 10));
+            spawnTestEnemies();
+        }
+    }
+
+    /**
+     * Saves the current game state to the default save file
+     */
+    private void save() {
+        try {
+            Serializer.save(getContext(), Serializer.SAVEFILE, this);
+        } catch (IOException e) {
+            Log.e(getContext().getString(R.string.logcatKey), "Error while saving", e);
+        }
     }
 
     @Override
@@ -77,9 +110,7 @@ public class Game extends AbstractGame {
         //TESTING
         // Add enemies whenever all enemies are killed
         if (enemies.size() == 0) {
-            addEnemy(200, 1000);
-            addEnemy(200, 1000);
-            addEnemy(200, 1000);
+            spawnTestEnemies();
         }
 
     }
@@ -141,36 +172,13 @@ public class Game extends AbstractGame {
         return enemies;
     }
 
-    /**
-     * A method used to set up some of the Game's objects.
-     */
-    private void setup () {
-        //TESTING
-        // Add Towers
-        towers.add(new Tower(new PointF(1000, 580),
-                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
-        towers.add(new Tower(new PointF(1400, 860),
-                BitmapFactory.decodeResource(getResources(), R.drawable.tower), 384,
-                BitmapFactory.decodeResource(getResources(), R.drawable.projectile), 750f, 10));
-
-        //TESTING
-        // Add Enemies
-        addEnemy(200, 1000);
-        addEnemy(200, 1000);
-        addEnemy(200, 1000);
+    public List<Tower> getTowers() {
+        return towers;
     }
 
-    /**
-     * A helper method to reduce complexity and size of main Game methods (update, setup)
-     *
-     * @param velocity  Enemy velocity
-     * @param hp        Enemy hp
-     */
-    private void addEnemy ( float velocity, int hp){
-        enemies.add(new Enemy(map.getPath(), cellSize,
-                BitmapFactory.decodeResource(getResources(), R.drawable.enemy),
-                200, 1000));
+    private void spawnTestEnemies() {
+        enemies.add(new Enemy(new PointF(200, 320), 300, 0, 100));
+        enemies.add(new Enemy(new PointF(2000, 720), 300, 0, 100));
+        enemies.add(new Enemy(new PointF(200, 1120), 300, 0, 100));
     }
 }
-

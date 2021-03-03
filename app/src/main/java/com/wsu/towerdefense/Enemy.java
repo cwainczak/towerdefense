@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,16 +37,14 @@ public class Enemy extends AbstractMapObject {
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param bitmap    A bitmap image of the Enemy object
      * @param hp        The amount of hit points this Enemy has
      * @param path     A List of Points for the current location to move towards
      * @param cellSize Dimensions of each cell in the grid making up the map area
-     * @param bitmap   A bitmap image of the Enemy object
      * @param velocity The Enemy's velocity
      */
-    public Enemy(List<Point> path, PointF cellSize, Bitmap bitmap,
+    public Enemy(List<Point> path, PointF cellSize,
                  int hp, float velocity) {
-        super(new PointF(path.get(0).x * cellSize.x, path.get(0).y * cellSize.y), bitmap);
+        super(new PointF(path.get(0).x * cellSize.x, path.get(0).y * cellSize.y), R.mipmap.enemy);
         Log.i("--contrtuct--", "constructor called");
         this.velocity = velocity;
         this.cellSize = cellSize;

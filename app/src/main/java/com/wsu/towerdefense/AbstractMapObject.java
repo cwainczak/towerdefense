@@ -1,27 +1,39 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.util.Log;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Base class for MapObjects, such as Tower and Enemy Objects
  */
-public abstract class AbstractMapObject {
+public abstract class AbstractMapObject implements Serializable {
+
+    private static final long serialVersionUID = 9019199404482143073L;
 
     /**
      * represents the location of the object on the screen
      */
-    protected PointF location;
+    protected transient PointF location;
     /**
      * represents the image/shape of the object
      */
-    protected Bitmap bitmap;
+    protected transient Bitmap bitmap;
 
-    public AbstractMapObject(PointF someLocation, Bitmap someBitmap) {
-        this.setLocation(someLocation);
-        this.setBitmap(someBitmap);
+    protected final int resourceID;
+
+    public AbstractMapObject(PointF location, int resourceID) {
+        this.location = location;
+        this.resourceID = resourceID;
+        this.bitmap = BitmapFactory.decodeResource(Application.context.getResources(), resourceID);
     }
 
     /**
@@ -48,5 +60,21 @@ public abstract class AbstractMapObject {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeFloat(this.location.x);
+        out.writeFloat(this.location.y);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        float x = in.readFloat();
+        float y = in.readFloat();
+
+        this.bitmap = BitmapFactory
+            .decodeResource(Application.context.getResources(), this.resourceID);
+        this.location = new PointF(x, y);
     }
 }
