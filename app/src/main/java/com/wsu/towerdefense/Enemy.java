@@ -38,7 +38,7 @@ public class Enemy extends AbstractMapObject {
      * @param hp        The amount of hit points this Enemy has
      */
     public Enemy(PointF location, float velocityX, float velocityY, int hp) {
-        super(location, R.drawable.enemy);
+        super(location, R.mipmap.enemy);
         this.velocityX = velocityX;
         this.velocityY = velocityY;
         this.hp = hp;

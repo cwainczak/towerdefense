@@ -42,9 +42,9 @@ public class Tower extends AbstractMapObject implements Serializable {
      *                           Enemy
      */
     public Tower(PointF location, int radius, float projectileVelocity, int damage) {
-        super(location, R.drawable.tower);
+        super(location, R.mipmap.tower);
         this.radius = radius;
-        this.projectileResourceID = R.drawable.projectile;
+        this.projectileResourceID = R.mipmap.projectile;
         this.projectileVelocity = projectileVelocity;
         this.damage = damage;
         this.projectiles = new ArrayList<>();
