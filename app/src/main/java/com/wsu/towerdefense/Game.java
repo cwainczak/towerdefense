@@ -47,6 +47,7 @@ public class Game extends AbstractGame implements Serializable {
         enemies = new ArrayList<>();
 
         init(context, saveState);
+        map.generateTiles(cellSize);
 
         Log.i(context.getString(R.string.logcatKey),
             "Started game with map '" + map.getName() + "'"
@@ -90,7 +91,6 @@ public class Game extends AbstractGame implements Serializable {
 
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
-            Log.i("--enemy   --", "processing enemy");
             Enemy e = enemyIt.next();
 
             if (e.isAlive) {
@@ -143,20 +143,19 @@ public class Game extends AbstractGame implements Serializable {
         float y = screenXActual / cols;
         float x = getDisplayHeight() / rows;
 
-        Log.i("--cellsize --", x + " " + y);
         return (new PointF(x, y));
     }
 
     private void drawGridLines (Canvas canvas, Paint paint){
         paint.setColor(Color.RED);
-        for (float i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++) {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
                     cols * cellSize.x, i * cellSize.y, paint);
         }
 
-        for (float i = 0; i < cols; i++) {
+        for (int i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
@@ -177,8 +176,8 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     private void spawnTestEnemies() {
-        enemies.add(new Enemy(new PointF(200, 320), 300, 0, 100));
-        enemies.add(new Enemy(new PointF(2000, 720), 300, 0, 100));
-        enemies.add(new Enemy(new PointF(200, 1120), 300, 0, 100));
+        enemies.add(new Enemy(map.getPath(), cellSize, 40, 500));
+        enemies.add(new Enemy(map.getPath(), cellSize, 40, 450));
+        enemies.add(new Enemy(map.getPath(), cellSize, 40, 400));
     }
 }

@@ -8,6 +8,8 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.wsu.towerdefense.R;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,31 +44,29 @@ public class Map {
         int x;
         int y;
 
-        for(int i = 0; i < path.size(); i++) {
+        for(int i = 0; i < path.size() -1; i++) {
             x = path.get(i).x;
             y = path.get(i).y;
 
-            if (i + 1 < path.size()) {
-                while (x != path.get(i + 1).x || y != path.get(i + 1).y) {
-                    //add rect at cell
-                    tiles.add(new RectF(x * cellSize.x, y * cellSize.y,
-                            (x * cellSize.x) + cellSize.x,
-                            (y * cellSize.y) + cellSize.y));
+            while (x != path.get(i + 1).x || y != path.get(i + 1).y) {
+                //add rect at cell
+                tiles.add(new RectF(x * cellSize.x, y * cellSize.y,
+                        (x * cellSize.x) + cellSize.x,
+                        (y * cellSize.y) + cellSize.y));
 
-                    //if x is not at next point, determine direction and increment x
-                    if (x != path.get(i + 1).x) {
-                        if (path.get(i + 1).x - x > 0) {        // x needs to move right
-                            x++;
-                        } else {                                // x needs to move left
-                            x--;
-                        }
-                        //if y is not at next point, determine direction and increment y
-                    } else {                                    // y needs to move towards point
-                        if (path.get(i + 1).y - y > 0) {        // y needs to move down
-                            y++;
-                        } else {                                // y needs to move up
-                            y--;
-                        }
+                //if x is not at next point, determine direction and increment x
+                if (x != path.get(i + 1).x) {
+                    if (path.get(i + 1).x - x > 0) {        // x needs to move right
+                        x++;
+                    } else {                                // x needs to move left
+                        x--;
+                    }
+                    //if y is not at next point, determine direction and increment y
+                } else {                                    // y needs to move towards point
+                    if (path.get(i + 1).y - y > 0) {        // y needs to move down
+                        y++;
+                    } else {                                // y needs to move up
+                        y--;
                     }
                 }
             }

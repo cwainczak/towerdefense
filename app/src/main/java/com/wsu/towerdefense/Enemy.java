@@ -9,6 +9,8 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -21,6 +23,8 @@ public class Enemy extends AbstractMapObject {
     private Point target;
     private double angle;
     private PointF cellSize;
+
+    private PointF offset;
 
 
     /**
@@ -44,24 +48,17 @@ public class Enemy extends AbstractMapObject {
      */
     public Enemy(List<Point> path, PointF cellSize,
                  int hp, float velocity) {
-        super(new PointF(path.get(0).x * cellSize.x, path.get(0).y * cellSize.y), R.mipmap.enemy);
-        Log.i("--contrtuct--", "constructor called");
+        super(new PointF(path.get(0).x * cellSize.x + (cellSize.x/2),
+                path.get(0).y * cellSize.y + (cellSize.y/2)), R.mipmap.enemy);
         this.velocity = velocity;
         this.cellSize = cellSize;
+        this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
 
-        // generate path
-        List<Point> tempPath = path;
-        for (Point p : tempPath) {
-            Log.i("--size     --", path.size() + "");
-            Log.i("--regpath  --", p.x + " " + p.y);
-            p.x *= cellSize.x;
-            p.y *= cellSize.y;
-            Log.i("--pixpath  --", p.x + " " + p.y);
-        }
-        this.path = tempPath.listIterator();
+        this.path = path.listIterator();
         this.target = this.path.next();
 
-        this.angle = Math.atan2(target.y - location.y, target.x - location.x);
+        this.angle = Math.atan2(target.y * cellSize.y - location.y * cellSize.y,
+                target.x * cellSize.x - location.x * cellSize.x);
 
         this.hp = hp;
         this.isAlive = true;
@@ -76,7 +73,6 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void update(Game game, double delta) {
-        Log.i("--update   --", "updating enemy");
         moveEnemy(delta);
     }
 
@@ -148,29 +144,29 @@ public class Enemy extends AbstractMapObject {
      * @param delta Time since last update
      */
     private void moveEnemy(double delta) {
-        Log.i("--location --", location.toString());
-        Log.i("--target   --", target.toString());
-        Log.i("--angle    --", angle + "");
+        PointF pixTarget = new PointF(target.x * cellSize.x + offset.x,
+                target.y * cellSize.y + offset.y);
 
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
-        if (Math.hypot(location.x - target.x, location.y - target.y) <= Math.abs(velocity * delta)
+        if (Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y) <= Math.abs(velocity * delta)
                 && path.hasNext()) {
 
             //set location to target, and update target
-            location = new PointF(target);
+            location = pixTarget;
             target = path.next();
-            angle = Math.atan2(target.y - location.y, target.x - location.x);
+            pixTarget = new PointF(target.x * cellSize.x, target.y * cellSize.y);
+            angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
         } else {
 
             //get x and y velocities
-            angle = Math.atan2(target.y - location.y, target.x - location.x);
+            angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
             velocityX = (float) (Math.round(velocity * Math.cos(angle)));
             velocityY = (float) (Math.round(velocity * Math.sin(angle) ));
 
-            //increment location based on velocity values
-            location.x += velocityX * delta;
-            location.y += velocityY * delta;
+            //increment lo   cation based on velocity values
+           location.x += velocityX * delta;
+           location.y += velocityY * delta;
         }
     }
 }
