@@ -43,17 +43,16 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
 
-  <Button
-    android:id="@+id/deleteGame"
-    android:layout_width="320dp"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="40dp"
-    android:backgroundTint="#4CAF50"
-    android:onClick="btnDeleteGameClicked"
-    android:text="@string/delete_game"
-    android:textSize="30sp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.335"
-    app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/deleteGame"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#4CAF50"
+        android:onClick="btnDeleteGameClicked"
+        android:text="@string/delete_game"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
