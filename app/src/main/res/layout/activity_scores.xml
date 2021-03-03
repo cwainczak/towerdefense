@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/main_menu_background"
+        app:srcCompat="@mipmap/main_menu_background"
         android:contentDescription="@string/todo" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:onClick="btnBackClicked"
         android:text="@string/back"
         android:textSize="18sp"
-        app:icon="@drawable/back"
+        app:icon="@mipmap/back"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
