@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 
@@ -38,6 +39,8 @@ public class Game extends AbstractGame implements Serializable {
     private float cols;
     private PointF cellSize;
 
+    private int lives;
+
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
 
@@ -63,14 +66,16 @@ public class Game extends AbstractGame implements Serializable {
 
             map = MapReader.get(saveState.mapName);
             towers = saveState.towers;
+            lives = saveState.lives;
         }
         // default state
         else {
             map = MapReader.get("map1");
 
+            lives = 5;
+
             // TESTING
-            towers.add(new Tower(new PointF(1000, 580), 384, 750f, 10));
-            towers.add(new Tower(new PointF(1400, 860), 384, 750f, 10));
+            spawnTestTowers();
             spawnTestEnemies();
         }
     }
@@ -95,6 +100,20 @@ public class Game extends AbstractGame implements Serializable {
 
             if (e.isAlive) {
                 e.update(this, delta);
+
+                // If the Enemy reached the end of the path
+                if(e.isAtPathEnd) {
+                    // Remove a life
+                    lives--;
+
+                    // Enemy is off-screen, can be removed
+                    enemyIt.remove();
+
+                    // Game over if out of lives
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                }
 
             } else {
                 // Remove dead Enemies
@@ -134,6 +153,9 @@ public class Game extends AbstractGame implements Serializable {
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
+
+        // Draw the lives
+        drawLives(canvas, paint);
     }
 
 
@@ -176,6 +198,30 @@ public class Game extends AbstractGame implements Serializable {
         }
     }
 
+    /**
+     * Draws the life count to the top left corner of the canvas
+     *
+     * @param canvas    Canvas to draw the life count on
+     * @param paint     Paint to draw with
+     */
+    private void drawLives(Canvas canvas, Paint paint) {
+        int posX = 10;
+        int posY = 60;
+
+        paint.setColor(Color.WHITE);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(75);
+
+        canvas.drawText("Lives: " + lives, posX, posY, paint);
+    }
+
+    /**
+     * Ends this game and returns to the the menu
+     */
+    private void gameOver() {
+        ((GameActivity)getContext()).gameOver();
+    }
+
     public Map getMap () {
         return map;
     }
@@ -186,6 +232,15 @@ public class Game extends AbstractGame implements Serializable {
 
     public List<Tower> getTowers() {
         return towers;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    private void spawnTestTowers() {
+        towers.add(new Tower(new PointF(800, 580), 384, 750f, 5));
+        towers.add(new Tower(new PointF(720, 1000), 384, 750f, 5));
     }
 
     private void spawnTestEnemies() {

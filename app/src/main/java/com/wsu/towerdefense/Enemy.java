@@ -31,10 +31,17 @@ public class Enemy extends AbstractMapObject {
      * Is the enemy alive
      */
     boolean isAlive;
+
+    /**
+     * Did the enemy reach the last point in its path
+     */
+    boolean isAtPathEnd;
+
     /**
      * Enemy's hit points
      */
     private int hp;
+
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
@@ -62,6 +69,7 @@ public class Enemy extends AbstractMapObject {
 
         this.hp = hp;
         this.isAlive = true;
+        this.isAtPathEnd = false;
     }
 
     /**
@@ -95,16 +103,13 @@ public class Enemy extends AbstractMapObject {
                     y - bitmap.getHeight() / 2f, null);
 
             // Draw the Enemy hp above the bitmap
-            float textSize = paint.getTextSize();
-            int textScale = 4;
             int offset = 10;
 
             paint.setColor(Color.RED);
             paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(textSize * textScale);
+            paint.setTextSize(40);
 
             canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
-            paint.setTextSize(textSize);
         }
     }
 
@@ -148,15 +153,20 @@ public class Enemy extends AbstractMapObject {
                 target.y * cellSize.y + offset.y);
 
         //check if distance between location and target is less than or equal to distance between
-        //location and next location, and there are more Points int path
+        //location and next location, and there are more Points in the path
         if (Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y)
-                <= Math.abs(velocity * delta) && path.hasNext()) {
+                <= Math.abs(velocity * delta)) {
 
+            if (path.hasNext()) {
             //set location to target, and update target
-            location = pixTarget;
-            target = path.next();
-            pixTarget = new PointF(target.x * cellSize.x, target.y * cellSize.y);
-            angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
+                location = pixTarget;
+                target = path.next();
+                pixTarget = new PointF(target.x * cellSize.x, target.y * cellSize.y);
+                angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
+            } else {
+                // If there are no more points in the path
+                isAtPathEnd = true;
+            }
         } else {
 
             //get x and y velocities
@@ -164,7 +174,7 @@ public class Enemy extends AbstractMapObject {
             velocityX = (float) (Math.round(velocity * Math.cos(angle)));
             velocityY = (float) (Math.round(velocity * Math.sin(angle) ));
 
-            //increment lo   cation based on velocity values
+            //increment location based on velocity values
            location.x += velocityX * delta;
            location.y += velocityY * delta;
         }
