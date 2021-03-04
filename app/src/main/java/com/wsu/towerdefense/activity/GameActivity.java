@@ -72,17 +72,29 @@ public class GameActivity extends AppCompatActivity {
         Point displaySize = new Point();
         display.getSize(displaySize);
 
-        // save state
-        SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
-        try {
-            game = new Game(this, displaySize.x, displaySize.y, saveState);
-        } catch (Exception e) {
-            // redirect game errors to logcat
-            Log.e(getString(R.string.logcatKey), Log.getStackTraceString(e));
-        }
 
-        cl_gameLayout.addView(game);
+        cl_gameLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                // save state
+                SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
+
+                try {
+                    game = new Game(GameActivity.this, cl_gameLayout.getWidth(), cl_gameLayout.getHeight(), saveState);
+                } catch (Exception e) {
+                    // redirect game errors to logcat
+                    Log.e(getString(R.string.logcatKey), Log.getStackTraceString(e));
+                }
+
+                cl_gameLayout.addView(game);
+
+            }
+        });
+
+
+
     }
 
 

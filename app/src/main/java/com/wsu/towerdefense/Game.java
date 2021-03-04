@@ -34,7 +34,7 @@ public class Game extends AbstractGame implements Serializable {
 
     private Map map;
 
-    private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
+    //private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private PointF cellSize;
@@ -166,7 +166,7 @@ public class Game extends AbstractGame implements Serializable {
      * @return PointF containing the width and height of each cell within the grid
      */
     protected PointF getCellSize () {
-        float screenXActual = (float) getDisplayWidth() * (1f - towerMenuWidth);
+        float screenXActual = (float) getDisplayWidth();
         float screenYActual = getDisplayHeight();
         cols = rows * (screenXActual / screenYActual);
         float y = screenXActual / cols;
