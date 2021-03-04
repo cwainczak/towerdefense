@@ -94,7 +94,10 @@ public class GameActivity extends AppCompatActivity {
     public void towerSelected(View view) {
         for (int i = 0; i < towerList.size(); i++) {
             if (towerList.get(i).isPressed()) {
-                txt_towerName.setText("Tower " + (i + 1));
+                ImageView imageView = (ImageView)findViewById(towerList.get(i).getId());
+                String imageName = String.valueOf(imageView.getTag());
+
+                txt_towerName.setText(imageName);
             }
         }
     }
