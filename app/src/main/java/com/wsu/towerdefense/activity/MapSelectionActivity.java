@@ -88,7 +88,10 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void mapSelected(View view) {
         for (int i = 0; i < mapList.size(); i++) {
             if (mapList.get(i).isPressed()) {
-                txt_mapName.setText("Map " + (i + 1));
+                ImageView imageView = (ImageView)findViewById(mapList.get(i).getId());
+                String imageName = String.valueOf(imageView.getTag());
+
+                txt_mapName.setText(imageName);
                 txt_mapName.setVisibility(View.VISIBLE);
             }
         }

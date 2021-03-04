@@ -33,18 +33,18 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      * Whether the game state should update. Set to false when app is minimized.
      */
     private boolean running;
-    private int displayWidth;
-    private int displayHeight;
+    private int gameWidth;
+    private int gameHeight;
 
     private final SurfaceHolder surfaceHolder;
     private Thread thread;
     private final Paint paint;
 
-    public AbstractGame(Context context, int displayWidth, int displayHeight) {
+    public AbstractGame(Context context, int gameWidth, int gameHeight) {
         super(context);
         running = false;
-        this.displayWidth = displayWidth;
-        this.displayHeight = displayHeight;
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
 
         surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
@@ -149,21 +149,21 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
     }
 
     /**
-     * Keeps track of changes in display size. {@link #getDisplayWidth()} and {@link
-     * #getDisplayHeight()} can be used by child classes.
+     * Keeps track of changes in display size. {@link #getGameWidth()} and {@link
+     * #getGameHeight()} can be used by child classes.
      */
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-        displayWidth = width;
-        displayHeight = height;
+        gameWidth = width;
+        gameHeight = height;
     }
 
-    int getDisplayWidth() {
-        return displayWidth;
+    protected int getGameWidth() {
+        return gameWidth;
     }
 
-    int getDisplayHeight() {
-        return displayHeight;
+    int getGameHeight() {
+        return gameHeight;
     }
 
     /**
