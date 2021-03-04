@@ -1,7 +1,12 @@
 package com.wsu.towerdefense.activity;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.View.OnDragListener;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -12,7 +17,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;
@@ -42,6 +46,7 @@ public class GameActivity extends AppCompatActivity {
 
     Game game;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,50 +69,75 @@ public class GameActivity extends AppCompatActivity {
         tower_11 = findViewById(R.id.img_Tower11);
 
         towerList = Arrays.asList(tower_1, tower_2, tower_3, tower_4, tower_5, tower_6, tower_7,
-                tower_8, tower_9, tower_10, tower_11);
+            tower_8, tower_9, tower_10, tower_11);
 
+        // add drag listeners to towers
+        OnDragListener towerListener = (v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                // allow image to be dragged
+                return true;
+            }
+            return false;
+        };
+        for (ImageView image : towerList) {
+            image.setOnTouchListener((v, event) -> {
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    return true;
+                }
+            );
+            image.setOnDragListener(towerListener);
+        }
+        // add drop listener to game
+        cl_gameLayout.setOnDragListener((v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                return true;
+            } else if (event.getAction() == DragEvent.ACTION_DROP) {
+                // drop tower onto game
+                return game.placeTower(event.getX(), event.getY());
+            }
+            return false;
+        });
 
         // display size
         Display display = getWindowManager().getDefaultDisplay();
         Point displaySize = new Point();
         display.getSize(displaySize);
 
+        cl_gameLayout.post(() -> {
+            // save state
+            SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
-
-        cl_gameLayout.post(new Runnable() {
-            @Override
-            public void run() {
-
-                // save state
-                SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
-
-                try {
-                    game = new Game(GameActivity.this, cl_gameLayout.getWidth(), cl_gameLayout.getHeight(), saveState);
-                } catch (Exception e) {
-                    // redirect game errors to logcat
-                    Log.e(getString(R.string.logcatKey), Log.getStackTraceString(e));
-                }
-
-                cl_gameLayout.addView(game);
-
+            try {
+                game = new Game(
+                    GameActivity.this,
+                    cl_gameLayout.getWidth(),
+                    cl_gameLayout.getHeight(),
+                    saveState
+                );
+            } catch (Exception e) {
+                // redirect game errors to logcat
+                Log.e(getString(R.string.logcatKey), Log.getStackTraceString(e));
             }
+
+            cl_gameLayout.addView(game);
         });
-
-
-
     }
 
 
     /**
-     * This method is for when one of the ImageView objects representing towers is clicked.
-     * It sets the text of the txt_towerName to the tower name.
+     * This method is for when one of the ImageView objects representing towers is clicked. It sets
+     * the text of the txt_towerName to the tower name.
      *
      * @param view view
      */
     public void towerSelected(View view) {
         for (int i = 0; i < towerList.size(); i++) {
             if (towerList.get(i).isPressed()) {
-                ImageView imageView = (ImageView)findViewById(towerList.get(i).getId());
+                ImageView imageView = findViewById(towerList.get(i).getId());
                 String imageName = String.valueOf(imageView.getTag());
 
                 txt_towerName.setText(imageName);
@@ -115,14 +145,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    public void gameOver(){
-
+    public void gameOver() {
         // Go back to game selection
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        Log.i(getString(R.string.logcatKey),"Game Over. Returning to Game Select Menu.");
+        Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
     }
-
-
 }
