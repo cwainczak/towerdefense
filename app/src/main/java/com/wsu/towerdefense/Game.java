@@ -39,6 +39,11 @@ public class Game extends AbstractGame implements Serializable {
 
     private int lives;
 
+    /**
+     * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when iterating
+     */
+    private Tower buffer = null;
+
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
 
@@ -100,7 +105,7 @@ public class Game extends AbstractGame implements Serializable {
                 e.update(this, delta);
 
                 // If the Enemy reached the end of the path
-                if(e.isAtPathEnd) {
+                if (e.isAtPathEnd) {
                     // Remove a life
                     lives--;
 
@@ -119,6 +124,11 @@ public class Game extends AbstractGame implements Serializable {
             }
         }
 
+        // add tower from buffer
+        if (buffer != null) {
+            towers.add(buffer);
+            buffer = null;
+        }
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -128,8 +138,9 @@ public class Game extends AbstractGame implements Serializable {
         // Add enemies whenever all enemies are killed
         if (enemies.size() == 0) {
             spawnTestEnemies();
+            // save game when "wave ends"
+            save();
         }
-
     }
 
     @Override
@@ -158,13 +169,13 @@ public class Game extends AbstractGame implements Serializable {
 
 
     /**
-     * Calculates the number of columns based on screen dimensions and space reserved for
-     * towerMenu, then calculates the height and width of each cell within the grid
+     * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
+     * then calculates the height and width of each cell within the grid
      *
      * @return PointF containing the width and height of each cell within the grid
      */
-    protected PointF getCellSize () {
-        cols = rows * ((float)getGameWidth() / getGameHeight());
+    protected PointF getCellSize() {
+        cols = rows * ((float) getGameWidth() / getGameHeight());
         float y = getGameWidth() / cols;
         float x = getGameHeight() / rows;
 
@@ -174,31 +185,31 @@ public class Game extends AbstractGame implements Serializable {
     /**
      * draws the grid onto the screen for debugging purposes
      *
-     * @param canvas    Canvas to draw the lines on
-     * @param paint     Paint to draw the lines with
+     * @param canvas Canvas to draw the lines on
+     * @param paint  Paint to draw the lines with
      */
-    private void drawGridLines (Canvas canvas, Paint paint){
+    private void drawGridLines(Canvas canvas, Paint paint) {
         paint.setColor(Color.RED);
         for (int i = 0; i < rows; i++) {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
-                    cols * cellSize.x, i * cellSize.y, paint);
+                cols * cellSize.x, i * cellSize.y, paint);
         }
 
         for (int i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
-                    i * cellSize.x, rows * cellSize.y, paint);
+                i * cellSize.x, rows * cellSize.y, paint);
         }
     }
 
     /**
      * Draws the life count to the top left corner of the canvas
      *
-     * @param canvas    Canvas to draw the life count on
-     * @param paint     Paint to draw with
+     * @param canvas Canvas to draw the life count on
+     * @param paint  Paint to draw with
      */
     private void drawLives(Canvas canvas, Paint paint) {
         int posX = 10;
@@ -212,17 +223,30 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     /**
+     * Place a tower at given coordinates if placement is valid
+     * @param x x
+     * @param y y
+     * @return whether position is valid
+     */
+    public boolean placeTower(float x, float y) {
+        // validate here
+        buffer = new Tower(new PointF(x, y), 384, 750f, 5);
+
+        return true;
+    }
+
+    /**
      * Ends this game and returns to the the menu
      */
     private void gameOver() {
-        ((GameActivity)getContext()).gameOver();
+        ((GameActivity) getContext()).gameOver();
     }
 
-    public Map getMap () {
+    public Map getMap() {
         return map;
     }
 
-    public List<Enemy> getEnemies () {
+    public List<Enemy> getEnemies() {
         return enemies;
     }
 
@@ -237,11 +261,16 @@ public class Game extends AbstractGame implements Serializable {
     private void spawnTestTowers() {
         towers.add(new Tower(new PointF(800, 580), 384, 750f, 5));
         towers.add(new Tower(new PointF(720, 1000), 384, 750f, 5));
+        placeTower(800, 580);
+        placeTower(720, 1000);
     }
 
     private void spawnTestEnemies() {
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 500));
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 450));
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 400));
+        for(int i=0;i<10;i++) {
+//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 500));
+//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 450));
+//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 400));
+            enemies.add(new Enemy(map.getPath(), cellSize, 40, 300+10*i));
+        }
     }
 }
