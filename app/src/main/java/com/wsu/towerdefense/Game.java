@@ -1,11 +1,9 @@
 package com.wsu.towerdefense;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.util.Log;
 
@@ -166,11 +164,9 @@ public class Game extends AbstractGame implements Serializable {
      * @return PointF containing the width and height of each cell within the grid
      */
     protected PointF getCellSize () {
-        float screenXActual = (float) getDisplayWidth();
-        float screenYActual = getDisplayHeight();
-        cols = rows * (screenXActual / screenYActual);
-        float y = screenXActual / cols;
-        float x = getDisplayHeight() / rows;
+        cols = rows * ((float)getGameWidth() / getGameHeight());
+        float y = getGameWidth() / cols;
+        float x = getGameHeight() / rows;
 
         return (new PointF(x, y));
     }
