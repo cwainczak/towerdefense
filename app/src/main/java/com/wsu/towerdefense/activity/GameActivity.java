@@ -110,7 +110,6 @@ public class GameActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point displaySize = new Point();
         display.getSize(displaySize);
-
         cl_gameLayout.post(() -> {
             // save state
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
