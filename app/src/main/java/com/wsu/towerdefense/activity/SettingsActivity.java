@@ -37,7 +37,6 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 }

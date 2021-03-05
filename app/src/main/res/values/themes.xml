@@ -21,7 +21,6 @@
     <!-- Style for the In-game Pause Pop-up Window -->
     <style name="Theme.CustomTheme" parent="Theme.AppCompat">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
 </resources>

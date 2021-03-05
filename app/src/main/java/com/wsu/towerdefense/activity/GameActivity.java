@@ -54,9 +54,16 @@ public class GameActivity extends AppCompatActivity {
         btn_pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                game.setPaused(true);
                 startActivity(new Intent(GameActivity.this, PauseActivity.class));
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        game.setPaused(false);
     }
 }

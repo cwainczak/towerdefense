@@ -33,6 +33,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      * Whether the game state should update. Set to false when app is minimized.
      */
     private boolean running;
+    private boolean isPaused;
     private int displayWidth;
     private int displayHeight;
 
@@ -73,23 +74,29 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
         double acc = 0;
 
         while (running) {
-            double timeCurrent = (System.currentTimeMillis() / 1000.0);
-            // time difference between previous & current loop
-            double delta = timeCurrent - timePrevious;
-            timePrevious = timeCurrent;
 
-            acc += delta; // passed time accumulates in acc variable
+                double timeCurrent = (System.currentTimeMillis() / 1000.0);
+                // time difference between previous & current loop
+                double delta = timeCurrent - timePrevious;
+                timePrevious = timeCurrent;
 
-            // when time passed is >= minimum time between updates (TIMESTEP), game is updated
-            while (acc >= TIMESTEP) {
-                update(TIMESTEP);
-                acc -= TIMESTEP; // one interval was processed, so subtract it
-            }
-            // keep updating the game until passed time < minimum
+                acc += delta; // passed time accumulates in acc variable
 
-            // when done updating, render the game
-            // remaining unprocessed time is used by render method to interpolate
-            _render(acc / TIMESTEP);
+                // when time passed is >= minimum time between updates (TIMESTEP), game is updated
+                while (acc >= TIMESTEP) {
+                    if (!this.isPaused) {
+                        update(TIMESTEP);
+                    }
+                    acc -= TIMESTEP; // one interval was processed, so subtract it
+                }
+                // keep updating the game until passed time < minimum
+
+                // when done updating, render the game
+                // remaining unprocessed time is used by render method to interpolate
+                if (!this.isPaused) {
+                    _render(acc / TIMESTEP);
+                }
+
         }
     }
 
@@ -218,4 +225,12 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      * @param lerp interpolation factor
      */
     protected abstract void render(double lerp, Canvas canvas, Paint paint);
+
+    /**
+     * To pause the game when the pause button is pressed
+     * @param paused
+     */
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
 }
