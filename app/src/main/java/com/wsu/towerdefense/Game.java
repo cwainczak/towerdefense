@@ -1,14 +1,14 @@
 package com.wsu.towerdefense;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.util.Log;
 
+import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 
@@ -33,10 +33,25 @@ public class Game extends AbstractGame implements Serializable {
 
     private Map map;
 
-    private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
+    //private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private PointF cellSize;
+
+    public static final float towerRadius = 56; //radius of tower object using tower.png
+
+    private int lives;
+
+    /**
+     * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
+     * iterating
+     */
+    private Tower addBuffer = null;
+    /**
+     * The index of the next tower to be removed; prevents {@link java.util.ConcurrentModificationException}
+     * when iterating
+     */
+    private int removeBuffer = -1;
 
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
@@ -63,14 +78,15 @@ public class Game extends AbstractGame implements Serializable {
 
             map = MapReader.get(saveState.mapName);
             towers = saveState.towers;
+            lives = saveState.lives;
         }
         // default state
         else {
             map = MapReader.get("map1");
 
+            lives = 5;
+
             // TESTING
-            towers.add(new Tower(new PointF(1000, 580), 384, 750f, 10));
-            towers.add(new Tower(new PointF(1400, 860), 384, 750f, 10));
             spawnTestEnemies();
         }
     }
@@ -96,12 +112,37 @@ public class Game extends AbstractGame implements Serializable {
             if (e.isAlive) {
                 e.update(this, delta);
 
+                // If the Enemy reached the end of the path
+                if (e.isAtPathEnd) {
+                    // Remove a life
+                    lives--;
+
+                    // Enemy is off-screen, can be removed
+                    enemyIt.remove();
+
+                    // Game over if out of lives
+                    if (lives <= 0) {
+                        gameOver();
+                        break;
+                    }
+                }
+
             } else {
                 // Remove dead Enemies
                 enemyIt.remove();
             }
         }
 
+        // add tower from buffer
+        if (addBuffer != null) {
+            towers.add(addBuffer);
+            addBuffer = null;
+        }
+        // remove tower from list based on buffer
+        if (removeBuffer > -1) {
+            towers.remove(removeBuffer);
+            removeBuffer = -1;
+        }
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -111,8 +152,9 @@ public class Game extends AbstractGame implements Serializable {
         // Add enemies whenever all enemies are killed
         if (enemies.size() == 0) {
             spawnTestEnemies();
+            // save game when "wave ends"
+            save();
         }
-
     }
 
     @Override
@@ -134,21 +176,22 @@ public class Game extends AbstractGame implements Serializable {
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
+
+        // Draw the lives
+        drawLives(canvas, paint);
     }
 
 
     /**
-     * Calculates the number of columns based on screen dimensions and space reserved for
-     * towerMenu, then calculates the height and width of each cell within the grid
+     * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
+     * then calculates the height and width of each cell within the grid
      *
      * @return PointF containing the width and height of each cell within the grid
      */
-    protected PointF getCellSize () {
-        float screenXActual = (float) getDisplayWidth() * (1f - towerMenuWidth);
-        float screenYActual = getDisplayHeight();
-        cols = rows * (screenXActual / screenYActual);
-        float y = screenXActual / cols;
-        float x = getDisplayHeight() / rows;
+    protected PointF getCellSize() {
+        cols = rows * ((float) getGameWidth() / getGameHeight());
+        float y = getGameWidth() / cols;
+        float x = getGameHeight() / rows;
 
         return (new PointF(x, y));
     }
@@ -156,31 +199,121 @@ public class Game extends AbstractGame implements Serializable {
     /**
      * draws the grid onto the screen for debugging purposes
      *
-     * @param canvas    Canvas to draw the lines on
-     * @param paint     Paint to draw the lines with
+     * @param canvas Canvas to draw the lines on
+     * @param paint  Paint to draw the lines with
      */
-    private void drawGridLines (Canvas canvas, Paint paint){
+    private void drawGridLines(Canvas canvas, Paint paint) {
         paint.setColor(Color.RED);
         for (int i = 0; i < rows; i++) {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
-                    cols * cellSize.x, i * cellSize.y, paint);
+                cols * cellSize.x, i * cellSize.y, paint);
         }
 
         for (int i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
-                    i * cellSize.x, rows * cellSize.y, paint);
+                i * cellSize.x, rows * cellSize.y, paint);
         }
     }
 
-    public Map getMap () {
+    /**
+     * Draws the life count to the top left corner of the canvas
+     *
+     * @param canvas Canvas to draw the life count on
+     * @param paint  Paint to draw with
+     */
+    private void drawLives(Canvas canvas, Paint paint) {
+        int posX = 10;
+        int posY = 60;
+
+        paint.setColor(Color.WHITE);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(75);
+
+        canvas.drawText("Lives: " + lives, posX, posY, paint);
+    }
+
+    /**
+     * Place a tower at given coordinates if placement is valid
+     *
+     * @param x x
+     * @param y y
+     * @return whether position is valid
+     */
+    public boolean placeTower(float x, float y) {
+        // validate here
+        if (isValidPlacement(new PointF(x, y))) {
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void removeTower(int index) {
+        removeBuffer = index;
+    }
+
+    /**
+     * Calculates the distance between a new tower and every existing object to determine if the
+     * placement of the new tower is valid. Assumes the new tower exists at time of valid check.
+     *
+     * @param location Location of new tower to be placed
+     * @return True if valid placement, false if not
+     */
+    public boolean isValidPlacement(PointF location) {
+        for (Tower tower : getTowers()) {
+            //calculate distance
+            double distance = distanceToPoint(location, tower.getLocation());
+
+            //calculate minDistance : assumes half of width is radius of tower
+            double minDistance = towerRadius * 2;
+
+            //determine if new tower is too close
+            if (distance < minDistance) {
+                return false;
+            }
+        }
+
+        for (RectF tile : map.getTiles()) {
+            //calculate distance
+            double distance = distanceToPoint(location, new PointF(tile.centerX(), tile.centerY()));
+
+            //calculate minDistance : with tileRadius corners of tiles will not affect calculation
+            float tileRadius = tile.centerX() - tile.left;
+            double minDistance = towerRadius + tileRadius;
+
+            //determine if new tower is too close
+            if (distance < minDistance) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private double distanceToPoint(PointF location, PointF point) {
+
+        float dx = location.x - point.x;
+        float dy = location.y - point.y;
+        return Math.hypot(dx, dy);
+    }
+
+    /**
+     * Ends this game and returns to the the menu
+     */
+    private void gameOver() {
+        running = false;
+        ((GameActivity) getContext()).gameOver();
+    }
+
+    public Map getMap() {
         return map;
     }
 
-    public List<Enemy> getEnemies () {
+    public List<Enemy> getEnemies() {
         return enemies;
     }
 
@@ -188,9 +321,14 @@ public class Game extends AbstractGame implements Serializable {
         return towers;
     }
 
+    public int getLives() {
+        return lives;
+    }
+
+
     private void spawnTestEnemies() {
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 500));
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 450));
-        enemies.add(new Enemy(map.getPath(), cellSize, 40, 400));
+        for (int i = 0; i < 3; i++) {
+            enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i));
+        }
     }
 }

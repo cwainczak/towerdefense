@@ -57,7 +57,7 @@ public class Map {
             while (x != path.get(i + 1).x || y != path.get(i + 1).y) {
                 //add rect at cell
                 tiles.add(new RectF(x * cellSize.x, y * cellSize.y,
-                        (x * cellSize.x) + cellSize.x,
+                          (x * cellSize.x) + cellSize.x,
                         (y * cellSize.y) + cellSize.y));
 
                 //if x is not at next point, determine direction and increment x
@@ -77,6 +77,10 @@ public class Map {
                 }
             }
         }
+    }
+
+    public List<RectF> getTiles() {
+        return tiles;
     }
 
     public String getName() {

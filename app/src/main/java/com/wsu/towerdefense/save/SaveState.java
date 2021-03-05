@@ -13,13 +13,18 @@ public class SaveState implements Serializable {
     // save data
     public final String mapName;
     public final List<Tower> towers;
+    public final int lives;
 
     public SaveState(String saveFile, Game game) {
         this.saveFile = saveFile;
 
         this.mapName = game.getMap().getName();
+
+        this.lives = game.getLives();
+
         // TODO: save only relevant tower data
         this.towers = game.getTowers();
+
     }
 
     @Override
@@ -27,6 +32,7 @@ public class SaveState implements Serializable {
         return "SaveState{" +
             "saveFile='" + saveFile + '\'' +
             ", mapName='" + mapName + '\'' +
+            ", lives='" + lives + '\'' +
             ", towers=" + (
             towers.stream().map(Object::toString).collect(Collectors.joining(", "))
         ) +

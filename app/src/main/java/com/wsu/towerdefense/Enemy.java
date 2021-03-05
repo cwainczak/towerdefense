@@ -17,11 +17,10 @@ import java.util.ListIterator;
 public class Enemy extends AbstractMapObject {
     private float velocityX;    // Enemy's velocity in the x direction
     private float velocityY;    // Enemy's velocity in the y direction
-    private float velocity;     // pixels per second
+    private float speed;     // pixels per second
 
     private ListIterator<Point> path;
     private Point target;
-    private double angle;
     private PointF cellSize;
 
     private PointF offset;
@@ -31,6 +30,12 @@ public class Enemy extends AbstractMapObject {
      * Is the enemy alive
      */
     boolean isAlive;
+
+    /**
+     * Did the enemy reach the last point in its path
+     */
+    boolean isAtPathEnd;
+
     /**
      * Enemy's hit points
      */
@@ -41,27 +46,25 @@ public class Enemy extends AbstractMapObject {
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path     A List of Points for the current location to move towards
-     * @param cellSize Dimensions of each cell in the grid making up the map area
+     * @param path      A List of Points for the current location to move towards
+     * @param cellSize  Dimensions of each cell in the grid making up the map area
      * @param hp        The amount of hit points this Enemy has
-     * @param velocity The Enemy's velocity
+     * @param speed     distance enemy moves, pixels per second
      */
-    public Enemy(List<Point> path, PointF cellSize, int hp, float velocity) {
+    public Enemy(List<Point> path, PointF cellSize, int hp, float speed) {
         super(new PointF(path.get(0).x * cellSize.x + (cellSize.x/2),
                 path.get(0).y * cellSize.y + (cellSize.y/2)), R.mipmap.enemy);
 
-        this.velocity = velocity;
+        this.speed = speed;
         this.cellSize = cellSize;
         this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
 
         this.path = path.listIterator();
         this.target = this.path.next();
 
-        this.angle = Math.atan2(target.y * cellSize.y - location.y * cellSize.y,
-                target.x * cellSize.x - location.x * cellSize.x);
-
         this.hp = hp;
         this.isAlive = true;
+        this.isAtPathEnd = false;
     }
 
     /**
@@ -95,16 +98,13 @@ public class Enemy extends AbstractMapObject {
                     y - bitmap.getHeight() / 2f, null);
 
             // Draw the Enemy hp above the bitmap
-            float textSize = paint.getTextSize();
-            int textScale = 4;
             int offset = 10;
 
             paint.setColor(Color.RED);
             paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(textSize * textScale);
+            paint.setTextSize(40);
 
             canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
-            paint.setTextSize(textSize);
         }
     }
 
@@ -131,9 +131,9 @@ public class Enemy extends AbstractMapObject {
      */
     public boolean collides(float x, float y, float width, float height) {
         return x - width / 2 <= this.location.x + bitmap.getWidth() / 2f &&
-            x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
-            y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
-            y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
+                x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
+                y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
+                y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
 
     /**
@@ -144,29 +144,37 @@ public class Enemy extends AbstractMapObject {
      * @param delta Time since last update
      */
     private void moveEnemy(double delta) {
-        PointF pixTarget = new PointF(target.x * cellSize.x + offset.x,
-                target.y * cellSize.y + offset.y);
-
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
-        if (Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y)
-                <= Math.abs(velocity * delta) && path.hasNext()) {
+        PointF pixTarget = new PointF(
+                target.x * cellSize.x + offset.x,
+                target.y * cellSize.y + offset.y
+        );
+        double distance = Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y);
 
+        if (distance <= Math.abs(speed * delta)) {
+            if (path.hasNext()) {
             //set location to target, and update target
-            location = pixTarget;
-            target = path.next();
-            pixTarget = new PointF(target.x * cellSize.x, target.y * cellSize.y);
-            angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
-        } else {
+                location = pixTarget;
+                target = path.next();
+                pixTarget = new PointF(
+                        target.x * cellSize.x + offset.x,
+                        target.y * cellSize.y + offset.y
+                );
 
-            //get x and y velocities
-            angle = Math.atan2(pixTarget.y - location.y, pixTarget.x - location.x);
-            velocityX = (float) (Math.round(velocity * Math.cos(angle)));
-            velocityY = (float) (Math.round(velocity * Math.sin(angle) ));
-
-            //increment lo   cation based on velocity values
-           location.x += velocityX * delta;
-           location.y += velocityY * delta;
+                float dx = pixTarget.x - location.x;
+                float dy = pixTarget.y - location.y;
+                distance = Math.hypot(dx, dy);
+                velocityX = speed * (float) (dx / distance);
+                velocityY = speed * (float) (dy / distance);
+            } else {
+                // If there are no more points in the path
+                isAtPathEnd = true;
+            }
         }
+
+        //increment location based on velocity values
+        location.x += velocityX * delta;
+        location.y += velocityY * delta;
     }
 }

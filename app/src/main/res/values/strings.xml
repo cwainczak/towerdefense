@@ -25,6 +25,9 @@
     <string name="tyler_lafleur">Tyler Lafleur</string>
     <string name="high_scores">High Scores</string>
     <string name="version_number">Version Number</string>
+    <string name="towers">Towers</string>
+    <string name="tower_info">Tower Info</string>
+    <string name="remove">remove</string>
     <string name="exit">Exit</string>
     <string name="save">Save</string>
     <string name="resume">Resume</string>

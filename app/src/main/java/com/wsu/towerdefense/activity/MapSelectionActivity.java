@@ -32,6 +32,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_selection);
+        onWindowFocusChanged(true);
 
         map_1 = findViewById(R.id.img_Map1);
         map_2 = findViewById(R.id.img_Map2);
@@ -88,9 +89,29 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void mapSelected(View view) {
         for (int i = 0; i < mapList.size(); i++) {
             if (mapList.get(i).isPressed()) {
-                txt_mapName.setText("Map " + (i + 1));
+                ImageView imageView = (ImageView)findViewById(mapList.get(i).getId());
+                String imageName = String.valueOf(imageView.getTag());
+
+                txt_mapName.setText(imageName);
                 txt_mapName.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            // Set the content to appear under the system bars so that the
+                            // content doesn't resize when the system bars hide and show.
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            // Hide the nav bar and status bar
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
     }
 
