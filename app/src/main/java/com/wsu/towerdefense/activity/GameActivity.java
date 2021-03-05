@@ -51,6 +51,7 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        onWindowFocusChanged(true);
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerLayout = findViewById(R.id.cl_towerLayout);
@@ -73,11 +74,8 @@ public class GameActivity extends AppCompatActivity {
 
         // add drag listeners to towers
         OnDragListener towerListener = (v, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                // allow image to be dragged
-                return true;
-            }
-            return false;
+            // allow image to be dragged
+            return event.getAction() == DragEvent.ACTION_DRAG_STARTED;
         };
         for (ImageView image : towerList) {
             image.setOnTouchListener((v, event) -> {
@@ -151,5 +149,22 @@ public class GameActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            // Set the content to appear under the system bars so that the
+                            // content doesn't resize when the system bars hide and show.
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            // Hide the nav bar and status bar
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
     }
 }
