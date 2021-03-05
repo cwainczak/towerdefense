@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -96,7 +97,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < towerList.size(); i++) {
             ImageView image = towerList.get(i);
 
-            image.setOnTouchListener((v, event) -> {
+            image.setOnLongClickListener(v -> {
                     ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
                     String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
                     ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
@@ -140,7 +141,7 @@ public class GameActivity extends AppCompatActivity {
 
             cl_gameLayout.addView(game);
 
-            Button btn_pause = findViewById(R.id.btn_pause);
+            ImageButton btn_pause = findViewById(R.id.btn_pause);
 
             btn_pause.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -207,8 +208,8 @@ public class GameActivity extends AppCompatActivity {
     public void gameOver() {
         // Go back to game selection
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finishAffinity();
         Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
     }
 
@@ -216,16 +217,7 @@ public class GameActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    // Set the content to appear under the system bars so that the
-                    // content doesn't resize when the system bars hide and show.
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    // Hide the nav bar and status bar
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            ActivityUtil.hideNavigator(getWindow());
         }
     }
 
@@ -247,6 +239,8 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        game.setPaused(false);
+        if (game != null) {
+            game.setPaused(false);
+        }
     }
 }

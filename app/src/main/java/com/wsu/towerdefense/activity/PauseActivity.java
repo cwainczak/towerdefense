@@ -66,4 +66,12 @@ public class PauseActivity extends Activity {
         b.setHeight(newHeight);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ActivityUtil.hideNavigator(getWindow());
+        }
+    }
+
 }
