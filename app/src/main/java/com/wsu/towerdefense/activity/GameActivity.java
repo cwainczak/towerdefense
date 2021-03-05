@@ -51,6 +51,8 @@ public class GameActivity extends AppCompatActivity {
 
     Game game;
 
+    private int towerSelectedIndex = -1;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class GameActivity extends AppCompatActivity {
         tower_11 = findViewById(R.id.img_Tower11);
 
         towerList = Arrays.asList(tower_1, tower_2, tower_3, tower_4, tower_5, tower_6, tower_7,
-                tower_8, tower_9, tower_10, tower_11);
+            tower_8, tower_9, tower_10, tower_11);
 
         // add drag listeners to towers
         OnDragListener towerListener = (v, event) -> {
@@ -89,13 +91,13 @@ public class GameActivity extends AppCompatActivity {
             ImageView image = towerList.get(i);
 
             image.setOnTouchListener((v, event) -> {
-                        ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                        ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                        View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                        v.startDragAndDrop(data, dragshadow, v, 0);
-                        return true;
-                    }
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    return true;
+                }
             );
             image.setOnDragListener(towerListener);
         }
@@ -120,10 +122,10 @@ public class GameActivity extends AppCompatActivity {
 
             try {
                 game = new Game(
-                        GameActivity.this,
-                        cl_gameLayout.getWidth(),
-                        cl_gameLayout.getHeight(),
-                        saveState
+                    GameActivity.this,
+                    cl_gameLayout.getWidth(),
+                    cl_gameLayout.getHeight(),
+                    saveState
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat
@@ -132,33 +134,35 @@ public class GameActivity extends AppCompatActivity {
 
             cl_gameLayout.addView(game);
 
+            setSelectionMenuVisible(false);
 
-            cl_towerInfoLayout.setVisibility(View.INVISIBLE);
             List<Tower> towers = game.getTowers();
+            game.setOnTouchListener((v, event) -> {
 
-            game.setOnTouchListener((v,event)-> {
+                for (int i = 0; i < towers.size(); i++) {
+                    Tower tower = towers.get(i);
 
-                boolean found = false;
-                for (Tower tower : towers) {
                     PointF delta = new PointF(
-                            event.getX() - tower.getLocation().x,
-                            event.getY() - tower.getLocation().y
+                        event.getX() - tower.getLocation().x,
+                        event.getY() - tower.getLocation().y
                     );
-                    double distance = Math.hypot(delta.x,delta.y);
+                    double distance = Math.hypot(delta.x, delta.y);
 
+                    // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius) {
-                        found = true;
-                        cl_towerInfoLayout.setVisibility(View.VISIBLE);
+                        towerSelectedIndex = i;
+                        setSelectionMenuVisible(true);
+
+                        // temporary position text
                         txt_towerInfo.setText(
-                                "x: " + tower.getLocation().x +
-                                        ", y: " + tower.getLocation().y
+                            "x: " + tower.getLocation().x +
+                                ", y: " + tower.getLocation().y
                         );
                         return true;
                     }
                 }
-                if (!found) {
-                    cl_towerInfoLayout.setVisibility(View.INVISIBLE);
-                }
+                towerSelectedIndex = -1;
+                setSelectionMenuVisible(false);
                 return false;
             });
 
@@ -197,15 +201,30 @@ public class GameActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            // Set the content to appear under the system bars so that the
-                            // content doesn't resize when the system bars hide and show.
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            // Hide the nav bar and status bar
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    // Set the content to appear under the system bars so that the
+                    // content doesn't resize when the system bars hide and show.
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    // Hide the nav bar and status bar
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
+    }
+
+    /**
+     * Called when remove button is clicked
+     */
+    public void removeSelectedTower(View view) {
+        game.removeTower(towerSelectedIndex);
+        setSelectionMenuVisible(false);
+    }
+
+    /**
+     * Shows/hides selected tower menu
+     */
+    private void setSelectionMenuVisible(boolean visible) {
+        cl_towerInfoLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 }

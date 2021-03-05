@@ -62,16 +62,17 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_towerName2" />
 
         <Button
-            android:id="@+id/button7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#F44336"
-            android:text="@string/remove"
-            android:textColor="#000000"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+          android:id="@+id/button7"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="#F44336"
+          android:onClick="removeSelectedTower"
+          android:text="@string/remove"
+          android:textColor="#000000"
+          android:textSize="12sp"
+          app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
