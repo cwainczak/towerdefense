@@ -1,14 +1,11 @@
 package com.wsu.towerdefense;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,6 +25,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     private double timeSinceShot = 0.0;
     private int damage;
     private float projectileVelocity;
+
+    boolean isSelected = false;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -131,22 +130,24 @@ public class Tower extends AbstractMapObject implements Serializable {
             p.render(lerp, canvas, paint);
         }
 
-        //TESTING
-        // Draw the Tower's range
-        drawRange(canvas, paint);
+        if (isSelected) {
+            drawRange(canvas, paint);
+        }
 
-        //TESTING
-        // Draw a line to the target Enemy, interpolating Enemy position
-        /*if (target != null) {
-            float width = paint.getStrokeWidth();
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(width + 6);
-            canvas.drawLine(location.x, location.y,
-                    (float) (target.location.x + target.getVelocityX() * lerp),
-                    (float) (target.location.y + target.getVelocityY() * lerp), paint);
-            paint.setStrokeWidth(width);
-        }*/
+        if (Settings.gameMode == Settings.GameMode.DEBUG) {
+            // Draw the Tower's range, - if statement prevents double drawing
+            if (!isSelected) drawRange(canvas, paint);
 
+
+            // Draw a line to the target Enemy, interpolating Enemy position
+            if (target != null) {
+                float width = paint.getStrokeWidth();
+                paint.setColor(Color.WHITE);
+                paint.setStrokeWidth(width + 6);
+                canvas.drawLine(location.x, location.y, target.location.x , target.location.y, paint);
+                paint.setStrokeWidth(width);
+            }
+        }
     }
 
     /**
