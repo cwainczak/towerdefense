@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View.OnDragListener;
@@ -79,7 +80,9 @@ public class GameActivity extends AppCompatActivity {
             }
             return false;
         };
-        for (ImageView image : towerList) {
+        for (int i = 0; i < towerList.size(); i++) {
+            ImageView image = towerList.get(i);
+
             image.setOnTouchListener((v, event) -> {
                     ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
                     String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
@@ -106,7 +109,6 @@ public class GameActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         Point displaySize = new Point();
         display.getSize(displaySize);
-
         cl_gameLayout.post(() -> {
             // save state
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
