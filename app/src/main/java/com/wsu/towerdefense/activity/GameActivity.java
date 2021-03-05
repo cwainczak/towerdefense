@@ -8,6 +8,7 @@ import android.graphics.PointF;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View.OnDragListener;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
 
 import java.util.Arrays;
@@ -29,7 +31,9 @@ public class GameActivity extends AppCompatActivity {
 
     ConstraintLayout cl_gameLayout;
     ConstraintLayout cl_towerLayout;
+    ConstraintLayout cl_towerInfoLayout;
     TextView txt_towerName;
+    TextView txt_towerInfo;
 
     ImageView tower_1;
     ImageView tower_2;
@@ -56,7 +60,10 @@ public class GameActivity extends AppCompatActivity {
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerLayout = findViewById(R.id.cl_towerLayout);
+        cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
+
         txt_towerName = findViewById(R.id.txt_towerName);
+        txt_towerInfo = findViewById(R.id.txt_towerInfo);
 
         tower_1 = findViewById(R.id.img_Tower1);
         tower_2 = findViewById(R.id.img_Tower2);
@@ -71,7 +78,7 @@ public class GameActivity extends AppCompatActivity {
         tower_11 = findViewById(R.id.img_Tower11);
 
         towerList = Arrays.asList(tower_1, tower_2, tower_3, tower_4, tower_5, tower_6, tower_7,
-            tower_8, tower_9, tower_10, tower_11);
+                tower_8, tower_9, tower_10, tower_11);
 
         // add drag listeners to towers
         OnDragListener towerListener = (v, event) -> {
@@ -82,13 +89,13 @@ public class GameActivity extends AppCompatActivity {
             ImageView image = towerList.get(i);
 
             image.setOnTouchListener((v, event) -> {
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                    v.startDragAndDrop(data, dragshadow, v, 0);
-                    return true;
-                }
+                        ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                        ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                        View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                        v.startDragAndDrop(data, dragshadow, v, 0);
+                        return true;
+                    }
             );
             image.setOnDragListener(towerListener);
         }
@@ -113,10 +120,10 @@ public class GameActivity extends AppCompatActivity {
 
             try {
                 game = new Game(
-                    GameActivity.this,
-                    cl_gameLayout.getWidth(),
-                    cl_gameLayout.getHeight(),
-                    saveState
+                        GameActivity.this,
+                        cl_gameLayout.getWidth(),
+                        cl_gameLayout.getHeight(),
+                        saveState
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat
@@ -124,7 +131,39 @@ public class GameActivity extends AppCompatActivity {
             }
 
             cl_gameLayout.addView(game);
+
+
+            cl_towerInfoLayout.setVisibility(View.INVISIBLE);
+            List<Tower> towers = game.getTowers();
+
+            game.setOnTouchListener((v,event)-> {
+
+                boolean found = false;
+                for (Tower tower : towers) {
+                    PointF delta = new PointF(
+                            event.getX() - tower.getLocation().x,
+                            event.getY() - tower.getLocation().y
+                    );
+                    double distance = Math.hypot(delta.x,delta.y);
+
+                    if (distance < Game.towerRadius) {
+                        found = true;
+                        cl_towerInfoLayout.setVisibility(View.VISIBLE);
+                        txt_towerInfo.setText(
+                                "x: " + tower.getLocation().x +
+                                        ", y: " + tower.getLocation().y
+                        );
+                        return true;
+                    }
+                }
+                if (!found) {
+                    cl_towerInfoLayout.setVisibility(View.INVISIBLE);
+                }
+                return false;
+            });
+
         });
+
     }
 
 

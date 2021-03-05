@@ -39,7 +39,7 @@ public class Game extends AbstractGame implements Serializable {
     private float cols;
     private PointF cellSize;
 
-    private float towerRadius = 56; //radius of tower object using tower.png
+    public static final float towerRadius = 56; //radius of tower object using tower.png
 
     private int lives;
 
