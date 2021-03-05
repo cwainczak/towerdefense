@@ -234,7 +234,7 @@ public class Game extends AbstractGame implements Serializable {
      * @param y y
      * @return whether position is valid
      */
-    public boolean placeTower(float x, float y, PointF imageSize) {
+    public boolean placeTower(float x, float y) {
         // validate here
         if(isValidPlacement(new PointF(x, y))) {
             buffer = new Tower(new PointF(x, y), 384, 750f, 5);
@@ -258,8 +258,7 @@ public class Game extends AbstractGame implements Serializable {
             double distance = distanceToPoint(location, tower.getLocation());
 
             //calculate minDistance : assumes half of width is radius of tower
-            float tower2Radius = tower.getBitmap().getWidth() / 2;
-            double minDistance = towerRadius + tower2Radius;
+            double minDistance = towerRadius * 2;
 
             //determine if new tower is too close
             if(distance < minDistance){

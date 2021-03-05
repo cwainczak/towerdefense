@@ -82,7 +82,6 @@ public class GameActivity extends AppCompatActivity {
         };
         for (int i = 0; i < towerList.size(); i++) {
             ImageView image = towerList.get(i);
-            image.setTag("tower" + i);
 
             image.setOnTouchListener((v, event) -> {
                     ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
@@ -101,7 +100,7 @@ public class GameActivity extends AppCompatActivity {
                 return true;
             } else if (event.getAction() == DragEvent.ACTION_DROP) {
                 // drop tower onto game
-                return game.placeTower(event.getX(), event.getY(), new PointF(v.getWidth(), v.getHeight()));
+                return game.placeTower(event.getX(), event.getY());
             }
             return false;
         });
