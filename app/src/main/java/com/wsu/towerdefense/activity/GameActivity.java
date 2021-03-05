@@ -1,5 +1,6 @@
 package com.wsu.towerdefense.activity;
 
+import android.content.Intent;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -7,6 +8,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.View;
+import android.widget.Button;
+
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
@@ -44,6 +48,15 @@ public class GameActivity extends AppCompatActivity {
         }
 
         cl_gameLayout.addView(game);
+
+        Button btn_pause = findViewById(R.id.btn_pause);
+
+        btn_pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(GameActivity.this, PauseActivity.class));
+            }
+        });
 
     }
 }
