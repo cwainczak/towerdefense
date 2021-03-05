@@ -1,40 +1,44 @@
 package com.wsu.towerdefense;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.util.Log;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
-    private float velocityX;    // Enemy's velocity in the x direction
-    private float velocityY;    // Enemy's velocity in the y direction
-    private float speed;     // pixels per second
 
-    private ListIterator<Point> path;
+    /**
+     * Enemy's velocity in the x direction
+     */
+    private float velocityX;
+    /**
+     * Enemy's velocity in the y direction
+     */
+    private float velocityY;
+    /**
+     * pixels per second
+     */
+    private final float speed;
+
+    private PointF pixTarget;
+    private final ListIterator<Point> path;
     private Point target;
-    private PointF cellSize;
-
-    private PointF offset;
-
+    private final PointF cellSize;
+    private final PointF offset;
 
     /**
      * Is the enemy alive
      */
-    boolean isAlive;
+    private boolean isAlive;
 
     /**
      * Did the enemy reach the last point in its path
      */
-    boolean isAtPathEnd;
+    private boolean isAtPathEnd;
 
     /**
      * Enemy's hit points
@@ -46,14 +50,14 @@ public class Enemy extends AbstractMapObject {
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path      A List of Points for the current location to move towards
-     * @param cellSize  Dimensions of each cell in the grid making up the map area
-     * @param hp        The amount of hit points this Enemy has
-     * @param speed     distance enemy moves, pixels per second
+     * @param path     A List of Points for the current location to move towards
+     * @param cellSize Dimensions of each cell in the grid making up the map area
+     * @param hp       The amount of hit points this Enemy has
+     * @param speed    distance enemy moves, pixels per second
      */
     public Enemy(List<Point> path, PointF cellSize, int hp, float speed) {
-        super(new PointF(path.get(0).x * cellSize.x + (cellSize.x/2),
-                path.get(0).y * cellSize.y + (cellSize.y/2)), R.mipmap.enemy);
+        super(new PointF(path.get(0).x * cellSize.x + (cellSize.x / 2),
+            path.get(0).y * cellSize.y + (cellSize.y / 2)), R.mipmap.enemy);
 
         this.speed = speed;
         this.cellSize = cellSize;
@@ -61,6 +65,10 @@ public class Enemy extends AbstractMapObject {
 
         this.path = path.listIterator();
         this.target = this.path.next();
+        this.pixTarget = new PointF(
+            target.x * cellSize.x + offset.x,
+            target.y * cellSize.y + offset.y
+        );
 
         this.hp = hp;
         this.isAlive = true;
@@ -95,7 +103,7 @@ public class Enemy extends AbstractMapObject {
 
             // Draw the Enemy bitmap image
             canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f,
-                    y - bitmap.getHeight() / 2f, null);
+                y - bitmap.getHeight() / 2f, null);
 
             // Draw the Enemy hp above the bitmap
             int offset = 10;
@@ -131,9 +139,9 @@ public class Enemy extends AbstractMapObject {
      */
     public boolean collides(float x, float y, float width, float height) {
         return x - width / 2 <= this.location.x + bitmap.getWidth() / 2f &&
-                x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
-                y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
-                y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
+            x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
+            y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
+            y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
 
     /**
@@ -146,20 +154,16 @@ public class Enemy extends AbstractMapObject {
     private void moveEnemy(double delta) {
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
-        PointF pixTarget = new PointF(
-                target.x * cellSize.x + offset.x,
-                target.y * cellSize.y + offset.y
-        );
         double distance = Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y);
 
         if (distance <= Math.abs(speed * delta)) {
             if (path.hasNext()) {
-            //set location to target, and update target
+                //set location to target, and update target
                 location = pixTarget;
                 target = path.next();
                 pixTarget = new PointF(
-                        target.x * cellSize.x + offset.x,
-                        target.y * cellSize.y + offset.y
+                    target.x * cellSize.x + offset.x,
+                    target.y * cellSize.y + offset.y
                 );
 
                 float dx = pixTarget.x - location.x;
@@ -176,5 +180,13 @@ public class Enemy extends AbstractMapObject {
         //increment location based on velocity values
         location.x += velocityX * delta;
         location.y += velocityY * delta;
+    }
+
+    public boolean isAlive() {
+        return this.isAlive;
+    }
+
+    public boolean isAtPathEnd() {
+        return this.isAtPathEnd;
     }
 }

@@ -1,14 +1,10 @@
 package com.wsu.towerdefense;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,15 +15,15 @@ import java.util.List;
 
 public class Tower extends AbstractMapObject implements Serializable {
 
-    private int radius;
+    private final int radius;
     private transient Enemy target;   // The Enemy this Tower will shoot at
 
     private final int projectileResourceID;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
-    private double fireRate = 1; // Time (in seconds) between firing of projectiles
+    private final double fireRate = 1; // Time (in seconds) between firing of projectiles
     private double timeSinceShot = 0.0;
-    private int damage;
-    private float projectileVelocity;
+    private final int damage;
+    private final float projectileVelocity;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -96,7 +92,7 @@ public class Tower extends AbstractMapObject implements Serializable {
 
                 // Remove the projectile from the projectile list
                 projectileIt.remove();
-            } else if (!p.target.isAlive) {
+            } else if (!p.getTarget().isAlive()) {
                 // If the current projectile did not hit its target, but a previous projectile
                 // hit and killed its target remove the current projectile
                 projectileIt.remove();
@@ -104,7 +100,7 @@ public class Tower extends AbstractMapObject implements Serializable {
         }
 
         // If the target died stop targeting it
-        if (target != null && !target.isAlive) {
+        if (target != null && !target.isAlive()) {
             target = null;
         }
     }

@@ -17,8 +17,8 @@ public class ScoresActivity extends AppCompatActivity {
     }
 
     /**
-     * This method is for when the back button is clicked. When the back button is clicked, it
-     * goes to the MainActivity.
+     * This method is for when the back button is clicked. When the back button is clicked, it goes
+     * to the MainActivity.
      *
      * @param view view
      */
@@ -34,5 +34,4 @@ public class ScoresActivity extends AppCompatActivity {
             ActivityUtil.hideNavigator(getWindow());
         }
     }
-
 }

@@ -18,6 +18,7 @@ public class PauseActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_pause);
+        onWindowFocusChanged(true);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -43,15 +44,15 @@ public class PauseActivity extends Activity {
         resizeButton(btn_exit, sizeRatio);
     }
 
-    public void btnPauseSettingsOnClick(View view){
+    public void btnPauseSettingsOnClick(View view) {
         startActivity(new Intent(PauseActivity.this, SettingsActivity.class));
     }
 
-    public void btnResumeOnClick(View view){
+    public void btnResumeOnClick(View view) {
         finish();   // finishes pause activity and resumes game activity
     }
 
-    public void btnExitOnClick(View view){
+    public void btnExitOnClick(View view) {
         // Close Game and go back to game selection
         Intent intent = new Intent().setClass(PauseActivity.this, GameSelectionActivity.class);
         startActivity(intent);
@@ -59,7 +60,7 @@ public class PauseActivity extends Activity {
         Log.i(getString(R.string.logcatKey), "Exiting game and returning to Game Select Menu.");
     }
 
-    private void resizeButton(Button b, float ratio){
+    private void resizeButton(Button b, float ratio) {
         int newWidth = (int) (b.getWidth() * ratio);
         int newHeight = (int) (b.getHeight() * ratio);
         b.setWidth(newWidth);
@@ -73,5 +74,4 @@ public class PauseActivity extends Activity {
             ActivityUtil.hideNavigator(getWindow());
         }
     }
-
 }

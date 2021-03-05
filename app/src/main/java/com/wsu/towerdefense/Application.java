@@ -3,7 +3,6 @@ package com.wsu.towerdefense;
 import android.content.Context;
 import android.util.Log;
 import com.wsu.towerdefense.map.MapReader;
-import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
 
 public class Application extends android.app.Application {

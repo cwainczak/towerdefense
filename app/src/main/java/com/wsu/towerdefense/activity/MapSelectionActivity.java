@@ -58,7 +58,9 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnPlayClicked(View view) {
-        if (txt_mapName.getText().equals("Map Name") || txt_mapName.getText().equals("Select a Map")) {
+        if (
+            txt_mapName.getText().equals("Map Name") || txt_mapName.getText().equals("Select a Map")
+        ) {
             txt_mapName.setText("Select a Map");
             txt_mapName.setVisibility(View.VISIBLE);
         } else {
@@ -67,10 +69,9 @@ public class MapSelectionActivity extends AppCompatActivity {
         }
     }
 
-
     /**
-     * This method is for when the back button is clicked. When the back button is clicked, it
-     * goes to the GameSelectionActivity.
+     * This method is for when the back button is clicked. When the back button is clicked, it goes
+     * to the GameSelectionActivity.
      *
      * @param view view
      */
@@ -79,17 +80,16 @@ public class MapSelectionActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     /**
-     * This method is for when one of the ImageView objects representing game maps is clicked.
-     * It sets the text of the txt_mapName to the map name and sets its visibility to visible.
+     * This method is for when one of the ImageView objects representing game maps is clicked. It
+     * sets the text of the txt_mapName to the map name and sets its visibility to visible.
      *
      * @param view view
      */
     public void mapSelected(View view) {
         for (int i = 0; i < mapList.size(); i++) {
             if (mapList.get(i).isPressed()) {
-                ImageView imageView = (ImageView)findViewById(mapList.get(i).getId());
+                ImageView imageView = (ImageView) findViewById(mapList.get(i).getId());
                 String imageName = String.valueOf(imageView.getTag());
 
                 txt_mapName.setText(imageName);
@@ -105,5 +105,4 @@ public class MapSelectionActivity extends AppCompatActivity {
             ActivityUtil.hideNavigator(getWindow());
         }
     }
-
 }

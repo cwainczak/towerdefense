@@ -19,6 +19,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_towerInfoLayout"
+        android:visibility="invisible"
         android:layout_width="93dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

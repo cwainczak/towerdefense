@@ -1,7 +1,5 @@
 package com.wsu.towerdefense;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -11,32 +9,32 @@ import static com.google.android.material.math.MathUtils.lerp;
 public class Projectile extends AbstractMapObject {
 
     // What percent of the bitmap height will be used for the hitbox
-    static private final float hitboxScaleY = 0.8f;
+    private static final float hitboxScaleY = 0.8f;
 
     // What percent of the bitmap width will be used for the hitbox
-    static private final float hitboxScaleX = 0.8f;
+    private static final float hitboxScaleX = 0.8f;
 
-    float velocity;
-    Enemy target;
+    private final float speed;
+    private final Enemy target;
 
     /**
      * A projectile shot by Towers at Enemies
      *
      * @param location   A PointF representing the location of the bitmap's center
-     * @param velocity   The Projectile's velocity
+     * @param speed      The Projectile's velocity
      * @param resourceID The resource ID of the image of this Projectile object
      * @param target     The Enemy this projectile is targeting
      */
-    public Projectile(PointF location, int resourceID, float velocity, Enemy target) {
+    public Projectile(PointF location, int resourceID, float speed, Enemy target) {
         super(location, resourceID);
-        this.velocity = velocity;
+        this.speed = speed;
         this.target = target;
     }
 
     public void update(Game game, double delta) {
         double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
             Math.abs(location.y - target.location.y));
-        double distanceMoved = velocity * delta;
+        double distanceMoved = speed * delta;
 
         // If the projectile moved far enough to reach the target set it at the target location
         if (distanceMoved >= distanceToTarget) {
@@ -95,7 +93,7 @@ public class Projectile extends AbstractMapObject {
             Math.abs(location.x - target.location.x),
             Math.abs(location.y - target.location.y)
         );
-        double distanceMoved = velocity * delta;
+        double distanceMoved = speed * delta;
 
         float amount = (float) (distanceMoved / distanceToTarget);
 
@@ -103,5 +101,9 @@ public class Projectile extends AbstractMapObject {
             lerp(location.x, target.location.x, amount),
             lerp(location.y, target.location.y, amount)
         );
+    }
+
+    public Enemy getTarget() {
+        return target;
     }
 }
