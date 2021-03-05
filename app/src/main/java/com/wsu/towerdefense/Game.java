@@ -5,7 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
@@ -36,6 +38,8 @@ public class Game extends AbstractGame implements Serializable {
     private final float rows = 20f;
     private float cols;
     private PointF cellSize;
+
+    private float towerRadius = 56; //radius of tower object using tower.png
 
     private int lives;
 
@@ -79,7 +83,6 @@ public class Game extends AbstractGame implements Serializable {
             lives = 5;
 
             // TESTING
-            spawnTestTowers();
             spawnTestEnemies();
         }
     }
@@ -233,9 +236,57 @@ public class Game extends AbstractGame implements Serializable {
      */
     public boolean placeTower(float x, float y) {
         // validate here
-        buffer = new Tower(new PointF(x, y), 384, 750f, 5);
+        if(isValidPlacement(new PointF(x, y))) {
+            buffer = new Tower(new PointF(x, y), 384, 750f, 5);
+            return true;
+        }
 
+        return false;
+    }
+
+    /**
+     * Calculates the distance between a new tower and every existing object to determine if
+     * the placement of the new tower is valid. Assumes the new tower exists at time of valid check.
+     *
+     *
+     * @param location  Location of new tower to be placed
+     * @return          True if valid placement, false if not
+     */
+    public boolean isValidPlacement(PointF location){
+        for(Tower tower : getTowers()){
+            //calculate distance
+            double distance = distanceToPoint(location, tower.getLocation());
+
+            //calculate minDistance : assumes half of width is radius of tower
+            double minDistance = towerRadius * 2;
+
+            //determine if new tower is too close
+            if(distance < minDistance){
+                return false;
+            }
+        }
+
+        for(RectF tile : map.getTiles()){
+            //calculate distance
+            double distance = distanceToPoint(location, new PointF(tile.centerX(), tile.centerY()));
+
+            //calculate minDistance : with tileRadius corners of tiles will not affect calculation
+            float tileRadius = tile.centerX() - tile.left;
+            double minDistance = towerRadius + tileRadius;
+
+            //determine if new tower is too close
+            if(distance < minDistance){
+                return false;
+            }
+        }
         return true;
+    }
+
+    private double distanceToPoint(PointF location, PointF point) {
+
+        float dx = location.x - point.x;
+        float dy = location.y - point.y;
+        return Math.hypot(dx, dy);
     }
 
     /**
@@ -262,10 +313,6 @@ public class Game extends AbstractGame implements Serializable {
         return lives;
     }
 
-    private void spawnTestTowers() {
-        towers.add(new Tower(new PointF(800, 580), 384, 750f, 5));
-        towers.add(new Tower(new PointF(720, 1000), 384, 750f, 5));
-    }
 
     private void spawnTestEnemies() {
         for (int i = 0; i < 3; i++) {

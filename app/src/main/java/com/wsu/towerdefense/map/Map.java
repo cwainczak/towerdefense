@@ -79,6 +79,10 @@ public class Map {
         }
     }
 
+    public List<RectF> getTiles() {
+        return tiles;
+    }
+
     public String getName() {
         return name;
     }
