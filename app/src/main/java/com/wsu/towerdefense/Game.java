@@ -35,7 +35,7 @@ public class Game extends AbstractGame implements Serializable {
 
     private final float rows = 20f;
     private float cols;
-    private PointF cellSize;
+    private final PointF cellSize;
 
     public static final float towerRadius = 56; //radius of tower object using tower.png
 
@@ -112,11 +112,11 @@ public class Game extends AbstractGame implements Serializable {
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
 
-            if (e.isAlive) {
+            if (e.isAlive()) {
                 e.update(this, delta);
 
                 // If the Enemy reached the end of the path
-                if (e.isAtPathEnd) {
+                if (e.isAtPathEnd()) {
                     // Remove a life
                     lives--;
 
@@ -126,7 +126,7 @@ public class Game extends AbstractGame implements Serializable {
                     // Game over if out of lives
                     if (lives <= 0) {
                         gameOver();
-                        break;
+                        return;
                     }
                 }
 
@@ -310,7 +310,13 @@ public class Game extends AbstractGame implements Serializable {
      * Ends this game and returns to the the menu
      */
     private void gameOver() {
+        // stop game loop
         running = false;
+
+        // delete save file
+        Serializer.delete(getContext(), Serializer.SAVEFILE);
+
+        // return to menu
         ((GameActivity) getContext()).gameOver();
     }
 

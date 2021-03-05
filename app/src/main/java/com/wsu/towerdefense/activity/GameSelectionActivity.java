@@ -12,7 +12,6 @@ import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
-import java.io.Serializable;
 
 public class GameSelectionActivity extends AppCompatActivity {
 
@@ -53,6 +52,9 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnNewGameClicked(View view) {
+        // delete safe file when new game is started
+        Serializer.delete(this, Serializer.SAVEFILE);
+
         Intent intent = new Intent(this, MapSelectionActivity.class);
         startActivity(intent);
     }

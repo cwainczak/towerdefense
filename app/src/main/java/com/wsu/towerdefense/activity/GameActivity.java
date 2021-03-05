@@ -35,18 +35,6 @@ public class GameActivity extends AppCompatActivity {
     TextView txt_towerName;
     TextView txt_towerInfo;
 
-    ImageView tower_1;
-    ImageView tower_2;
-    ImageView tower_3;
-    ImageView tower_4;
-    ImageView tower_5;
-    ImageView tower_6;
-    ImageView tower_7;
-    ImageView tower_8;
-    ImageView tower_9;
-    ImageView tower_10;
-    ImageView tower_11;
-
     List<ImageView> towerList;
 
     Game game;
@@ -65,20 +53,19 @@ public class GameActivity extends AppCompatActivity {
         txt_towerName = findViewById(R.id.txt_towerName);
         txt_towerInfo = findViewById(R.id.txt_towerInfo);
 
-        tower_1 = findViewById(R.id.img_Tower1);
-        tower_2 = findViewById(R.id.img_Tower2);
-        tower_3 = findViewById(R.id.img_Tower3);
-        tower_4 = findViewById(R.id.img_Tower4);
-        tower_5 = findViewById(R.id.img_Tower5);
-        tower_6 = findViewById(R.id.img_Tower6);
-        tower_7 = findViewById(R.id.img_Tower7);
-        tower_8 = findViewById(R.id.img_Tower8);
-        tower_9 = findViewById(R.id.img_Tower9);
-        tower_10 = findViewById(R.id.img_Tower10);
-        tower_11 = findViewById(R.id.img_Tower11);
-
-        towerList = Arrays.asList(tower_1, tower_2, tower_3, tower_4, tower_5, tower_6, tower_7,
-            tower_8, tower_9, tower_10, tower_11);
+        towerList = Arrays.asList(
+            findViewById(R.id.img_Tower1),
+            findViewById(R.id.img_Tower2),
+            findViewById(R.id.img_Tower3),
+            findViewById(R.id.img_Tower4),
+            findViewById(R.id.img_Tower5),
+            findViewById(R.id.img_Tower6),
+            findViewById(R.id.img_Tower7),
+            findViewById(R.id.img_Tower8),
+            findViewById(R.id.img_Tower9),
+            findViewById(R.id.img_Tower10),
+            findViewById(R.id.img_Tower11)
+        );
 
         // add drag listeners to towers
         OnDragListener towerListener = (v, event) -> {
@@ -134,15 +121,10 @@ public class GameActivity extends AppCompatActivity {
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
 
-            btn_pause.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    game.setPaused(true);
-                    startActivity(new Intent(GameActivity.this, PauseActivity.class));
-                }
+            btn_pause.setOnClickListener(view -> {
+                game.setPaused(true);
+                startActivity(new Intent(GameActivity.this, PauseActivity.class));
             });
-
-            setSelectionMenuVisible(false);
 
             List<Tower> towers = game.getTowers();
             game.setOnTouchListener((v, event) -> {
@@ -178,7 +160,6 @@ public class GameActivity extends AppCompatActivity {
             });
         });
     }
-
 
     /**
      * This method is for when one of the ImageView objects representing towers is clicked. It sets

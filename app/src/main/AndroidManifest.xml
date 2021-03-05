@@ -15,7 +15,8 @@
       android:screenOrientation="sensorLandscape" />
     <activity
       android:name=".activity.PauseActivity"
-      android:theme="@style/Theme.CustomTheme"    />
+      android:screenOrientation="sensorLandscape"
+      android:theme="@style/Theme.CustomTheme" />
     <activity
       android:name=".activity.SettingsActivity"
       android:screenOrientation="sensorLandscape" />

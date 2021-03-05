@@ -1,7 +1,6 @@
 package com.wsu.towerdefense.activity;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,9 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.map.MapReader;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     /**
      * This method is for when the scores button is clicked. When the scores button is clicked, it
      * goes to the ScoresActivity.
@@ -44,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ScoresActivity.class);
         startActivity(intent);
     }
-
 
     /**
      * This method is for when the settings button is clicked. When the settings button is clicked,

@@ -1,12 +1,10 @@
 package com.wsu.towerdefense;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -73,8 +71,10 @@ public abstract class AbstractMapObject implements Serializable {
         float x = in.readFloat();
         float y = in.readFloat();
 
-        this.bitmap = BitmapFactory
-            .decodeResource(Application.context.getResources(), this.resourceID);
+        this.bitmap = BitmapFactory.decodeResource(
+            Application.context.getResources(),
+            this.resourceID
+        );
         this.location = new PointF(x, y);
     }
 }

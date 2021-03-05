@@ -33,9 +33,8 @@ public class SaveState implements Serializable {
             "saveFile='" + saveFile + '\'' +
             ", mapName='" + mapName + '\'' +
             ", lives='" + lives + '\'' +
-            ", towers=" + (
-            towers.stream().map(Object::toString).collect(Collectors.joining(", "))
-        ) +
+            ", towers=" + (towers.stream().map(Object::toString)
+            .collect(Collectors.joining(", "))) +
             '}';
     }
 }

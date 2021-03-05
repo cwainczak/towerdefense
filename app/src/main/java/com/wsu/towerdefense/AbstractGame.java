@@ -75,27 +75,27 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
 
         while (running) {
 
-                double timeCurrent = (System.currentTimeMillis() / 1000.0);
-                // time difference between previous & current loop
-                double delta = timeCurrent - timePrevious;
-                timePrevious = timeCurrent;
+            double timeCurrent = (System.currentTimeMillis() / 1000.0);
+            // time difference between previous & current loop
+            double delta = timeCurrent - timePrevious;
+            timePrevious = timeCurrent;
 
-                acc += delta; // passed time accumulates in acc variable
+            acc += delta; // passed time accumulates in acc variable
 
-                // when time passed is >= minimum time between updates (TIMESTEP), game is updated
-                while (acc >= TIMESTEP) {
-                    if (!this.isPaused) {
-                        update(TIMESTEP);
-                    }
-                    acc -= TIMESTEP; // one interval was processed, so subtract it
-                }
-                // keep updating the game until passed time < minimum
-
-                // when done updating, render the game
-                // remaining unprocessed time is used by render method to interpolate
+            // when time passed is >= minimum time between updates (TIMESTEP), game is updated
+            while (acc >= TIMESTEP) {
                 if (!this.isPaused) {
-                    _render(acc / TIMESTEP);
+                    update(TIMESTEP);
                 }
+                acc -= TIMESTEP; // one interval was processed, so subtract it
+            }
+            // keep updating the game until passed time < minimum
+
+            // when done updating, render the game
+            // remaining unprocessed time is used by render method to interpolate
+            if (!this.isPaused) {
+                _render(acc / TIMESTEP);
+            }
 
         }
     }
@@ -156,8 +156,8 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
     }
 
     /**
-     * Keeps track of changes in display size. {@link #getGameWidth()} and {@link
-     * #getGameHeight()} can be used by child classes.
+     * Keeps track of changes in display size. {@link #getGameWidth()} and {@link #getGameHeight()}
+     * can be used by child classes.
      */
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
@@ -228,6 +228,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
 
     /**
      * To pause the game when the pause button is pressed
+     *
      * @param paused
      */
     public void setPaused(boolean paused) {
