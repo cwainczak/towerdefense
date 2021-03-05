@@ -28,4 +28,7 @@
     <string name="towers">Towers</string>
     <string name="tower_info">Tower Info</string>
     <string name="remove">remove</string>
+    <string name="exit">Exit</string>
+    <string name="save">Save</string>
+    <string name="resume">Resume</string>
 </resources>
