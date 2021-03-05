@@ -44,7 +44,8 @@ public class Game extends AbstractGame implements Serializable {
     private int lives;
 
     /**
-     * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when iterating
+     * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
+     * iterating
      */
     private Tower buffer = null;
 
@@ -118,6 +119,7 @@ public class Game extends AbstractGame implements Serializable {
                     // Game over if out of lives
                     if (lives <= 0) {
                         gameOver();
+                        break;
                     }
                 }
 
@@ -227,6 +229,7 @@ public class Game extends AbstractGame implements Serializable {
 
     /**
      * Place a tower at given coordinates if placement is valid
+     *
      * @param x x
      * @param y y
      * @return whether position is valid
@@ -291,6 +294,7 @@ public class Game extends AbstractGame implements Serializable {
      * Ends this game and returns to the the menu
      */
     private void gameOver() {
+        running = false;
         ((GameActivity) getContext()).gameOver();
     }
 
@@ -312,11 +316,8 @@ public class Game extends AbstractGame implements Serializable {
 
 
     private void spawnTestEnemies() {
-        for(int i=0;i<10;i++) {
-//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 500));
-//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 450));
-//        enemies.add(new Enemy(map.getPath(), cellSize, 40, 400));
-            enemies.add(new Enemy(map.getPath(), cellSize, 40, 300+10*i));
+        for (int i = 0; i < 3; i++) {
+            enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i));
         }
     }
 }

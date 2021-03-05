@@ -32,7 +32,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
     /**
      * Whether the game state should update. Set to false when app is minimized.
      */
-    private boolean running;
+    protected boolean running;
     private int gameWidth;
     private int gameHeight;
 
