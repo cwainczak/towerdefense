@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
@@ -39,7 +38,7 @@ public class Game extends AbstractGame implements Serializable {
     private float cols;
     private PointF cellSize;
 
-    private float towerRadius = 56; //radius of tower object using tower.png
+    public static final float towerRadius = 56; //radius of tower object using tower.png
 
     private int lives;
 
@@ -47,7 +46,12 @@ public class Game extends AbstractGame implements Serializable {
      * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
      * iterating
      */
-    private Tower buffer = null;
+    private Tower addBuffer = null;
+    /**
+     * The index of the next tower to be removed; prevents {@link java.util.ConcurrentModificationException}
+     * when iterating
+     */
+    private int removeBuffer = -1;
 
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
@@ -130,9 +134,14 @@ public class Game extends AbstractGame implements Serializable {
         }
 
         // add tower from buffer
-        if (buffer != null) {
-            towers.add(buffer);
-            buffer = null;
+        if (addBuffer != null) {
+            towers.add(addBuffer);
+            addBuffer = null;
+        }
+        // remove tower from list based on buffer
+        if (removeBuffer > -1) {
+            towers.remove(removeBuffer);
+            removeBuffer = -1;
         }
         // Update the Towers
         for (Tower t : towers) {
@@ -236,24 +245,27 @@ public class Game extends AbstractGame implements Serializable {
      */
     public boolean placeTower(float x, float y) {
         // validate here
-        if(isValidPlacement(new PointF(x, y))) {
-            buffer = new Tower(new PointF(x, y), 384, 750f, 5);
+        if (isValidPlacement(new PointF(x, y))) {
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5);
             return true;
         }
 
         return false;
     }
 
+    public void removeTower(int index) {
+        removeBuffer = index;
+    }
+
     /**
-     * Calculates the distance between a new tower and every existing object to determine if
-     * the placement of the new tower is valid. Assumes the new tower exists at time of valid check.
+     * Calculates the distance between a new tower and every existing object to determine if the
+     * placement of the new tower is valid. Assumes the new tower exists at time of valid check.
      *
-     *
-     * @param location  Location of new tower to be placed
-     * @return          True if valid placement, false if not
+     * @param location Location of new tower to be placed
+     * @return True if valid placement, false if not
      */
-    public boolean isValidPlacement(PointF location){
-        for(Tower tower : getTowers()){
+    public boolean isValidPlacement(PointF location) {
+        for (Tower tower : getTowers()) {
             //calculate distance
             double distance = distanceToPoint(location, tower.getLocation());
 
@@ -261,12 +273,12 @@ public class Game extends AbstractGame implements Serializable {
             double minDistance = towerRadius * 2;
 
             //determine if new tower is too close
-            if(distance < minDistance){
+            if (distance < minDistance) {
                 return false;
             }
         }
 
-        for(RectF tile : map.getTiles()){
+        for (RectF tile : map.getTiles()) {
             //calculate distance
             double distance = distanceToPoint(location, new PointF(tile.centerX(), tile.centerY()));
 
@@ -275,7 +287,7 @@ public class Game extends AbstractGame implements Serializable {
             double minDistance = towerRadius + tileRadius;
 
             //determine if new tower is too close
-            if(distance < minDistance){
+            if (distance < minDistance) {
                 return false;
             }
         }

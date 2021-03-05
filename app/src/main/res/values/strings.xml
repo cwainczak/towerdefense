@@ -26,4 +26,6 @@
     <string name="high_scores">High Scores</string>
     <string name="version_number">Version Number</string>
     <string name="towers">Towers</string>
+    <string name="tower_info">Tower Info</string>
+    <string name="remove">remove</string>
 </resources>
