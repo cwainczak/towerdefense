@@ -33,7 +33,6 @@ public class Game extends AbstractGame implements Serializable {
 
     private Map map;
 
-    //private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private final PointF cellSize;
@@ -41,6 +40,11 @@ public class Game extends AbstractGame implements Serializable {
     public static final float towerRadius = 56; //radius of tower object using tower.png
 
     private int lives;
+
+    /**
+     * The money available for the player to spend
+     */
+    public int money;
 
     /**
      * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
@@ -79,12 +83,14 @@ public class Game extends AbstractGame implements Serializable {
             map = MapReader.get(saveState.mapName);
             towers = saveState.towers;
             lives = saveState.lives;
+            money = saveState.money;
         }
         // default state
         else {
             map = MapReader.get("map1");
 
             lives = 5;
+            money = 500;
 
             // TESTING
             spawnTestEnemies();
@@ -128,6 +134,9 @@ public class Game extends AbstractGame implements Serializable {
                 }
 
             } else {
+                // Add enemy's value to game balance
+                money += e.getValue();
+
                 // Remove dead Enemies
                 enemyIt.remove();
             }
@@ -136,10 +145,12 @@ public class Game extends AbstractGame implements Serializable {
         // add tower from buffer
         if (addBuffer != null) {
             towers.add(addBuffer);
+            money -= addBuffer.cost;
             addBuffer = null;
         }
         // remove tower from list based on buffer
         if (removeBuffer > -1) {
+            money += towers.get(removeBuffer).cost/2;
             towers.remove(removeBuffer);
             removeBuffer = -1;
         }
@@ -177,8 +188,8 @@ public class Game extends AbstractGame implements Serializable {
             e.render(lerp, canvas, paint);
         }
 
-        // Draw the lives
-        drawLives(canvas, paint);
+        // Draw the money and lives
+        drawMoneyandLives(canvas, paint);
     }
 
 
@@ -220,20 +231,24 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     /**
-     * Draws the life count to the top left corner of the canvas
+     * Draws the money count and life count to the top left corner of the canvas
      *
      * @param canvas Canvas to draw the life count on
      * @param paint  Paint to draw with
      */
-    private void drawLives(Canvas canvas, Paint paint) {
+    private void drawMoneyandLives(Canvas canvas, Paint paint) {
         int posX = 10;
-        int posY = 60;
+        int posY = 65;
+        int yOffset = 65;
 
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.YELLOW);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(75);
 
-        canvas.drawText("Lives: " + lives, posX, posY, paint);
+        canvas.drawText("$" + money, posX, posY, paint);
+
+        paint.setColor(Color.WHITE);
+        canvas.drawText("Lives: " + lives, posX, posY+yOffset, paint);
     }
 
     /**
@@ -244,9 +259,12 @@ public class Game extends AbstractGame implements Serializable {
      * @return whether position is valid
      */
     public boolean placeTower(float x, float y) {
+        // Todo - Cost will need to be passed from GameActivity once there are different towers
+        int cost = 100;
+
         // validate here
-        if (isValidPlacement(new PointF(x, y))) {
-            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5);
+        if (isValidPlacement(new PointF(x, y)) && cost <= money) {
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5, cost);
             return true;
         }
 
@@ -334,7 +352,7 @@ public class Game extends AbstractGame implements Serializable {
 
     private void spawnTestEnemies() {
         for (int i = 0; i < 3; i++) {
-            enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i));
+            enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i, 20));
         }
     }
 }

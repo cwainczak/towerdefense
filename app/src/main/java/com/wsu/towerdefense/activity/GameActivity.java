@@ -150,7 +150,8 @@ public class GameActivity extends AppCompatActivity {
                         // temporary position text
                         txt_towerInfo.setText(
                             "x: " + tower.getLocation().x +
-                                ", y: " + tower.getLocation().y
+                            "\ny: " + tower.getLocation().y +
+                            "\n\nSell for: " + tower.cost/2
                         );
                         return true;
                     }
