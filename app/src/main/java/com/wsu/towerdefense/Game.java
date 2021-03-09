@@ -22,6 +22,9 @@ import java.util.List;
 
 public class Game extends AbstractGame implements Serializable {
 
+    //DEBUG MODE
+    private boolean debug = true;
+
     /**
      * Keeps track of all Towers in the Game
      */
@@ -51,11 +54,15 @@ public class Game extends AbstractGame implements Serializable {
      * iterating
      */
     private Tower addBuffer = null;
+
     /**
-     * The index of the next tower to be removed; prevents {@link java.util.ConcurrentModificationException}
-     * when iterating
+     * The currently selected tower
      */
-    private int removeBuffer = -1;
+    private Tower selectedTower = null;
+    /**
+     * Whether or not to remove the currently selected tower
+     */
+    private boolean removeTower = false;
 
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
@@ -92,8 +99,6 @@ public class Game extends AbstractGame implements Serializable {
             lives = 5;
             money = 500;
 
-            // TESTING
-            spawnTestEnemies();
         }
     }
 
@@ -149,22 +154,15 @@ public class Game extends AbstractGame implements Serializable {
             addBuffer = null;
         }
         // remove tower from list based on buffer
-        if (removeBuffer > -1) {
-            money += towers.get(removeBuffer).cost/2;
-            towers.remove(removeBuffer);
-            removeBuffer = -1;
+        if (removeTower) {
+            money += selectedTower.cost / 2;
+            towers.remove(selectedTower);
+            selectedTower = null;
+            removeTower = false;
         }
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
-        }
-
-        //TESTING
-        // Add enemies whenever all enemies are killed
-        if (enemies.size() == 0) {
-            spawnTestEnemies();
-            // save game when "wave ends"
-            save();
         }
     }
 
@@ -173,14 +171,21 @@ public class Game extends AbstractGame implements Serializable {
         // Draw the background
         canvas.drawColor(Color.BLACK);
 
-        paint.setColor(Color.YELLOW);
-        map.render(canvas, paint);
-
-        drawGridLines(canvas, paint);
+        // Draw debug information
+        if(debug) {
+            map.render(canvas, paint);
+            drawGridLines(canvas, paint);
+        }
 
         // Draw the Towers
         for (Tower t : towers) {
             t.render(lerp, canvas, paint);
+
+            // Draw all tower ranges if in debug mode
+            if(debug){
+                t.drawRange(canvas, paint);
+                t.drawLine(canvas, paint);
+            }
         }
 
         // Draw the Enemies
@@ -264,15 +269,16 @@ public class Game extends AbstractGame implements Serializable {
 
         // validate here
         if (isValidPlacement(new PointF(x, y)) && cost <= money) {
-            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5, cost);
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 10, cost);
             return true;
         }
 
         return false;
     }
 
-    public void removeTower(int index) {
-        removeBuffer = index;
+    public void removeSelectedTower() {
+        selectedTower.isSelected = false;
+        removeTower = true;
     }
 
     /**
@@ -350,9 +356,25 @@ public class Game extends AbstractGame implements Serializable {
     }
 
 
-    private void spawnTestEnemies() {
+    public void spawnEnemies() {
+        save();
+
         for (int i = 0; i < 3; i++) {
             enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i, 20));
         }
+    }
+
+    public void setSelectedTower(Tower tower) {
+        // Deselect previously selected tower
+        if (selectedTower != null) {
+            selectedTower.isSelected = false;
+        }
+
+        // Select the new tower
+        selectedTower = tower;
+        if (tower != null) {
+            tower.isSelected = true;
+        }
+
     }
 }
