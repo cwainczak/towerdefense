@@ -124,10 +124,17 @@ public class GameActivity extends AppCompatActivity {
             cl_gameLayout.addView(game);
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
+            ImageButton btn_play = findViewById(R.id.btn_play);
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
                 startActivity(new Intent(GameActivity.this, PauseActivity.class));
+            });
+
+            btn_play.setOnClickListener(view -> {
+                if(game.getEnemies().isEmpty()){
+                    game.spawnEnemies();
+                }
             });
 
             List<Tower> towers = game.getTowers();

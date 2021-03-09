@@ -168,7 +168,7 @@ public class Tower extends AbstractMapObject implements Serializable {
      * @param canvas The Canvas to draw the range on.
      * @param paint  The Paint used to draw the range.
      */
-    private void drawRange(Canvas canvas, Paint paint) {
+    public void drawRange(Canvas canvas, Paint paint) {
         float width = paint.getStrokeWidth();
         paint.setStrokeWidth(width + 6);
         paint.setColor(Color.GREEN);

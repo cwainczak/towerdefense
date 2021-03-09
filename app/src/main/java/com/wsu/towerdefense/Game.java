@@ -22,6 +22,9 @@ import java.util.List;
 
 public class Game extends AbstractGame implements Serializable {
 
+    //DEBUG MODE
+    private boolean debug = true;
+
     /**
      * Keeps track of all Towers in the Game
      */
@@ -33,7 +36,6 @@ public class Game extends AbstractGame implements Serializable {
 
     private Map map;
 
-    //private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private final PointF cellSize;
@@ -86,8 +88,6 @@ public class Game extends AbstractGame implements Serializable {
 
             lives = 5;
 
-            // TESTING
-            spawnTestEnemies();
         }
     }
 
@@ -147,14 +147,6 @@ public class Game extends AbstractGame implements Serializable {
         for (Tower t : towers) {
             t.update(this, delta);
         }
-
-        //TESTING
-        // Add enemies whenever all enemies are killed
-        if (enemies.size() == 0) {
-            spawnTestEnemies();
-            // save game when "wave ends"
-            save();
-        }
     }
 
     @Override
@@ -162,14 +154,20 @@ public class Game extends AbstractGame implements Serializable {
         // Draw the background
         canvas.drawColor(Color.BLACK);
 
-        paint.setColor(Color.YELLOW);
-        map.render(canvas, paint);
-
-        drawGridLines(canvas, paint);
+        // Draw debug information
+        if(debug) {
+            map.render(canvas, paint);
+            drawGridLines(canvas, paint);
+        }
 
         // Draw the Towers
         for (Tower t : towers) {
             t.render(lerp, canvas, paint);
+
+            // Draw all tower ranges if in debug mode
+            if(debug){
+                t.drawRange(canvas, paint);
+            }
         }
 
         // Draw the Enemies
@@ -179,6 +177,7 @@ public class Game extends AbstractGame implements Serializable {
 
         // Draw the lives
         drawLives(canvas, paint);
+
     }
 
 
@@ -332,7 +331,9 @@ public class Game extends AbstractGame implements Serializable {
     }
 
 
-    private void spawnTestEnemies() {
+    public void spawnEnemies() {
+        save();
+
         for (int i = 0; i < 3; i++) {
             enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i));
         }
