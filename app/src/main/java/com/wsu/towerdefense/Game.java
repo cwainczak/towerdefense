@@ -172,6 +172,7 @@ public class Game extends AbstractGame implements Serializable {
             // Draw all tower ranges if in debug mode
             if(debug){
                 t.drawRange(canvas, paint);
+                t.drawLine(canvas, paint);
             }
         }
 

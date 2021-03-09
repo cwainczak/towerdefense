@@ -133,21 +133,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (isSelected) {
             drawRange(canvas, paint);
         }
-
-        if (Settings.gameMode == Settings.GameMode.DEBUG) {
-            // Draw the Tower's range, - if statement prevents double drawing
-            if (!isSelected) drawRange(canvas, paint);
-
-
-            // Draw a line to the target Enemy, interpolating Enemy position
-            if (target != null) {
-                float width = paint.getStrokeWidth();
-                paint.setColor(Color.WHITE);
-                paint.setStrokeWidth(width + 6);
-                canvas.drawLine(location.x, location.y, target.location.x , target.location.y, paint);
-                paint.setStrokeWidth(width);
-            }
-        }
     }
 
     /**
@@ -185,6 +170,16 @@ public class Tower extends AbstractMapObject implements Serializable {
         paint.setAlpha(255);
         paint.setStrokeWidth(width);
         paint.setStyle(Paint.Style.FILL);
+    }
+
+    public void drawLine(Canvas canvas, Paint paint) {
+        if (target != null) {
+            float width = paint.getStrokeWidth();
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(width + 6);
+            canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);
+            paint.setStrokeWidth(width);
+        }
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
