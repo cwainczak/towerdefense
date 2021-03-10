@@ -11,9 +11,9 @@ import android.util.Log;
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
-
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,7 +47,11 @@ public class Game extends AbstractGame implements Serializable {
     /**
      * The money available for the player to spend
      */
-    public int money;
+    private int money;
+    /**
+     * A custom listener used to send data to the GameActivity whenever certain actions occur
+     */
+    private GameListener listener = null;
 
     /**
      * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
@@ -76,7 +80,7 @@ public class Game extends AbstractGame implements Serializable {
         map.generateTiles(cellSize);
 
         Log.i(context.getString(R.string.logcatKey),
-            "Started game with map '" + map.getName() + "'"
+                "Started game with map '" + map.getName() + "'"
         );
     }
 
@@ -84,7 +88,7 @@ public class Game extends AbstractGame implements Serializable {
         // load save
         if (saveState != null) {
             Log.i(context.getString(R.string.logcatKey),
-                "Loading save file '" + saveState.saveFile + "'"
+                    "Loading save file '" + saveState.saveFile + "'"
             );
 
             map = MapReader.get(saveState.mapName);
@@ -97,7 +101,7 @@ public class Game extends AbstractGame implements Serializable {
             map = MapReader.get("map1");
 
             lives = 5;
-            money = 500;
+            money = 300;
 
         }
     }
@@ -140,7 +144,7 @@ public class Game extends AbstractGame implements Serializable {
 
             } else {
                 // Add enemy's value to game balance
-                money += e.getValue();
+                addMoney(e.getValue());
 
                 // Remove dead Enemies
                 enemyIt.remove();
@@ -150,12 +154,12 @@ public class Game extends AbstractGame implements Serializable {
         // add tower from buffer
         if (addBuffer != null) {
             towers.add(addBuffer);
-            money -= addBuffer.cost;
+            removeMoney(addBuffer.cost);
             addBuffer = null;
         }
         // remove tower from list based on buffer
         if (removeTower) {
-            money += selectedTower.cost / 2;
+            addMoney(selectedTower.cost / 2);
             towers.remove(selectedTower);
             selectedTower = null;
             removeTower = false;
@@ -172,7 +176,7 @@ public class Game extends AbstractGame implements Serializable {
         canvas.drawColor(Color.BLACK);
 
         // Draw debug information
-        if(debug) {
+        if (debug) {
             map.render(canvas, paint);
             drawGridLines(canvas, paint);
         }
@@ -182,7 +186,7 @@ public class Game extends AbstractGame implements Serializable {
             t.render(lerp, canvas, paint);
 
             // Draw all tower ranges if in debug mode
-            if(debug){
+            if (debug) {
                 t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
             }
@@ -224,14 +228,14 @@ public class Game extends AbstractGame implements Serializable {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
-                cols * cellSize.x, i * cellSize.y, paint);
+                    cols * cellSize.x, i * cellSize.y, paint);
         }
 
         for (int i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
-                i * cellSize.x, rows * cellSize.y, paint);
+                    i * cellSize.x, rows * cellSize.y, paint);
         }
     }
 
@@ -253,7 +257,7 @@ public class Game extends AbstractGame implements Serializable {
         canvas.drawText("$" + money, posX, posY, paint);
 
         paint.setColor(Color.WHITE);
-        canvas.drawText("Lives: " + lives, posX, posY+yOffset, paint);
+        canvas.drawText("Lives: " + lives, posX, posY + yOffset, paint);
     }
 
     /**
@@ -355,6 +359,10 @@ public class Game extends AbstractGame implements Serializable {
         return lives;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
 
     public void spawnEnemies() {
         save();
@@ -375,6 +383,39 @@ public class Game extends AbstractGame implements Serializable {
         if (tower != null) {
             tower.isSelected = true;
         }
+    }
 
+    /**
+     * Adds a specified amount to the game's money and triggers the game's listener
+     *
+     * @param amount The amount of money to add
+     */
+    private void addMoney(int amount) {
+        money += amount;
+        listener.onMoneyChanged();
+    }
+
+    /**
+     * Removes a specified amount from the game's money and triggers the game's listener
+     *
+     * @param amount The amount of money to remove
+     */
+    private void removeMoney(int amount) {
+        money -= amount;
+        listener.onMoneyChanged();
+    }
+
+    /**
+     * A custom listener for Game objects
+     */
+    public interface GameListener {
+        /**
+         * This method is called whenever the game's money increases or decreases
+         */
+        void onMoneyChanged();
+    }
+
+    public void setGameListener(GameListener listener) {
+        this.listener = listener;
     }
 }

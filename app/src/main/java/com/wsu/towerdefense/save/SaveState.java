@@ -23,7 +23,7 @@ public class SaveState implements Serializable {
 
         this.lives = game.getLives();
 
-        this.money = game.money;
+        this.money = game.getMoney();
 
         // TODO: save only relevant tower data
         this.towers = game.getTowers();
