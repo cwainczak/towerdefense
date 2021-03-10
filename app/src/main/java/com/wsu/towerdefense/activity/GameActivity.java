@@ -15,7 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -123,13 +122,6 @@ public class GameActivity extends AppCompatActivity {
 
             cl_gameLayout.addView(game);
 
-            ImageButton btn_pause = findViewById(R.id.btn_pause);
-
-            btn_pause.setOnClickListener(view -> {
-                game.setPaused(true);
-                startActivity(new Intent(GameActivity.this, PauseActivity.class));
-            });
-
             List<Tower> towers = game.getTowers();
             game.setOnTouchListener((v, event) -> {
 
@@ -201,6 +193,14 @@ public class GameActivity extends AppCompatActivity {
     public void removeSelectedTower(View view) {
         game.removeTower(towerSelectedIndex);
         setSelectionMenuVisible(false);
+    }
+
+    /**
+     * Called when pause button is clicked
+     */
+    public void btnPauseOnClick(View view){
+        game.setPaused(true);
+        startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
 
     /**
