@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
+
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;
@@ -17,8 +19,11 @@ public class GameSelectionActivity extends AppCompatActivity {
 
     private SaveState saveState = null;
 
-    private Button resumeButton;
-    private Button deleteButton;
+    private Button btn_resume;
+    private Button btn_delete;
+    private ImageButton imgBtn_back;
+    private ImageButton imgBtn_settings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +31,15 @@ public class GameSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_selection);
         onWindowFocusChanged(true);
 
-        resumeButton = findViewById(R.id.resumeGame);
-        deleteButton = findViewById(R.id.deleteGame);
+        btn_resume = findViewById(R.id.resumeGame);
+        btn_delete = findViewById(R.id.deleteGame);
 
         // load save game if it exists
         boolean hasSave = Serializer.exists(Application.context, Serializer.SAVEFILE);
 
         // disable buttons when no save exists
-        resumeButton.setEnabled(hasSave);
-        deleteButton.setEnabled(hasSave);
+        btn_resume.setEnabled(hasSave);
+        btn_delete.setEnabled(hasSave);
 
         if (hasSave) {
             try {
@@ -60,7 +65,7 @@ public class GameSelectionActivity extends AppCompatActivity {
     }
 
     /**
-     * This method is for when the nee resume game button is clicked. When the resume game button is
+     * This method is for when the resume game button is clicked. When the resume game button is
      * clicked, it goes to the GameActivity.
      *
      * @param view view
@@ -75,8 +80,8 @@ public class GameSelectionActivity extends AppCompatActivity {
         if (Serializer.exists(Application.context, Serializer.SAVEFILE)) {
             Serializer.delete(Application.context, Serializer.SAVEFILE);
 
-            resumeButton.setEnabled(false);
-            deleteButton.setEnabled(false);
+            btn_resume.setEnabled(false);
+            btn_delete.setEnabled(false);
         }
     }
 
@@ -86,5 +91,17 @@ public class GameSelectionActivity extends AppCompatActivity {
         if (hasFocus) {
             ActivityUtil.hideNavigator(getWindow());
         }
+    }
+
+    // testing
+    public void btnBackClicked(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+
+    public void btnSettingsClicked(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 }

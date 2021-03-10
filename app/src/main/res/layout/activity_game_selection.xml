@@ -19,6 +19,32 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@mipmap/main_menu_background" />
 
+    <ImageButton
+        android:id="@+id/btn_pause5"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@mipmap/back"
+        android:backgroundTint="#009688"
+        android:contentDescription="@string/todo"
+        android:onClick="btnBackClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_pause4"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@mipmap/settings"
+        android:backgroundTint="#009688"
+        android:contentDescription="@string/todo"
+        android:onClick="btnSettingsClicked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/newGame"
         android:layout_width="320dp"
