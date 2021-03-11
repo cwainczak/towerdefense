@@ -69,35 +69,7 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.img_Tower11)
         );
 
-        // add drag listeners to towers
-        OnDragListener towerListener = (v, event) -> {
-            // allow image to be dragged
-            return event.getAction() == DragEvent.ACTION_DRAG_STARTED;
-        };
-        for (int i = 0; i < towerList.size(); i++) {
-            ImageView image = towerList.get(i);
-
-            image.setOnLongClickListener(v -> {
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                    v.startDragAndDrop(data, dragshadow, v, 0);
-                    return true;
-                }
-            );
-            image.setOnDragListener(towerListener);
-        }
-        // add drop listener to game
-        cl_gameLayout.setOnDragListener((v, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DROP) {
-                // drop tower onto game
-                return game.placeTower(event.getX(), event.getY());
-            }
-            return false;
-        });
+        addDragListeners();
 
         // display size
         Display display = getWindowManager().getDefaultDisplay();
@@ -167,6 +139,60 @@ public class GameActivity extends AppCompatActivity {
                 game.setSelectedTower(null);
                 return false;
             });
+        });
+    }
+
+    private void addDragListeners() {
+        OnDragListener towerListener = (v, event) -> {
+            // allow image to be dragged
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                return true;
+            }
+            // remove range circle when dragging over side bar
+            else if (
+                event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
+                    event.getAction() == DragEvent.ACTION_DROP
+            ) {
+                game.dragLocation = null;
+                return true;
+            }
+            return false;
+        };
+
+        // add drag listeners to towers
+        for (int i = 0; i < towerList.size(); i++) {
+            ImageView image = towerList.get(i);
+
+            image.setOnLongClickListener(v -> {
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    return true;
+                }
+            );
+            image.setOnDragListener(towerListener);
+        }
+
+        // add drop listener to game
+        cl_gameLayout.setOnDragListener((v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                return true;
+            }
+            // show range circle when dragging over map
+            else if (event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
+                PointF dragLocation = new PointF((event.getX()), event.getY());
+                boolean onScreen = dragLocation.x < cl_gameLayout.getWidth() &&
+                    dragLocation.y < cl_gameLayout.getHeight();
+                game.dragLocation = onScreen ? dragLocation : null;
+            }
+            // drop tower onto game
+            else if (event.getAction() == DragEvent.ACTION_DROP) {
+                game.dragLocation = null;
+                return game.placeTower(event.getX(), event.getY());
+            }
+            return false;
         });
     }
 
