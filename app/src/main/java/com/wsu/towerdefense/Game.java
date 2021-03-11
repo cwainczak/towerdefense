@@ -13,7 +13,6 @@ import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,9 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Game extends AbstractGame implements Serializable {
-
-    //DEBUG MODE
-    private boolean debug = true;
 
     /**
      * Keeps track of all Towers in the Game
@@ -80,7 +76,7 @@ public class Game extends AbstractGame implements Serializable {
         map.generateTiles(cellSize);
 
         Log.i(context.getString(R.string.logcatKey),
-                "Started game with map '" + map.getName() + "'"
+            "Started game with map '" + map.getName() + "'"
         );
     }
 
@@ -88,7 +84,7 @@ public class Game extends AbstractGame implements Serializable {
         // load save
         if (saveState != null) {
             Log.i(context.getString(R.string.logcatKey),
-                    "Loading save file '" + saveState.saveFile + "'"
+                "Loading save file '" + saveState.saveFile + "'"
             );
 
             map = MapReader.get(saveState.mapName);
@@ -102,7 +98,6 @@ public class Game extends AbstractGame implements Serializable {
 
             lives = 5;
             money = 300;
-
         }
     }
 
@@ -151,19 +146,7 @@ public class Game extends AbstractGame implements Serializable {
             }
         }
 
-        // add tower from buffer
-        if (addBuffer != null) {
-            towers.add(addBuffer);
-            removeMoney(addBuffer.cost);
-            addBuffer = null;
-        }
-        // remove tower from list based on buffer
-        if (removeTower) {
-            addMoney(selectedTower.cost / 2);
-            towers.remove(selectedTower);
-            selectedTower = null;
-            removeTower = false;
-        }
+        checkBuffers();
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -176,7 +159,7 @@ public class Game extends AbstractGame implements Serializable {
         canvas.drawColor(Color.BLACK);
 
         // Draw debug information
-        if (debug) {
+        if (Application.DEBUG) {
             map.render(canvas, paint);
             drawGridLines(canvas, paint);
         }
@@ -186,9 +169,11 @@ public class Game extends AbstractGame implements Serializable {
             t.render(lerp, canvas, paint);
 
             // Draw all tower ranges if in debug mode
-            if (debug) {
+            if (Application.DEBUG) {
                 t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
+            } else if (selectedTower == t) {
+                t.drawRange(canvas, paint);
             }
         }
 
@@ -197,8 +182,24 @@ public class Game extends AbstractGame implements Serializable {
             e.render(lerp, canvas, paint);
         }
 
-        // Draw the money and lives
         drawHUD(canvas, paint);
+    }
+
+    private void checkBuffers() {
+        // add tower from buffer
+        if (addBuffer != null) {
+            removeMoney(addBuffer.cost);
+            towers.add(addBuffer);
+            addBuffer = null;
+        }
+
+        // remove tower from list based on buffer
+        if (removeTower) {
+            addMoney(selectedTower.cost / 2);
+            towers.remove(selectedTower);
+            selectedTower = null;
+            removeTower = false;
+        }
     }
 
     /**
@@ -227,14 +228,14 @@ public class Game extends AbstractGame implements Serializable {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
 //                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
             canvas.drawLine(0, i * cellSize.y,
-                    cols * cellSize.x, i * cellSize.y, paint);
+                cols * cellSize.x, i * cellSize.y, paint);
         }
 
         for (int i = 0; i < cols; i++) {
 //            Log.i("--draw grid--", "Drawing col: " + i + " at " +
 //                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
             canvas.drawLine(i * cellSize.x, 0,
-                    i * cellSize.x, rows * cellSize.y, paint);
+                i * cellSize.x, rows * cellSize.y, paint);
         }
     }
 
@@ -280,7 +281,6 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     public void removeSelectedTower() {
-        selectedTower.isSelected = false;
         removeTower = true;
     }
 
@@ -372,16 +372,7 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     public void setSelectedTower(Tower tower) {
-        // Deselect previously selected tower
-        if (selectedTower != null) {
-            selectedTower.isSelected = false;
-        }
-
-        // Select the new tower
         selectedTower = tower;
-        if (tower != null) {
-            tower.isSelected = true;
-        }
     }
 
     /**

@@ -26,8 +26,6 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final int damage;
     private final float projectileVelocity;
 
-    boolean isSelected = false;
-
     /**
      * The monetary cost of the tower
      */
@@ -133,10 +131,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         // Draw each projectile
         for (Projectile p : projectiles) {
             p.render(lerp, canvas, paint);
-        }
-
-        if (isSelected) {
-            drawRange(canvas, paint);
         }
     }
 
