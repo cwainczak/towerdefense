@@ -154,6 +154,8 @@ public class GameActivity extends AppCompatActivity {
                     event.getAction() == DragEvent.ACTION_DROP
             ) {
                 game.dragLocation = null;
+                game.setSelectedTower(null);
+                setSelectionMenuVisible(false);
                 return true;
             }
             return false;
@@ -185,7 +187,13 @@ public class GameActivity extends AppCompatActivity {
                 PointF dragLocation = new PointF((event.getX()), event.getY());
                 boolean onScreen = dragLocation.x < cl_gameLayout.getWidth() &&
                     dragLocation.y < cl_gameLayout.getHeight();
-                game.dragLocation = onScreen ? dragLocation : null;
+                if (onScreen) {
+                    game.dragLocation = dragLocation;
+                    game.setSelectedTower(null);
+                    setSelectionMenuVisible(false);
+                } else {
+                    game.dragLocation = null;
+                }
             }
             // drop tower onto game
             else if (event.getAction() == DragEvent.ACTION_DROP) {
