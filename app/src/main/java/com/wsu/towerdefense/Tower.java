@@ -26,8 +26,6 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final int damage;
     private final float projectileVelocity;
 
-    boolean isSelected = false;
-
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
@@ -128,10 +126,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         // Draw each projectile
         for (Projectile p : projectiles) {
             p.render(lerp, canvas, paint);
-        }
-
-        if (isSelected) {
-            drawRange(canvas, paint);
         }
     }
 

@@ -29,15 +29,18 @@ import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
 
-    ConstraintLayout cl_gameLayout;
-    ConstraintLayout cl_towerLayout;
-    ConstraintLayout cl_towerInfoLayout;
-    TextView txt_towerName;
-    TextView txt_towerInfo;
+    /**
+     * Multiplies radius of valid tower selection
+     */
+    private static final double SELECT_TOLERANCE = 1.5;
 
-    List<ImageView> towerList;
+    private ConstraintLayout cl_gameLayout;
+    private ConstraintLayout cl_towerInfoLayout;
+    private TextView txt_towerName;
+    private TextView txt_towerInfo;
+    private List<ImageView> towerList;
 
-    Game game;
+    private Game game;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -47,7 +50,6 @@ public class GameActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
-        cl_towerLayout = findViewById(R.id.cl_towerLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
 
         txt_towerName = findViewById(R.id.txt_towerName);
@@ -128,7 +130,7 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btn_play.setOnClickListener(view -> {
-                if(game.getEnemies().isEmpty()){
+                if (game.getEnemies().isEmpty()) {
                     game.spawnEnemies();
                 }
             });
@@ -146,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
                     double distance = Math.hypot(delta.x, delta.y);
 
                     // check if distance from click to tower is within radius
-                    if (distance < Game.towerRadius) {
+                    if (distance < Game.towerRadius * SELECT_TOLERANCE) {
                         setSelectionMenuVisible(true);
 
                         // temporary position text

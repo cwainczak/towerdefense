@@ -147,7 +147,7 @@ public class Game extends AbstractGame implements Serializable {
         canvas.drawColor(Color.BLACK);
 
         // Draw debug information
-        if(Application.DEBUG) {
+        if (Application.DEBUG) {
             map.render(canvas, paint);
             drawGridLines(canvas, paint);
         }
@@ -157,9 +157,11 @@ public class Game extends AbstractGame implements Serializable {
             t.render(lerp, canvas, paint);
 
             // Draw all tower ranges if in debug mode
-            if(Application.DEBUG){
+            if (Application.DEBUG) {
                 t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
+            } else if (selectedTower == t) {
+                t.drawRange(canvas, paint);
             }
         }
 
@@ -259,7 +261,7 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     public void removeSelectedTower() {
-        selectedTower.isSelected = false;
+//        selectedTower.isSelected = false;
         removeTower = true;
     }
 
@@ -347,16 +349,6 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     public void setSelectedTower(Tower tower) {
-        // Deselect previously selected tower
-        if (selectedTower != null) {
-            selectedTower.isSelected = false;
-        }
-
-        // Select the new tower
         selectedTower = tower;
-        if (tower != null) {
-            tower.isSelected = true;
-        }
-
     }
 }
