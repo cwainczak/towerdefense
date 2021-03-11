@@ -122,15 +122,9 @@ public class Game extends AbstractGame implements Serializable {
             if (e.isAlive()) {
                 e.update(this, delta);
 
-                // If the Enemy reached the end of the path
                 if (e.isAtPathEnd()) {
-                    // Remove a life
                     lives--;
-
-                    // Enemy is off-screen, can be removed
                     enemyIt.remove();
-
-                    // Game over if out of lives
                     if (lives <= 0) {
                         gameOver();
                         return;
@@ -139,7 +133,7 @@ public class Game extends AbstractGame implements Serializable {
 
             } else {
                 // Add enemy's value to game balance
-                addMoney(e.getValue());
+                addMoney(e.getPrice());
 
                 // Remove dead Enemies
                 enemyIt.remove();
@@ -147,6 +141,7 @@ public class Game extends AbstractGame implements Serializable {
         }
 
         checkBuffers();
+
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -188,14 +183,12 @@ public class Game extends AbstractGame implements Serializable {
     private void checkBuffers() {
         // add tower from buffer
         if (addBuffer != null) {
-            removeMoney(addBuffer.cost);
             towers.add(addBuffer);
             addBuffer = null;
         }
 
         // remove tower from list based on buffer
         if (removeTower) {
-            addMoney(selectedTower.cost / 2);
             towers.remove(selectedTower);
             selectedTower = null;
             removeTower = false;
@@ -271,9 +264,11 @@ public class Game extends AbstractGame implements Serializable {
         // Todo - Cost will need to be passed from GameActivity once there are different towers
         int cost = 100;
 
-        // validate here
         if (isValidPlacement(new PointF(x, y)) && cost <= money) {
             addBuffer = new Tower(new PointF(x, y), 384, 750f, 10, cost);
+
+            // purchase tower
+            removeMoney(addBuffer.cost);
             return true;
         }
 
@@ -282,6 +277,9 @@ public class Game extends AbstractGame implements Serializable {
 
     public void removeSelectedTower() {
         removeTower = true;
+
+        // refund tower cost
+        addMoney(selectedTower.cost / 2);
     }
 
     /**
@@ -361,7 +359,6 @@ public class Game extends AbstractGame implements Serializable {
     public int getMoney() {
         return money;
     }
-
 
     public void spawnEnemies() {
         save();

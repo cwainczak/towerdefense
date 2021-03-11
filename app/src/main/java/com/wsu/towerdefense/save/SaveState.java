@@ -14,20 +14,16 @@ public class SaveState implements Serializable {
     public final String mapName;
     public final List<Tower> towers;
     public final int lives;
-    public int money;
+    public final int money;
 
     public SaveState(String saveFile, Game game) {
         this.saveFile = saveFile;
 
         this.mapName = game.getMap().getName();
-
-        this.lives = game.getLives();
-
-        this.money = game.getMoney();
-
         // TODO: save only relevant tower data
         this.towers = game.getTowers();
-
+        this.lives = game.getLives();
+        this.money = game.getMoney();
     }
 
     @Override

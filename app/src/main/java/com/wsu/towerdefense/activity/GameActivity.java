@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -37,6 +38,13 @@ public class GameActivity extends AppCompatActivity {
      * Multiplies radius of valid tower selection
      */
     private static final double SELECT_TOLERANCE = 1.5;
+    /**
+     * Tint by which tower images are multiplied when there is not enough money
+     */
+    private static final PorterDuffColorFilter NO_MONEY_TINT = new PorterDuffColorFilter(
+        Color.argb(255, 180, 0, 0),
+        Mode.MULTIPLY
+    );
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
@@ -60,17 +68,17 @@ public class GameActivity extends AppCompatActivity {
         txt_towerInfo = findViewById(R.id.txt_towerInfo);
 
         towerList = Arrays.asList(
-                findViewById(R.id.img_Tower1),
-                findViewById(R.id.img_Tower2),
-                findViewById(R.id.img_Tower3),
-                findViewById(R.id.img_Tower4),
-                findViewById(R.id.img_Tower5),
-                findViewById(R.id.img_Tower6),
-                findViewById(R.id.img_Tower7),
-                findViewById(R.id.img_Tower8),
-                findViewById(R.id.img_Tower9),
-                findViewById(R.id.img_Tower10),
-                findViewById(R.id.img_Tower11)
+            findViewById(R.id.img_Tower1),
+            findViewById(R.id.img_Tower2),
+            findViewById(R.id.img_Tower3),
+            findViewById(R.id.img_Tower4),
+            findViewById(R.id.img_Tower5),
+            findViewById(R.id.img_Tower6),
+            findViewById(R.id.img_Tower7),
+            findViewById(R.id.img_Tower8),
+            findViewById(R.id.img_Tower9),
+            findViewById(R.id.img_Tower10),
+            findViewById(R.id.img_Tower11)
         );
 
         // add drag listeners to towers
@@ -82,13 +90,13 @@ public class GameActivity extends AppCompatActivity {
             ImageView image = towerList.get(i);
 
             image.setOnLongClickListener(v -> {
-                        ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                        String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                        ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                        View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                        v.startDragAndDrop(data, dragshadow, v, 0);
-                        return true;
-                    }
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    return true;
+                }
             );
             image.setOnDragListener(towerListener);
         }
@@ -113,10 +121,10 @@ public class GameActivity extends AppCompatActivity {
 
             try {
                 game = new Game(
-                        GameActivity.this,
-                        cl_gameLayout.getWidth(),
-                        cl_gameLayout.getHeight(),
-                        saveState
+                    GameActivity.this,
+                    cl_gameLayout.getWidth(),
+                    cl_gameLayout.getHeight(),
+                    saveState
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat
@@ -146,8 +154,8 @@ public class GameActivity extends AppCompatActivity {
                     Tower tower = towers.get(i);
 
                     PointF delta = new PointF(
-                            event.getX() - tower.getLocation().x,
-                            event.getY() - tower.getLocation().y
+                        event.getX() - tower.getLocation().x,
+                        event.getY() - tower.getLocation().y
                     );
                     double distance = Math.hypot(delta.x, delta.y);
 
@@ -157,7 +165,7 @@ public class GameActivity extends AppCompatActivity {
 
                         // temporary position text
                         txt_towerInfo.setText(
-                                "x: " + tower.getLocation().x +
+                            "x: " + tower.getLocation().x +
                                 "\ny: " + tower.getLocation().y +
                                 "\n\nSell for: " + tower.cost / 2);
 
@@ -190,12 +198,10 @@ public class GameActivity extends AppCompatActivity {
                         }
                         // Disable towers (in menu) with cost greater than money
                         else {
-                            towerImage.setColorFilter(Color.argb(255,180,0,0), Mode.MULTIPLY);
+                            towerImage.setColorFilter(NO_MONEY_TINT);
                             towerImage.setEnabled(false);
                         }
                     }
-
-                    Log.i(getString(R.string.logcatKey), "Game Money changed");
                 }
             });
         });
