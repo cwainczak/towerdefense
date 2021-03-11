@@ -198,9 +198,8 @@ public class Game extends AbstractGame implements Serializable {
         }
 
         // Draw the money and lives
-        drawMoneyandLives(canvas, paint);
+        drawHUD(canvas, paint);
     }
-
 
     /**
      * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
@@ -245,10 +244,10 @@ public class Game extends AbstractGame implements Serializable {
      * @param canvas Canvas to draw the life count on
      * @param paint  Paint to draw with
      */
-    private void drawMoneyandLives(Canvas canvas, Paint paint) {
+    private void drawHUD(Canvas canvas, Paint paint) {
         int posX = 10;
-        int posY = 65;
-        int yOffset = 65;
+        int posY = 75;
+        int yOffset = 80;
 
         paint.setColor(Color.YELLOW);
         paint.setTextAlign(Paint.Align.LEFT);

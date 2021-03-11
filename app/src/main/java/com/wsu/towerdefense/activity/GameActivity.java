@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -187,7 +188,7 @@ public class GameActivity extends AppCompatActivity {
                         }
                         // Disable towers (in menu) with cost greater than money
                         else {
-                            towerImage.setColorFilter(Color.argb(220,28,28,28), PorterDuff.Mode.MULTIPLY);
+                            towerImage.setColorFilter(Color.argb(255,180,0,0), Mode.MULTIPLY);
                             towerImage.setEnabled(false);
                         }
                     }
