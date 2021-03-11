@@ -3,23 +3,21 @@ package com.wsu.towerdefense.activity;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.graphics.PointF;
 import android.content.Intent;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.View.OnDragListener;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
+import android.view.DragEvent;
+import android.view.View;
+import android.view.View.OnDragListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
@@ -40,8 +38,6 @@ public class GameActivity extends AppCompatActivity {
     List<ImageView> towerList;
 
     Game game;
-
-    private int towerSelectedIndex = -1;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -124,10 +120,17 @@ public class GameActivity extends AppCompatActivity {
             cl_gameLayout.addView(game);
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
+            ImageButton btn_play = findViewById(R.id.btn_play);
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
                 startActivity(new Intent(GameActivity.this, PauseActivity.class));
+            });
+
+            btn_play.setOnClickListener(view -> {
+                if(game.getEnemies().isEmpty()){
+                    game.spawnEnemies();
+                }
             });
 
             List<Tower> towers = game.getTowers();
@@ -144,19 +147,22 @@ public class GameActivity extends AppCompatActivity {
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius) {
-                        towerSelectedIndex = i;
                         setSelectionMenuVisible(true);
 
                         // temporary position text
                         txt_towerInfo.setText(
                             "x: " + tower.getLocation().x +
-                                ", y: " + tower.getLocation().y
+                                "\ny: " + tower.getLocation().y
                         );
+
+                        // Notify game of selected tower
+                        game.setSelectedTower(tower);
+
                         return true;
                     }
                 }
-                towerSelectedIndex = -1;
                 setSelectionMenuVisible(false);
+                game.setSelectedTower(null);
                 return false;
             });
         });
@@ -179,8 +185,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method goes to the GameSelectionActivity, then kills all tasks related to the current
+     * activity, including the extra Game thread.
+     */
     public void gameOver() {
-        // Go back to game selection
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         startActivity(intent);
         finishAffinity();
@@ -199,7 +208,7 @@ public class GameActivity extends AppCompatActivity {
      * Called when remove button is clicked
      */
     public void removeSelectedTower(View view) {
-        game.removeTower(towerSelectedIndex);
+        game.removeSelectedTower();
         setSelectionMenuVisible(false);
     }
 

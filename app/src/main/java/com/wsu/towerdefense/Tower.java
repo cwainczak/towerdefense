@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,6 +25,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     private double timeSinceShot = 0.0;
     private final int damage;
     private final float projectileVelocity;
+
+    boolean isSelected = false;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -127,22 +130,9 @@ public class Tower extends AbstractMapObject implements Serializable {
             p.render(lerp, canvas, paint);
         }
 
-        //TESTING
-        // Draw the Tower's range
-        drawRange(canvas, paint);
-
-        //TESTING
-        // Draw a line to the target Enemy, interpolating Enemy position
-        /*if (target != null) {
-            float width = paint.getStrokeWidth();
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(width + 6);
-            canvas.drawLine(location.x, location.y,
-                    (float) (target.location.x + target.getVelocityX() * lerp),
-                    (float) (target.location.y + target.getVelocityY() * lerp), paint);
-            paint.setStrokeWidth(width);
-        }*/
-
+        if (isSelected) {
+            drawRange(canvas, paint);
+        }
     }
 
     /**
@@ -168,7 +158,7 @@ public class Tower extends AbstractMapObject implements Serializable {
      * @param canvas The Canvas to draw the range on.
      * @param paint  The Paint used to draw the range.
      */
-    private void drawRange(Canvas canvas, Paint paint) {
+    public void drawRange(Canvas canvas, Paint paint) {
         float width = paint.getStrokeWidth();
         paint.setStrokeWidth(width + 6);
         paint.setColor(Color.GREEN);
@@ -180,6 +170,16 @@ public class Tower extends AbstractMapObject implements Serializable {
         paint.setAlpha(255);
         paint.setStrokeWidth(width);
         paint.setStyle(Paint.Style.FILL);
+    }
+
+    public void drawLine(Canvas canvas, Paint paint) {
+        if (target != null) {
+            float width = paint.getStrokeWidth();
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(width + 6);
+            canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);
+            paint.setStrokeWidth(width);
+        }
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

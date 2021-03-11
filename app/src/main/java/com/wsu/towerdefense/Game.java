@@ -33,7 +33,6 @@ public class Game extends AbstractGame implements Serializable {
 
     private Map map;
 
-    //private final float towerMenuWidth = 0.1f;    //percent of screen taken up by selectedTowerMenu
     private final float rows = 20f;
     private float cols;
     private final PointF cellSize;
@@ -47,11 +46,15 @@ public class Game extends AbstractGame implements Serializable {
      * iterating
      */
     private Tower addBuffer = null;
+
     /**
-     * The index of the next tower to be removed; prevents {@link java.util.ConcurrentModificationException}
-     * when iterating
+     * The currently selected tower
      */
-    private int removeBuffer = -1;
+    private Tower selectedTower = null;
+    /**
+     * Whether or not to remove the currently selected tower
+     */
+    private boolean removeTower = false;
 
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
@@ -86,8 +89,6 @@ public class Game extends AbstractGame implements Serializable {
 
             lives = 5;
 
-            // TESTING
-            spawnTestEnemies();
         }
     }
 
@@ -133,27 +134,10 @@ public class Game extends AbstractGame implements Serializable {
             }
         }
 
-        // add tower from buffer
-        if (addBuffer != null) {
-            towers.add(addBuffer);
-            addBuffer = null;
-        }
-        // remove tower from list based on buffer
-        if (removeBuffer > -1) {
-            towers.remove(removeBuffer);
-            removeBuffer = -1;
-        }
+        checkBuffers();
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
-        }
-
-        //TESTING
-        // Add enemies whenever all enemies are killed
-        if (enemies.size() == 0) {
-            spawnTestEnemies();
-            // save game when "wave ends"
-            save();
         }
     }
 
@@ -162,14 +146,21 @@ public class Game extends AbstractGame implements Serializable {
         // Draw the background
         canvas.drawColor(Color.BLACK);
 
-        paint.setColor(Color.YELLOW);
-        map.render(canvas, paint);
-
-        drawGridLines(canvas, paint);
+        // Draw debug information
+        if(Application.DEBUG) {
+            map.render(canvas, paint);
+            drawGridLines(canvas, paint);
+        }
 
         // Draw the Towers
         for (Tower t : towers) {
             t.render(lerp, canvas, paint);
+
+            // Draw all tower ranges if in debug mode
+            if(Application.DEBUG){
+                t.drawRange(canvas, paint);
+                t.drawLine(canvas, paint);
+            }
         }
 
         // Draw the Enemies
@@ -181,6 +172,20 @@ public class Game extends AbstractGame implements Serializable {
         drawLives(canvas, paint);
     }
 
+    private void checkBuffers() {
+        // add tower from buffer
+        if (addBuffer != null) {
+            towers.add(addBuffer);
+            addBuffer = null;
+        }
+
+        // remove tower from list based on buffer
+        if (removeTower) {
+            towers.remove(selectedTower);
+            selectedTower = null;
+            removeTower = false;
+        }
+    }
 
     /**
      * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
@@ -246,15 +251,16 @@ public class Game extends AbstractGame implements Serializable {
     public boolean placeTower(float x, float y) {
         // validate here
         if (isValidPlacement(new PointF(x, y))) {
-            addBuffer = new Tower(new PointF(x, y), 384, 750f, 5);
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 10);
             return true;
         }
 
         return false;
     }
 
-    public void removeTower(int index) {
-        removeBuffer = index;
+    public void removeSelectedTower() {
+        selectedTower.isSelected = false;
+        removeTower = true;
     }
 
     /**
@@ -332,9 +338,25 @@ public class Game extends AbstractGame implements Serializable {
     }
 
 
-    private void spawnTestEnemies() {
+    public void spawnEnemies() {
+        save();
+
         for (int i = 0; i < 3; i++) {
             enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i));
         }
+    }
+
+    public void setSelectedTower(Tower tower) {
+        // Deselect previously selected tower
+        if (selectedTower != null) {
+            selectedTower.isSelected = false;
+        }
+
+        // Select the new tower
+        selectedTower = tower;
+        if (tower != null) {
+            tower.isSelected = true;
+        }
+
     }
 }
