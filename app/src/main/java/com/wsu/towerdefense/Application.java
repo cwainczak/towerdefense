@@ -7,6 +7,8 @@ import java.io.IOException;
 
 public class Application extends android.app.Application {
 
+    public static final boolean DEBUG = true;
+
     public static Context context;
 
     @Override

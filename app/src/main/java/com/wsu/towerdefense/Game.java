@@ -22,9 +22,6 @@ import java.util.List;
 
 public class Game extends AbstractGame implements Serializable {
 
-    //DEBUG MODE
-    private boolean debug = true;
-
     /**
      * Keeps track of all Towers in the Game
      */
@@ -137,17 +134,7 @@ public class Game extends AbstractGame implements Serializable {
             }
         }
 
-        // add tower from buffer
-        if (addBuffer != null) {
-            towers.add(addBuffer);
-            addBuffer = null;
-        }
-        // remove tower from list based on buffer
-        if (removeTower) {
-            towers.remove(selectedTower);
-            selectedTower = null;
-            removeTower = false;
-        }
+        checkBuffers();
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -160,7 +147,7 @@ public class Game extends AbstractGame implements Serializable {
         canvas.drawColor(Color.BLACK);
 
         // Draw debug information
-        if(debug) {
+        if(Application.DEBUG) {
             map.render(canvas, paint);
             drawGridLines(canvas, paint);
         }
@@ -170,7 +157,7 @@ public class Game extends AbstractGame implements Serializable {
             t.render(lerp, canvas, paint);
 
             // Draw all tower ranges if in debug mode
-            if(debug){
+            if(Application.DEBUG){
                 t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
             }
@@ -183,9 +170,22 @@ public class Game extends AbstractGame implements Serializable {
 
         // Draw the lives
         drawLives(canvas, paint);
-
     }
 
+    private void checkBuffers() {
+        // add tower from buffer
+        if (addBuffer != null) {
+            towers.add(addBuffer);
+            addBuffer = null;
+        }
+
+        // remove tower from list based on buffer
+        if (removeTower) {
+            towers.remove(selectedTower);
+            selectedTower = null;
+            removeTower = false;
+        }
+    }
 
     /**
      * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
