@@ -13,8 +13,6 @@ import com.wsu.towerdefense.R;
 
 public class PauseActivity extends Activity {
 
-    public static boolean rerender = false;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +72,6 @@ public class PauseActivity extends Activity {
         if (hasFocus) {
             ActivityUtil.hideNavigator(getWindow());
         }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        rerender = true;
     }
 
 }
