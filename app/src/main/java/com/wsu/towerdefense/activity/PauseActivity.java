@@ -57,7 +57,7 @@ public class PauseActivity extends Activity {
         Intent intent = new Intent().setClass(PauseActivity.this, GameSelectionActivity.class);
         startActivity(intent);
         finishAffinity();
-        Log.i(getString(R.string.logcatKey), "Exiting game and returning to Game Select Menu.");
+        Log.i(getString(R.string.logcatKey), "Exiting game");
     }
 
     private void resizeButton(Button b, float ratio) {

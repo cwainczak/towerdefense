@@ -1,0 +1,15 @@
+{
+  "displayName": "Zelda",
+  "image": "map_5",
+  "pathRadius": 55,
+  "path": [
+    {
+      "x": 0,
+      "y": 0.5
+    },
+    {
+      "x": 1,
+      "y": 0.5
+    }
+  ]
+}

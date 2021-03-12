@@ -52,9 +52,6 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnNewGameClicked(View view) {
-        // delete safe file when new game is started
-        Serializer.delete(this, Serializer.SAVEFILE);
-
         Intent intent = new Intent(this, MapSelectionActivity.class);
         startActivity(intent);
     }

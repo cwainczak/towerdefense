@@ -21,7 +21,6 @@ public class SettingsActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         tv_versionNumber = findViewById(R.id.tv_versionNumber);
-        tv_versionNumber.setText("Version 1.0");
 
         sb_music = findViewById(R.id.sb_music);
         sb_soundFx = findViewById(R.id.sb_soundFx);

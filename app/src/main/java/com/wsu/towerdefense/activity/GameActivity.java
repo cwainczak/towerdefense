@@ -22,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
+import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.save.SaveState;
 
 import java.util.Arrays;
@@ -107,12 +108,15 @@ public class GameActivity extends AppCompatActivity {
             // save state
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
+            String map = getIntent().getStringExtra("map");
+
             try {
                 game = new Game(
                     GameActivity.this,
                     cl_gameLayout.getWidth(),
                     cl_gameLayout.getHeight(),
-                    saveState
+                    saveState,
+                    map
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat

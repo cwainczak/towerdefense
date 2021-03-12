@@ -153,26 +153,20 @@ public class Tower extends AbstractMapObject implements Serializable {
      * @param paint  The Paint used to draw the range.
      */
     public void drawRange(Canvas canvas, Paint paint) {
-        float width = paint.getStrokeWidth();
-        paint.setStrokeWidth(width + 6);
+        paint.reset();
+        paint.setStrokeWidth(7);
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAlpha(150);
-
         canvas.drawCircle(location.x, location.y, radius, paint);
-
-        paint.setAlpha(255);
-        paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.FILL);
     }
 
     public void drawLine(Canvas canvas, Paint paint) {
         if (target != null) {
-            float width = paint.getStrokeWidth();
+            paint.reset();
             paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(width + 6);
+            paint.setStrokeWidth(7);
             canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);
-            paint.setStrokeWidth(width);
         }
     }
 
