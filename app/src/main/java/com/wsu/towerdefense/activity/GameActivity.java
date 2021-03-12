@@ -286,6 +286,14 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
+     * Called when pause button is clicked
+     */
+    public void btnPauseOnClick(View view){
+        game.setPaused(true);
+        startActivity(new Intent(GameActivity.this, PauseActivity.class));
+    }
+
+    /**
      * Shows/hides selected tower menu
      */
     private void setSelectionMenuVisible(boolean visible) {

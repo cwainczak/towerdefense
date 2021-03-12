@@ -9,10 +9,11 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
-
 import com.wsu.towerdefense.R;
 
 public class PauseActivity extends Activity {
+
+    public static boolean rerender = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,4 +75,11 @@ public class PauseActivity extends Activity {
             ActivityUtil.hideNavigator(getWindow());
         }
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        rerender = true;
+    }
+
 }
