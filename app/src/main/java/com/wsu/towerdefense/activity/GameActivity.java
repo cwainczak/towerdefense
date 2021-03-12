@@ -4,8 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
@@ -33,6 +38,13 @@ public class GameActivity extends AppCompatActivity {
      * Multiplies radius of valid tower selection
      */
     private static final double SELECT_TOLERANCE = 1.5;
+    /**
+     * Tint by which tower images are multiplied when there is not enough money
+     */
+    private static final PorterDuffColorFilter NO_MONEY_TINT = new PorterDuffColorFilter(
+        Color.argb(255, 180, 0, 0),
+        Mode.MULTIPLY
+    );
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
@@ -126,8 +138,8 @@ public class GameActivity extends AppCompatActivity {
                         // temporary position text
                         txt_towerInfo.setText(
                             "x: " + tower.getLocation().x +
-                                "\ny: " + tower.getLocation().y
-                        );
+                                "\ny: " + tower.getLocation().y +
+                                "\n\nSell for: " + tower.cost / 2);
 
                         // Notify game of selected tower
                         game.setSelectedTower(tower);
@@ -138,6 +150,31 @@ public class GameActivity extends AppCompatActivity {
                 setSelectionMenuVisible(false);
                 game.setSelectedTower(null);
                 return false;
+            });
+
+            // Add Custom listener to game
+            game.setGameListener(new Game.GameListener() {
+                @Override
+                public void onMoneyChanged() {
+                    int money = game.getMoney();
+
+                    // TODO: Change this to get the tower cost from the tower type
+                    int cost = 100;
+
+                    // Check difference between each tower cost and money
+                    for (ImageView towerImage : towerList) {
+                        // Enable towers (in menu) with cost equal to or lower than money
+                        if (money >= cost) {
+                            towerImage.setColorFilter(null);
+                            towerImage.setEnabled(true);
+                        }
+                        // Disable towers (in menu) with cost greater than money
+                        else {
+                            towerImage.setColorFilter(NO_MONEY_TINT);
+                            towerImage.setEnabled(false);
+                        }
+                    }
+                }
             });
         });
     }
