@@ -27,23 +27,28 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final float projectileVelocity;
 
     /**
+     * The monetary cost of the tower
+     */
+    public final int cost;
+
+    /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
      * range.
-     *
-     * @param location           A PointF representing the location of the towerBitmap's center
+     *  @param location           A PointF representing the location of the towerBitmap's center
      * @param radius             The radius of this Tower's detection range
      * @param projectileVelocity The velocity of this Tower's Projectiles
      * @param damage             The amount of damage each projectile from this Tower deals to an
-     *                           Enemy
+     * @param cost               The amount of money required to purchase this Tower
      */
-    public Tower(PointF location, int radius, float projectileVelocity, int damage) {
+    public Tower(PointF location, int radius, float projectileVelocity, int damage, int cost) {
         super(location, R.mipmap.tower);
         this.radius = radius;
         this.projectileResourceID = R.mipmap.projectile;
         this.projectileVelocity = projectileVelocity;
         this.damage = damage;
+        this.cost = cost;
         this.projectiles = new ArrayList<>();
     }
 
