@@ -36,6 +36,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      */
     protected boolean running;
     private boolean isPaused = false;
+    private boolean rerender = false;
     private int gameWidth;
     private int gameHeight;
 
@@ -93,13 +94,13 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
             }
             // keep updating the game until passed time < minimum
 
+            this.rerender = PauseActivity.rerender;
             // when done updating, render the game, unless the game is paused
             // remaining unprocessed time is used by render method to interpolate
-            if (!this.isPaused) {
+            if (!this.isPaused || this.rerender) {
                 _render(acc / TIMESTEP);
-            }
-            else {
-                _render(0f);
+                this.rerender = false;
+                PauseActivity.rerender = false;
             }
 
         }
@@ -240,4 +241,13 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
         isPaused = paused;
     }
 
+    /**
+     * To let the game know to rerender to avoid an unrendered game
+     * after returning to the pause menu from the settings menu
+     *
+     * @param rerender
+     */
+    public void setRerender(boolean rerender) {
+        this.rerender = rerender;
+    }
 }
