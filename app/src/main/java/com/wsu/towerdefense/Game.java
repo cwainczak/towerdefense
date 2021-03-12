@@ -377,9 +377,9 @@ public class Game extends AbstractGame implements Serializable {
     public void spawnEnemies() {
         save();
 
-        for (int i = 0; i < 3; i++) {
-            enemies.add(new Enemy(map.getPath(), cellSize, 40, 350 + 50 * i, 20));
-        }
+        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S1));
+        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S2));
+        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S3));
     }
 
     public void setSelectedTower(Tower tower) {

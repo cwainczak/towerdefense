@@ -11,6 +11,25 @@ import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
+    enum Type{
+        //Standard enemy types
+        S1(400, 40, 20, R.mipmap.enemy),
+        S2(450, 50, 20, R.mipmap.enemy),
+        S3(500, 60, 20, R.mipmap.enemy);
+
+        float speed;
+        int hp;
+        int price;
+        int resource;
+
+        Type(float speed, int hp, int price, int resource){
+            this.speed = speed;
+            this.hp = hp;
+            this.price = price;
+            this.resource = resource;
+        }
+    }
+
     /**
      * Enemy's velocity in the x direction
      */
@@ -55,17 +74,16 @@ public class Enemy extends AbstractMapObject {
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path     A List of Points for the current location to move towards
-     * @param cellSize Dimensions of each cell in the grid making up the map area
-     * @param hp       The amount of hit points this Enemy has
-     * @param speed    distance enemy moves, pixels per second
-     * @param price    Amount of money given to player when this enemy is defeated
+     * @param path      A List of Points for the current location to move towards
+     * @param cellSize  Dimensions of each cell in the grid making up the map area
+     * @param enemyType enum containing information which will be consistent across all enemies of
+     *                  the same type (speed, hp, price, resource)
      */
-    public Enemy(List<Point> path, PointF cellSize, int hp, float speed, int price) {
+    public Enemy(List<Point> path, PointF cellSize, Type enemyType) {
         super(new PointF(path.get(0).x * cellSize.x + (cellSize.x / 2),
-            path.get(0).y * cellSize.y + (cellSize.y / 2)), R.mipmap.enemy);
+            path.get(0).y * cellSize.y + (cellSize.y / 2)), enemyType.resource);
 
-        this.speed = speed;
+        this.speed = enemyType.speed;
         this.cellSize = cellSize;
         this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
 
@@ -76,8 +94,8 @@ public class Enemy extends AbstractMapObject {
             target.y * cellSize.y + offset.y
         );
 
-        this.hp = hp;
-        this.price = price;
+        this.hp = enemyType.hp;
+        this.price = enemyType.price;
         this.isAlive = true;
         this.isAtPathEnd = false;
     }
