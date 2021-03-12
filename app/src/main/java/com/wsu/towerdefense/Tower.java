@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,23 +27,28 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final float projectileVelocity;
 
     /**
+     * The monetary cost of the tower
+     */
+    public final int cost;
+
+    /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
      * range.
-     *
-     * @param location           A PointF representing the location of the towerBitmap's center
+     *  @param location           A PointF representing the location of the towerBitmap's center
      * @param radius             The radius of this Tower's detection range
      * @param projectileVelocity The velocity of this Tower's Projectiles
      * @param damage             The amount of damage each projectile from this Tower deals to an
-     *                           Enemy
+     * @param cost               The amount of money required to purchase this Tower
      */
-    public Tower(PointF location, int radius, float projectileVelocity, int damage) {
+    public Tower(PointF location, int radius, float projectileVelocity, int damage, int cost) {
         super(location, R.mipmap.tower);
         this.radius = radius;
         this.projectileResourceID = R.mipmap.projectile;
         this.projectileVelocity = projectileVelocity;
         this.damage = damage;
+        this.cost = cost;
         this.projectiles = new ArrayList<>();
     }
 
@@ -126,23 +132,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         for (Projectile p : projectiles) {
             p.render(lerp, canvas, paint);
         }
-
-        //TESTING
-        // Draw the Tower's range
-        drawRange(canvas, paint);
-
-        //TESTING
-        // Draw a line to the target Enemy, interpolating Enemy position
-        /*if (target != null) {
-            float width = paint.getStrokeWidth();
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(width + 6);
-            canvas.drawLine(location.x, location.y,
-                    (float) (target.location.x + target.getVelocityX() * lerp),
-                    (float) (target.location.y + target.getVelocityY() * lerp), paint);
-            paint.setStrokeWidth(width);
-        }*/
-
     }
 
     /**
@@ -162,24 +151,12 @@ public class Tower extends AbstractMapObject implements Serializable {
         return Math.hypot(a, b);
     }
 
-    /**
-     * A helper method that draws a circular outline representing the range of this Tower.
-     *
-     * @param canvas The Canvas to draw the range on.
-     * @param paint  The Paint used to draw the range.
-     */
-    private void drawRange(Canvas canvas, Paint paint) {
-        float width = paint.getStrokeWidth();
-        paint.setStrokeWidth(width + 6);
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAlpha(150);
-
-        canvas.drawCircle(location.x, location.y, radius, paint);
-
-        paint.setAlpha(255);
-        paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.FILL);
+    public void drawLine(Canvas canvas, Paint paint) {
+        if (target != null) {
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(7);
+            canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);
+        }
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -190,5 +167,9 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
+    }
+
+    public float getRange() {
+        return this.radius;
     }
 }

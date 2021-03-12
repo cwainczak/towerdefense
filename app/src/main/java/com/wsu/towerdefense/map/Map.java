@@ -1,6 +1,7 @@
 package com.wsu.towerdefense.map;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -26,12 +27,12 @@ public class Map {
     Map(String name, List<Point> path) {
         this.name = name;
         this.path = path;
-
         this.tiles = new ArrayList<>();
     }
 
     public void render(Canvas canvas, Paint paint) {
         for (RectF tile : tiles) {
+            paint.setColor(Color.YELLOW);
             canvas.drawRect(tile, paint);
         }
     }

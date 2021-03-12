@@ -46,6 +46,11 @@ public class Enemy extends AbstractMapObject {
     private int hp;
 
     /**
+     * Amount of money added to player's total money count when this enemy is defeated
+     */
+    private int price;
+
+    /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
@@ -54,8 +59,9 @@ public class Enemy extends AbstractMapObject {
      * @param cellSize Dimensions of each cell in the grid making up the map area
      * @param hp       The amount of hit points this Enemy has
      * @param speed    distance enemy moves, pixels per second
+     * @param price    Amount of money given to player when this enemy is defeated
      */
-    public Enemy(List<Point> path, PointF cellSize, int hp, float speed) {
+    public Enemy(List<Point> path, PointF cellSize, int hp, float speed, int price) {
         super(new PointF(path.get(0).x * cellSize.x + (cellSize.x / 2),
             path.get(0).y * cellSize.y + (cellSize.y / 2)), R.mipmap.enemy);
 
@@ -71,6 +77,7 @@ public class Enemy extends AbstractMapObject {
         );
 
         this.hp = hp;
+        this.price = price;
         this.isAlive = true;
         this.isAtPathEnd = false;
     }
@@ -189,4 +196,6 @@ public class Enemy extends AbstractMapObject {
     public boolean isAtPathEnd() {
         return this.isAtPathEnd;
     }
+
+    public int getPrice() { return this.price; }
 }
