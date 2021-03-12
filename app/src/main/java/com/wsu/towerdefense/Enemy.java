@@ -17,10 +17,10 @@ public class Enemy extends AbstractMapObject {
         S2(450, 50, 20, R.mipmap.enemy),
         S3(500, 60, 20, R.mipmap.enemy);
 
-        float speed;
-        int hp;
-        int price;
-        int resource;
+        final float speed;
+        final int hp;
+        final int price;
+        final int resource;
 
         EnemyType(float speed, int hp, int price, int resource){
             this.speed = speed;
