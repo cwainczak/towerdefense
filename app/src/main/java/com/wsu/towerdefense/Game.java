@@ -1,13 +1,14 @@
 package com.wsu.towerdefense;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
@@ -20,6 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Game extends AbstractGame implements Serializable {
+
+    private static final int VALID_RANGE_COLOR = Color.argb(255, 80, 80, 80);
+    private static final int INVALID_RANGE_COLOR = Color.argb(255, 180, 0, 0);
+    private static final int RANGE_OPACITY = 90;
 
     /**
      * Keeps track of all Towers in the Game
@@ -63,6 +68,8 @@ public class Game extends AbstractGame implements Serializable {
      * Whether or not to remove the currently selected tower
      */
     private boolean removeTower = false;
+
+    public PointF dragLocation = null;
 
     public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
         super(context, displayWidth, displayHeight);
@@ -161,15 +168,15 @@ public class Game extends AbstractGame implements Serializable {
 
         // Draw the Towers
         for (Tower t : towers) {
-            t.render(lerp, canvas, paint);
-
             // Draw all tower ranges if in debug mode
             if (Application.DEBUG) {
-                t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
-            } else if (selectedTower == t) {
-                t.drawRange(canvas, paint);
             }
+            if (selectedTower == t) {
+                drawRange(canvas, paint, t.getLocation(), t.getRange(), true);
+            }
+
+            t.render(lerp, canvas, paint);
         }
 
         // Draw the Enemies
@@ -177,7 +184,13 @@ public class Game extends AbstractGame implements Serializable {
             e.render(lerp, canvas, paint);
         }
 
+        // Draw the lives
         drawHUD(canvas, paint);
+
+        if (dragLocation != null) {
+            // TODO: change hardcoded radius based on dragged tower type
+            drawRange(canvas, paint, dragLocation, 384, isValidPlacement(dragLocation));
+        }
     }
 
     private void checkBuffers() {
@@ -216,6 +229,7 @@ public class Game extends AbstractGame implements Serializable {
      * @param paint  Paint to draw the lines with
      */
     private void drawGridLines(Canvas canvas, Paint paint) {
+        paint.setStrokeWidth(1);
         paint.setColor(Color.RED);
         for (int i = 0; i < rows; i++) {
 //            Log.i("--draw grid--", "Drawing row: " + i + " at " +
@@ -370,6 +384,22 @@ public class Game extends AbstractGame implements Serializable {
 
     public void setSelectedTower(Tower tower) {
         selectedTower = tower;
+    }
+
+    /**
+     * A helper method that draws a circular outline representing the range of this Tower.
+     *
+     * @param canvas The Canvas to draw the range on.
+     * @param paint  The Paint used to draw the range.
+     */
+    public void drawRange(Canvas canvas, Paint paint,
+        PointF location,
+        float radius,
+        boolean valid
+    ) {
+        paint.setColor(valid ? VALID_RANGE_COLOR : INVALID_RANGE_COLOR);
+        paint.setAlpha(RANGE_OPACITY);
+        canvas.drawCircle(location.x, location.y, radius, paint);
     }
 
     /**

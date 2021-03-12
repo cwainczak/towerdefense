@@ -151,33 +151,11 @@ public class Tower extends AbstractMapObject implements Serializable {
         return Math.hypot(a, b);
     }
 
-    /**
-     * A helper method that draws a circular outline representing the range of this Tower.
-     *
-     * @param canvas The Canvas to draw the range on.
-     * @param paint  The Paint used to draw the range.
-     */
-    public void drawRange(Canvas canvas, Paint paint) {
-        float width = paint.getStrokeWidth();
-        paint.setStrokeWidth(width + 6);
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAlpha(150);
-
-        canvas.drawCircle(location.x, location.y, radius, paint);
-
-        paint.setAlpha(255);
-        paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.FILL);
-    }
-
     public void drawLine(Canvas canvas, Paint paint) {
         if (target != null) {
-            float width = paint.getStrokeWidth();
             paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(width + 6);
+            paint.setStrokeWidth(7);
             canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);
-            paint.setStrokeWidth(width);
         }
     }
 
@@ -189,5 +167,9 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
+    }
+
+    public float getRange() {
+        return this.radius;
     }
 }
