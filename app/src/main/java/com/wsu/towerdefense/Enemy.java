@@ -11,18 +11,29 @@ import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
-    /**
-     * Enemy's velocity in the x direction
-     */
+    enum Type {
+        //Standard enemy types
+        S1(400, 40, 20, R.mipmap.enemy),
+        S2(450, 50, 20, R.mipmap.enemy),
+        S3(500, 60, 20, R.mipmap.enemy);
+
+        final float speed;
+        final int hp;
+        final int price;
+        final int resource;
+
+        Type(float speed, int hp, int price, int resource){
+            this.speed = speed;
+            this.hp = hp;
+            this.price = price;
+            this.resource = resource;
+        }
+    }
+
+    private Type type;
+
     private float velocityX;
-    /**
-     * Enemy's velocity in the y direction
-     */
     private float velocityY;
-    /**
-     * pixels per second
-     */
-    private final float speed;
 
     private PointF pixTarget;
     private final ListIterator<Point> path;
@@ -30,42 +41,27 @@ public class Enemy extends AbstractMapObject {
     private final PointF cellSize;
     private final PointF offset;
 
-    /**
-     * Is the enemy alive
-     */
     private boolean isAlive;
 
-    /**
-     * Did the enemy reach the last point in its path
-     */
     private boolean isAtPathEnd;
 
-    /**
-     * Enemy's hit points
-     */
     private int hp;
-
-    /**
-     * Amount of money added to player's total money count when this enemy is defeated
-     */
-    private int price;
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path     A List of Points for the current location to move towards
-     * @param cellSize Dimensions of each cell in the grid making up the map area
-     * @param hp       The amount of hit points this Enemy has
-     * @param speed    distance enemy moves, pixels per second
-     * @param price    Amount of money given to player when this enemy is defeated
+     * @param path      A List of Points for the current location to move towards
+     * @param cellSize  Dimensions of each cell in the grid making up the map area
+     * @param type enum containing information which will be consistent across all enemies of
+     *                  the same type (speed, hp, price, resource)
      */
-    public Enemy(List<Point> path, PointF cellSize, int hp, float speed, int price) {
+    public Enemy(List<Point> path, PointF cellSize, Type type) {
         super(new PointF(path.get(0).x * cellSize.x + (cellSize.x / 2),
-            path.get(0).y * cellSize.y + (cellSize.y / 2)), R.mipmap.enemy);
+            path.get(0).y * cellSize.y + (cellSize.y / 2)), type.resource);
 
-        this.speed = speed;
+        this.type = type;
         this.cellSize = cellSize;
         this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
 
@@ -76,8 +72,7 @@ public class Enemy extends AbstractMapObject {
             target.y * cellSize.y + offset.y
         );
 
-        this.hp = hp;
-        this.price = price;
+        this.hp = type.hp;
         this.isAlive = true;
         this.isAtPathEnd = false;
     }
@@ -163,7 +158,7 @@ public class Enemy extends AbstractMapObject {
         //location and next location, and there are more Points int path
         double distance = Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y);
 
-        if (distance <= Math.abs(speed * delta)) {
+        if (distance <= Math.abs(type.speed * delta)) {
             if (path.hasNext()) {
                 //set location to target, and update target
                 location = pixTarget;
@@ -176,8 +171,8 @@ public class Enemy extends AbstractMapObject {
                 float dx = pixTarget.x - location.x;
                 float dy = pixTarget.y - location.y;
                 distance = Math.hypot(dx, dy);
-                velocityX = speed * (float) (dx / distance);
-                velocityY = speed * (float) (dy / distance);
+                velocityX = type.speed * (float) (dx / distance);
+                velocityY = type.speed * (float) (dy / distance);
             } else {
                 // If there are no more points in the path
                 isAtPathEnd = true;
@@ -197,5 +192,5 @@ public class Enemy extends AbstractMapObject {
         return this.isAtPathEnd;
     }
 
-    public int getPrice() { return this.price; }
+    public int getPrice() { return this.type.price; }
 }
