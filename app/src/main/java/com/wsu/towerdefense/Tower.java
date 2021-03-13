@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,6 +26,11 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final float projectileVelocity;
 
     /**
+     * The monetary cost of the tower
+     */
+    public final int cost;
+
+    /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
@@ -36,14 +40,15 @@ public class Tower extends AbstractMapObject implements Serializable {
      * @param radius             The radius of this Tower's detection range
      * @param projectileVelocity The velocity of this Tower's Projectiles
      * @param damage             The amount of damage each projectile from this Tower deals to an
-     *                           Enemy
+     * @param cost               The amount of money required to purchase this Tower
      */
-    public Tower(PointF location, int radius, float projectileVelocity, int damage) {
+    public Tower(PointF location, int radius, float projectileVelocity, int damage, int cost) {
         super(location, R.mipmap.tower);
         this.radius = radius;
         this.projectileResourceID = R.mipmap.projectile;
         this.projectileVelocity = projectileVelocity;
         this.damage = damage;
+        this.cost = cost;
         this.projectiles = new ArrayList<>();
     }
 
@@ -146,21 +151,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         return Math.hypot(a, b);
     }
 
-    /**
-     * A helper method that draws a circular outline representing the range of this Tower.
-     *
-     * @param canvas The Canvas to draw the range on.
-     * @param paint  The Paint used to draw the range.
-     */
-    public void drawRange(Canvas canvas, Paint paint) {
-        paint.reset();
-        paint.setStrokeWidth(7);
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAlpha(150);
-        canvas.drawCircle(location.x, location.y, radius, paint);
-    }
-
     public void drawLine(Canvas canvas, Paint paint) {
         if (target != null) {
             paint.reset();
@@ -178,5 +168,9 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
+    }
+
+    public float getRange() {
+        return this.radius;
     }
 }

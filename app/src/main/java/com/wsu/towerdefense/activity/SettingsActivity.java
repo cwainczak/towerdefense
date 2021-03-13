@@ -1,11 +1,10 @@
 package com.wsu.towerdefense.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
 
 public class SettingsActivity extends AppCompatActivity {

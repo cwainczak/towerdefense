@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -15,16 +18,12 @@ import android.view.View.OnDragListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
-import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.save.SaveState;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +33,13 @@ public class GameActivity extends AppCompatActivity {
      * Multiplies radius of valid tower selection
      */
     private static final double SELECT_TOLERANCE = 1.5;
+    /**
+     * Tint by which tower images are multiplied when there is not enough money
+     */
+    private static final PorterDuffColorFilter NO_MONEY_TINT = new PorterDuffColorFilter(
+        Color.argb(255, 180, 0, 0),
+        Mode.MULTIPLY
+    );
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
@@ -70,35 +76,7 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.img_Tower11)
         );
 
-        // add drag listeners to towers
-        OnDragListener towerListener = (v, event) -> {
-            // allow image to be dragged
-            return event.getAction() == DragEvent.ACTION_DRAG_STARTED;
-        };
-        for (int i = 0; i < towerList.size(); i++) {
-            ImageView image = towerList.get(i);
-
-            image.setOnLongClickListener(v -> {
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                    v.startDragAndDrop(data, dragshadow, v, 0);
-                    return true;
-                }
-            );
-            image.setOnDragListener(towerListener);
-        }
-        // add drop listener to game
-        cl_gameLayout.setOnDragListener((v, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
-            } else if (event.getAction() == DragEvent.ACTION_DROP) {
-                // drop tower onto game
-                return game.placeTower(event.getX(), event.getY());
-            }
-            return false;
-        });
+        addDragListeners();
 
         // display size
         Display display = getWindowManager().getDefaultDisplay();
@@ -158,8 +136,8 @@ public class GameActivity extends AppCompatActivity {
                         // temporary position text
                         txt_towerInfo.setText(
                             "x: " + tower.getLocation().x +
-                                "\ny: " + tower.getLocation().y
-                        );
+                                "\ny: " + tower.getLocation().y +
+                                "\n\nSell for: " + tower.cost / 2);
 
                         // Notify game of selected tower
                         game.setSelectedTower(tower);
@@ -171,6 +149,93 @@ public class GameActivity extends AppCompatActivity {
                 game.setSelectedTower(null);
                 return false;
             });
+
+            // Add Custom listener to game
+            game.setGameListener(new Game.GameListener() {
+                @Override
+                public void onMoneyChanged() {
+                    int money = game.getMoney();
+
+                    // TODO: Change this to get the tower cost from the tower type
+                    int cost = 100;
+
+                    // Check difference between each tower cost and money
+                    for (ImageView towerImage : towerList) {
+                        // Enable towers (in menu) with cost equal to or lower than money
+                        if (money >= cost) {
+                            towerImage.setColorFilter(null);
+                            towerImage.setEnabled(true);
+                        }
+                        // Disable towers (in menu) with cost greater than money
+                        else {
+                            towerImage.setColorFilter(NO_MONEY_TINT);
+                            towerImage.setEnabled(false);
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private void addDragListeners() {
+        OnDragListener towerListener = (v, event) -> {
+            // allow image to be dragged
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                return true;
+            }
+            // remove range circle when dragging over side bar
+            else if (
+                event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
+                    event.getAction() == DragEvent.ACTION_DROP
+            ) {
+                game.dragLocation = null;
+                game.setSelectedTower(null);
+                setSelectionMenuVisible(false);
+                return true;
+            }
+            return false;
+        };
+
+        // add drag listeners to towers
+        for (int i = 0; i < towerList.size(); i++) {
+            ImageView image = towerList.get(i);
+
+            image.setOnLongClickListener(v -> {
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    return true;
+                }
+            );
+            image.setOnDragListener(towerListener);
+        }
+
+        // add drop listener to game
+        cl_gameLayout.setOnDragListener((v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                return true;
+            }
+            // show range circle when dragging over map
+            else if (event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
+                PointF dragLocation = new PointF((event.getX()), event.getY());
+                boolean onScreen = dragLocation.x < cl_gameLayout.getWidth() &&
+                    dragLocation.y < cl_gameLayout.getHeight();
+                if (onScreen) {
+                    game.dragLocation = dragLocation;
+                    game.setSelectedTower(null);
+                    setSelectionMenuVisible(false);
+                } else {
+                    game.dragLocation = null;
+                }
+            }
+            // drop tower onto game
+            else if (event.getAction() == DragEvent.ACTION_DROP) {
+                game.dragLocation = null;
+                return game.placeTower(event.getX(), event.getY());
+            }
+            return false;
         });
     }
 
@@ -216,6 +281,14 @@ public class GameActivity extends AppCompatActivity {
     public void removeSelectedTower(View view) {
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+    }
+
+    /**
+     * Called when pause button is clicked
+     */
+    public void btnPauseOnClick(View view){
+        game.setPaused(true);
+        startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
 
     /**

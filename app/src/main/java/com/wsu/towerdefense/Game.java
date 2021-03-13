@@ -7,37 +7,41 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
-
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Game extends AbstractGame implements Serializable {
+public class Game extends AbstractGame {
 
     private static final int START_LIVES = 5;
+    private static final int START_MONEY = 300;
+    private static final int VALID_RANGE_COLOR = Color.argb(255, 80, 80, 80);
+    private static final int INVALID_RANGE_COLOR = Color.argb(255, 180, 0, 0);
+    private static final int RANGE_OPACITY = 90;
 
-    /**
-     * Keeps track of all Towers in the Game
-     */
-    private List<Tower> towers;
-    /**
-     * Keeps track of all Enemies in the Game
-     */
-    private transient final List<Enemy> enemies;
+    private final List<Tower> towers;
+    private final List<Enemy> enemies;
 
-    private Map map;
+    private final Map map;
 
     public static final float towerRadius = 56; //radius of tower object using tower.png
 
     private int lives;
+
+    /**
+     * The money available for the player to spend
+     */
+    private int money;
+    /**
+     * A custom listener used to send data to the GameActivity whenever certain actions occur
+     */
+    private GameListener listener = null;
 
     /**
      * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
@@ -53,6 +57,8 @@ public class Game extends AbstractGame implements Serializable {
      * Whether or not to remove the currently selected tower
      */
     private boolean removeTower = false;
+
+    public PointF dragLocation = null;
 
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
         String mapName) {
@@ -73,6 +79,7 @@ public class Game extends AbstractGame implements Serializable {
         );
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
+        money = hasSave ? saveState.money : START_MONEY;
 
         enemies = new ArrayList<>();
 
@@ -101,15 +108,9 @@ public class Game extends AbstractGame implements Serializable {
             if (e.isAlive()) {
                 e.update(this, delta);
 
-                // If the Enemy reached the end of the path
                 if (e.isAtPathEnd()) {
-                    // Remove a life
                     lives--;
-
-                    // Enemy is off-screen, can be removed
                     enemyIt.remove();
-
-                    // Game over if out of lives
                     if (lives <= 0) {
                         gameOver();
                         return;
@@ -117,12 +118,16 @@ public class Game extends AbstractGame implements Serializable {
                 }
 
             } else {
+                // Add enemy's value to game balance
+                addMoney(e.getPrice());
+
                 // Remove dead Enemies
                 enemyIt.remove();
             }
         }
 
         checkBuffers();
+
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
@@ -134,22 +139,27 @@ public class Game extends AbstractGame implements Serializable {
         map.render(canvas, paint);
 
         for (Tower t : towers) {
-            t.render(lerp, canvas, paint);
-
             // Draw all tower ranges if in debug mode
             if (Application.DEBUG) {
-                t.drawRange(canvas, paint);
                 t.drawLine(canvas, paint);
-            } else if (selectedTower == t) {
-                t.drawRange(canvas, paint);
             }
+            if (selectedTower == t) {
+                drawRange(canvas, paint, t.getLocation(), t.getRange(), true);
+            }
+
+            t.render(lerp, canvas, paint);
         }
 
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
 
-        drawLives(canvas, paint);
+        drawHUD(canvas, paint);
+
+        if (dragLocation != null) {
+            // TODO: change hardcoded radius based on dragged tower type
+            drawRange(canvas, paint, dragLocation, 384, isValidPlacement(dragLocation));
+        }
     }
 
     private void checkBuffers() {
@@ -168,22 +178,26 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     /**
-     * Draws the life count to the top left corner of the canvas
+     * Draws the money count and life count to the top left corner of the canvas
      *
      * @param canvas Canvas to draw the life count on
      * @param paint  Paint to draw with
      */
-    private void drawLives(Canvas canvas, Paint paint) {
+    private void drawHUD(Canvas canvas, Paint paint) {
         int posX = 10;
-        int posY = 60;
+        int posY = 75;
+        int yOffset = 80;
 
         paint.reset();
-        paint.setColor(Color.WHITE);
         paint.setShadowLayer(0.1f, 5, 5, Color.BLACK);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(75);
 
-        canvas.drawText("Lives: " + lives, posX, posY, paint);
+        paint.setColor(Color.YELLOW);
+        canvas.drawText("$" + money, posX, posY, paint);
+
+        paint.setColor(Color.WHITE);
+        canvas.drawText("Lives: " + lives, posX, posY + yOffset, paint);
     }
 
     /**
@@ -194,9 +208,14 @@ public class Game extends AbstractGame implements Serializable {
      * @return whether position is valid
      */
     public boolean placeTower(float x, float y) {
-        // validate here
-        if (isValidPlacement(new PointF(x, y))) {
-            addBuffer = new Tower(new PointF(x, y), 384, 750f, 10);
+        // Todo - Cost will need to be passed from GameActivity once there are different towers
+        int cost = 100;
+
+        if (isValidPlacement(new PointF(x, y)) && cost <= money) {
+            addBuffer = new Tower(new PointF(x, y), 384, 750f, 10, cost);
+
+            // purchase tower
+            removeMoney(addBuffer.cost);
             return true;
         }
 
@@ -204,8 +223,10 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     public void removeSelectedTower() {
-//        selectedTower.isSelected = false;
         removeTower = true;
+
+        // refund tower cost
+        addMoney(selectedTower.cost / 2);
     }
 
     /**
@@ -235,7 +256,6 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     private double distanceToPoint(PointF location, PointF point) {
-
         float dx = location.x - point.x;
         float dy = location.y - point.y;
         return Math.hypot(dx, dy);
@@ -255,6 +275,58 @@ public class Game extends AbstractGame implements Serializable {
         ((GameActivity) getContext()).gameOver();
     }
 
+    public void spawnEnemies() {
+        save();
+
+        enemies.add(new Enemy(Enemy.Type.S1, map.getPath()));
+        enemies.add(new Enemy(Enemy.Type.S2, map.getPath()));
+        enemies.add(new Enemy(Enemy.Type.S3, map.getPath()));
+    }
+
+    public void setSelectedTower(Tower tower) {
+        selectedTower = tower;
+    }
+
+    /**
+     * A helper method that draws a circular outline representing the range of this Tower.
+     *
+     * @param canvas The Canvas to draw the range on.
+     * @param paint  The Paint used to draw the range.
+     */
+    public void drawRange(Canvas canvas, Paint paint,
+        PointF location,
+        float radius,
+        boolean valid
+    ) {
+        paint.setColor(valid ? VALID_RANGE_COLOR : INVALID_RANGE_COLOR);
+        paint.setAlpha(RANGE_OPACITY);
+        canvas.drawCircle(location.x, location.y, radius, paint);
+    }
+
+    /**
+     * Adds a specified amount to the game's money and triggers the game's listener
+     *
+     * @param amount The amount of money to add
+     */
+    private void addMoney(int amount) {
+        money += amount;
+        listener.onMoneyChanged();
+    }
+
+    /**
+     * Removes a specified amount from the game's money and triggers the game's listener
+     *
+     * @param amount The amount of money to remove
+     */
+    private void removeMoney(int amount) {
+        money -= amount;
+        listener.onMoneyChanged();
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
     public Map getMap() {
         return map;
     }
@@ -271,15 +343,17 @@ public class Game extends AbstractGame implements Serializable {
         return lives;
     }
 
-    public void spawnEnemies() {
-        save();
-
-        for (int i = 0; i < 3; i++) {
-            enemies.add(new Enemy(map.getPath(), 40, 350 + 50 * i));
-        }
+    /**
+     * A custom listener for Game objects
+     */
+    public interface GameListener {
+        /**
+         * This method is called whenever the game's money increases or decreases
+         */
+        void onMoneyChanged();
     }
 
-    public void setSelectedTower(Tower tower) {
-        selectedTower = tower;
+    public void setGameListener(GameListener listener) {
+        this.listener = listener;
     }
 }

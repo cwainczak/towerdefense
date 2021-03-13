@@ -4,59 +4,57 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
-import android.graphics.Typeface;
 import java.util.List;
 import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
-    /**
-     * Enemy's velocity in the x direction
-     */
-    private float velocityX;
-    /**
-     * Enemy's velocity in the y direction
-     */
-    private float velocityY;
-    /**
-     * pixels per second
-     */
-    private final float speed;
+    public enum Type {
+        //Standard enemy types
+        S1(400, 40, 20, R.mipmap.enemy),
+        S2(450, 50, 20, R.mipmap.enemy),
+        S3(500, 60, 20, R.mipmap.enemy);
 
-    private final ListIterator<PointF> path;
-    private PointF target;
+        final float speed;
+        final int hp;
+        final int price;
+        final int resource;
 
-    /**
-     * Is the enemy alive
-     */
+        Type(float speed, int hp, int price, int resource) {
+            this.speed = speed;
+            this.hp = hp;
+            this.price = price;
+            this.resource = resource;
+        }
+    }
+
+    private final Type type;
+
+    private int hp;
     private boolean isAlive;
 
-    /**
-     * Did the enemy reach the last point in its path
-     */
-    private boolean isAtPathEnd;
+    private float velocityX;
+    private float velocityY;
 
-    /**
-     * Enemy's hit points
-     */
-    private int hp;
+    private final ListIterator<PointF> path;
+    private boolean isAtPathEnd;
+    private PointF target;
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path  A List of Points for the current location to move towards
-     * @param hp    The amount of hit points this Enemy has
-     * @param speed distance enemy moves, pixels per second
+     * @param path A List of Points for the current location to move towards
+     * @param type enum containing information which will be consistent across all enemies of the
+     *             same type (speed, hp, price, resource)
      */
-    public Enemy(List<PointF> path, int hp, float speed) {
-        super(path.get(0), R.mipmap.enemy);
+    public Enemy(Type type, List<PointF> path) {
+        super(path.get(0), type.resource);
 
+        this.type = type;
         this.path = path.listIterator();
-        this.hp = hp;
-        this.speed = speed;
+        this.hp = type.hp;
 
         this.target = this.path.next();
         this.isAlive = true;
@@ -82,7 +80,7 @@ public class Enemy extends AbstractMapObject {
         //location and next location, and there are more Points int path
         double distance = Math.hypot(location.x - target.x, location.y - target.y);
 
-        if (distance <= Math.abs(speed * delta)) {
+        if (distance <= Math.abs(type.speed * delta)) {
             if (path.hasNext()) {
                 //set location to target, and update target
                 location = new PointF(target.x, target.y);
@@ -91,8 +89,8 @@ public class Enemy extends AbstractMapObject {
                 float dx = target.x - location.x;
                 float dy = target.y - location.y;
                 distance = Math.hypot(dx, dy);
-                velocityX = speed * (float) (dx / distance);
-                velocityY = speed * (float) (dy / distance);
+                velocityX = type.speed * (float) (dx / distance);
+                velocityY = type.speed * (float) (dy / distance);
             } else {
                 // If there are no more points in the path
                 isAtPathEnd = true;
@@ -167,5 +165,9 @@ public class Enemy extends AbstractMapObject {
 
     public boolean isAtPathEnd() {
         return this.isAtPathEnd;
+    }
+
+    public int getPrice() {
+        return this.type.price;
     }
 }
