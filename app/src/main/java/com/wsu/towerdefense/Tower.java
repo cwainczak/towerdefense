@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,7 +35,8 @@ public class Tower extends AbstractMapObject implements Serializable {
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
      * range.
-     *  @param location           A PointF representing the location of the towerBitmap's center
+     *
+     * @param location           A PointF representing the location of the towerBitmap's center
      * @param radius             The radius of this Tower's detection range
      * @param projectileVelocity The velocity of this Tower's Projectiles
      * @param damage             The amount of damage each projectile from this Tower deals to an
@@ -153,6 +153,7 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public void drawLine(Canvas canvas, Paint paint) {
         if (target != null) {
+            paint.reset();
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(7);
             canvas.drawLine(location.x, location.y, target.location.x, target.location.y, paint);

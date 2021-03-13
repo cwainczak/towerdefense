@@ -1,12 +1,11 @@
 package com.wsu.towerdefense.activity;
 
-import android.util.Log;
-import android.widget.Button;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;
@@ -52,9 +51,6 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnNewGameClicked(View view) {
-        // delete safe file when new game is started
-        Serializer.delete(this, Serializer.SAVEFILE);
-
         Intent intent = new Intent(this, MapSelectionActivity.class);
         startActivity(intent);
     }

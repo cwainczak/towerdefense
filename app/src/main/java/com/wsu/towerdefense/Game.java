@@ -13,31 +13,22 @@ import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Game extends AbstractGame implements Serializable {
+public class Game extends AbstractGame {
 
+    private static final int START_LIVES = 5;
+    private static final int START_MONEY = 300;
     private static final int VALID_RANGE_COLOR = Color.argb(255, 80, 80, 80);
     private static final int INVALID_RANGE_COLOR = Color.argb(255, 180, 0, 0);
     private static final int RANGE_OPACITY = 90;
 
-    /**
-     * Keeps track of all Towers in the Game
-     */
-    private List<Tower> towers;
-    /**
-     * Keeps track of all Enemies in the Game
-     */
-    private transient final List<Enemy> enemies;
+    private final List<Tower> towers;
+    private final List<Enemy> enemies;
 
-    private Map map;
-
-    private final float rows = 20f;
-    private float cols;
-    private final PointF cellSize;
+    private final Map map;
 
     public static final float towerRadius = 56; //radius of tower object using tower.png
 
@@ -69,41 +60,32 @@ public class Game extends AbstractGame implements Serializable {
 
     public PointF dragLocation = null;
 
-    public Game(Context context, int displayWidth, int displayHeight, SaveState saveState) {
-        super(context, displayWidth, displayHeight);
+    public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
+        String mapName) {
+        super(context, gameWidth, gameHeight);
 
-        cellSize = getCellSize();
+        boolean hasSave = saveState != null;
 
-        towers = new ArrayList<>();
+        if (hasSave) {
+            Log.i(context.getString(R.string.logcatKey),
+                "Loading save file '" + saveState.saveFile + "'"
+            );
+        }
+
+        map = new Map(
+            MapReader.get(hasSave ? saveState.mapName : mapName),
+            getGameWidth(),
+            getGameHeight()
+        );
+        towers = hasSave ? saveState.towers : new ArrayList<>();
+        lives = hasSave ? saveState.lives : START_LIVES;
+        money = hasSave ? saveState.money : START_MONEY;
+
         enemies = new ArrayList<>();
-
-        init(context, saveState);
-        map.generateTiles(cellSize);
 
         Log.i(context.getString(R.string.logcatKey),
             "Started game with map '" + map.getName() + "'"
         );
-    }
-
-    private void init(Context context, SaveState saveState) {
-        // load save
-        if (saveState != null) {
-            Log.i(context.getString(R.string.logcatKey),
-                "Loading save file '" + saveState.saveFile + "'"
-            );
-
-            map = MapReader.get(saveState.mapName);
-            towers = saveState.towers;
-            lives = saveState.lives;
-            money = saveState.money;
-        }
-        // default state
-        else {
-            map = MapReader.get("map1");
-
-            lives = 5;
-            money = 300;
-        }
     }
 
     /**
@@ -119,7 +101,6 @@ public class Game extends AbstractGame implements Serializable {
 
     @Override
     protected void update(double delta) {
-
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
@@ -155,16 +136,8 @@ public class Game extends AbstractGame implements Serializable {
 
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-        // Draw the background
-        canvas.drawColor(Color.BLACK);
+        map.render(canvas, paint);
 
-        // Draw debug information
-        if (Application.DEBUG) {
-            map.render(canvas, paint);
-            drawGridLines(canvas, paint);
-        }
-
-        // Draw the Towers
         for (Tower t : towers) {
             // Draw all tower ranges if in debug mode
             if (Application.DEBUG) {
@@ -177,12 +150,10 @@ public class Game extends AbstractGame implements Serializable {
             t.render(lerp, canvas, paint);
         }
 
-        // Draw the Enemies
         for (Enemy e : enemies) {
             e.render(lerp, canvas, paint);
         }
 
-        // Draw the lives
         drawHUD(canvas, paint);
 
         if (dragLocation != null) {
@@ -207,44 +178,6 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     /**
-     * Calculates the number of columns based on screen dimensions and space reserved for towerMenu,
-     * then calculates the height and width of each cell within the grid
-     *
-     * @return PointF containing the width and height of each cell within the grid
-     */
-    protected PointF getCellSize() {
-        cols = rows * ((float) getGameWidth() / getGameHeight());
-        float y = getGameWidth() / cols;
-        float x = getGameHeight() / rows;
-
-        return (new PointF(x, y));
-    }
-
-    /**
-     * draws the grid onto the screen for debugging purposes
-     *
-     * @param canvas Canvas to draw the lines on
-     * @param paint  Paint to draw the lines with
-     */
-    private void drawGridLines(Canvas canvas, Paint paint) {
-        paint.setStrokeWidth(1);
-        paint.setColor(Color.RED);
-        for (int i = 0; i < rows; i++) {
-//            Log.i("--draw grid--", "Drawing row: " + i + " at " +
-//                    0 + " " + i * cellSize.y + " " + cols * cellSize.x + " " + i * cellSize.y);
-            canvas.drawLine(0, i * cellSize.y,
-                cols * cellSize.x, i * cellSize.y, paint);
-        }
-
-        for (int i = 0; i < cols; i++) {
-//            Log.i("--draw grid--", "Drawing col: " + i + " at " +
-//                    i * cellSize.x + " " + 0 + " " + i * cellSize.x + " " + rows * cellSize.y);
-            canvas.drawLine(i * cellSize.x, 0,
-                i * cellSize.x, rows * cellSize.y, paint);
-        }
-    }
-
-    /**
      * Draws the money count and life count to the top left corner of the canvas
      *
      * @param canvas Canvas to draw the life count on
@@ -255,10 +188,12 @@ public class Game extends AbstractGame implements Serializable {
         int posY = 75;
         int yOffset = 80;
 
-        paint.setColor(Color.YELLOW);
+        paint.reset();
+        paint.setShadowLayer(0.1f, 5, 5, Color.BLACK);
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(75);
 
+        paint.setColor(Color.YELLOW);
         canvas.drawText("$" + money, posX, posY, paint);
 
         paint.setColor(Color.WHITE);
@@ -302,29 +237,18 @@ public class Game extends AbstractGame implements Serializable {
      * @return True if valid placement, false if not
      */
     public boolean isValidPlacement(PointF location) {
+        // check against towers
         for (Tower tower : getTowers()) {
-            //calculate distance
             double distance = distanceToPoint(location, tower.getLocation());
-
-            //calculate minDistance : assumes half of width is radius of tower
-            double minDistance = towerRadius * 2;
-
-            //determine if new tower is too close
-            if (distance < minDistance) {
+            if (distance < towerRadius * 2) {
                 return false;
             }
         }
 
-        for (RectF tile : map.getTiles()) {
-            //calculate distance
-            double distance = distanceToPoint(location, new PointF(tile.centerX(), tile.centerY()));
-
-            //calculate minDistance : with tileRadius corners of tiles will not affect calculation
-            float tileRadius = tile.centerX() - tile.left;
-            double minDistance = towerRadius + tileRadius;
-
-            //determine if new tower is too close
-            if (distance < minDistance) {
+        // check against path
+        for (RectF rect : map.getBounds()) {
+            if (rect.left <= location.x && location.x <= rect.right &&
+                rect.top <= location.y && location.y <= rect.bottom) {
                 return false;
             }
         }
@@ -332,7 +256,6 @@ public class Game extends AbstractGame implements Serializable {
     }
 
     private double distanceToPoint(PointF location, PointF point) {
-
         float dx = location.x - point.x;
         float dy = location.y - point.y;
         return Math.hypot(dx, dy);
@@ -352,32 +275,12 @@ public class Game extends AbstractGame implements Serializable {
         ((GameActivity) getContext()).gameOver();
     }
 
-    public Map getMap() {
-        return map;
-    }
-
-    public List<Enemy> getEnemies() {
-        return enemies;
-    }
-
-    public List<Tower> getTowers() {
-        return towers;
-    }
-
-    public int getLives() {
-        return lives;
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
     public void spawnEnemies() {
         save();
 
-        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S1));
-        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S2));
-        enemies.add(new Enemy(map.getPath(), cellSize,  Enemy.Type.S3));
+        enemies.add(new Enemy(Enemy.Type.S1, map.getPath()));
+        enemies.add(new Enemy(Enemy.Type.S2, map.getPath()));
+        enemies.add(new Enemy(Enemy.Type.S3, map.getPath()));
     }
 
     public void setSelectedTower(Tower tower) {
@@ -418,6 +321,26 @@ public class Game extends AbstractGame implements Serializable {
     private void removeMoney(int amount) {
         money -= amount;
         listener.onMoneyChanged();
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public List<Tower> getTowers() {
+        return towers;
+    }
+
+    public int getLives() {
+        return lives;
     }
 
     /**

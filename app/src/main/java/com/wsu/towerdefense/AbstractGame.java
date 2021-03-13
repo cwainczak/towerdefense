@@ -8,7 +8,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import androidx.annotation.NonNull;
-
 import com.wsu.towerdefense.activity.PauseActivity;
 
 /**

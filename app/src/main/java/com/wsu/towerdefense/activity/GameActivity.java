@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
@@ -19,16 +18,12 @@ import android.view.View.OnDragListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -91,12 +86,15 @@ public class GameActivity extends AppCompatActivity {
             // save state
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
+            String map = getIntent().getStringExtra("map");
+
             try {
                 game = new Game(
                     GameActivity.this,
                     cl_gameLayout.getWidth(),
                     cl_gameLayout.getHeight(),
-                    saveState
+                    saveState,
+                    map
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat
