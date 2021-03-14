@@ -154,26 +154,11 @@ public class GameActivity extends AppCompatActivity {
             game.setGameListener(new Game.GameListener() {
                 @Override
                 public void onMoneyChanged() {
-                    int money = game.getMoney();
-
-                    // TODO: Change this to get the tower cost from the tower type
-                    int cost = 100;
-
-                    // Check difference between each tower cost and money
-                    for (ImageView towerImage : towerList) {
-                        // Enable towers (in menu) with cost equal to or lower than money
-                        if (money >= cost) {
-                            towerImage.setColorFilter(null);
-                            towerImage.setEnabled(true);
-                        }
-                        // Disable towers (in menu) with cost greater than money
-                        else {
-                            towerImage.setColorFilter(NO_MONEY_TINT);
-                            towerImage.setEnabled(false);
-                        }
-                    }
+                    updateTowerSelection();
                 }
             });
+
+            updateTowerSelection();
         });
     }
 
@@ -303,6 +288,27 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         if (game != null) {
             game.setPaused(false);
+        }
+    }
+
+    private void updateTowerSelection() {
+        int money = game.getMoney();
+
+        // TODO: Change this to get the tower cost from the tower type
+        int cost = 100;
+
+        // Check difference between each tower cost and money
+        for (ImageView towerImage : towerList) {
+            // Enable towers (in menu) with cost equal to or lower than money
+            if (money >= cost) {
+                towerImage.setColorFilter(null);
+                towerImage.setEnabled(true);
+            }
+            // Disable towers (in menu) with cost greater than money
+            else {
+                towerImage.setColorFilter(NO_MONEY_TINT);
+                towerImage.setEnabled(false);
+            }
         }
     }
 }
