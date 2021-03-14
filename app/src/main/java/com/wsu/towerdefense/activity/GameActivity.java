@@ -51,6 +51,8 @@ public class GameActivity extends AppCompatActivity {
     private TextView txt_towerName;
     private TextView txt_towerInfo;
     private List<ImageView> towerList;
+    private List<Tower.Type> towerTypes;
+    private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
 
     private Game game;
 
@@ -79,6 +81,20 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.img_Tower9),
             findViewById(R.id.img_Tower10),
             findViewById(R.id.img_Tower11)
+        );
+
+        towerTypes = Arrays.asList(
+                Tower.Type.BASIC_HOMING,
+                Tower.Type.BASIC_LINEAR,
+                Tower.Type.BASIC_HOMING,
+                Tower.Type.BASIC_LINEAR,
+                Tower.Type.BASIC_HOMING,
+                Tower.Type.BASIC_LINEAR,
+                Tower.Type.BASIC_HOMING,
+                Tower.Type.BASIC_LINEAR,
+                Tower.Type.BASIC_HOMING,
+                Tower.Type.BASIC_LINEAR,
+                Tower.Type.BASIC_HOMING
         );
 
         addDragListeners();
@@ -137,9 +153,10 @@ public class GameActivity extends AppCompatActivity {
 
                         // temporary position text
                         txt_towerInfo.setText(
-                            "x: " + tower.getLocation().x +
+                            tower.getType() +
+                            "\nx: " + tower.getLocation().x +
                                 "\ny: " + tower.getLocation().y +
-                                "\n\nSell for: " + tower.cost / 2);
+                                "\n\nSell for: " + tower.getCost() / 2);
 
                         // Notify game of selected tower
                         game.setSelectedTower(tower);
@@ -180,23 +197,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addDragListeners() {
-        OnDragListener towerListener = (v, event) -> {
-            // allow image to be dragged
-            if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-                return true;
-            }
-            // remove range circle when dragging over side bar
-            else if (
-                event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
-                    event.getAction() == DragEvent.ACTION_DROP
-            ) {
-                game.dragLocation = null;
-                game.setSelectedTower(null);
-                setSelectionMenuVisible(false);
-                return true;
-            }
-            return false;
-        };
 
         // add drag listeners to towers
         for (int i = 0; i < towerList.size(); i++) {
@@ -211,7 +211,35 @@ public class GameActivity extends AppCompatActivity {
                     return true;
                 }
             );
-            image.setOnDragListener(towerListener);
+            image.setOnDragListener(new OnDragListener() {
+                @Override
+                public boolean onDrag(View view, DragEvent event) {
+                    // allow image to be dragged
+                    if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                        for (int x = 0; x < towerList.size(); x++){
+                            if (((ImageView) (view)) == towerList.get(x)){
+                                GameActivity.this.selectedTowerType = towerTypes.get(x);
+                                break;
+                            }
+
+                        }
+                        return true;
+                    }
+                    // remove range circle when dragging over side bar
+                    else if (
+                            event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
+                                    event.getAction() == DragEvent.ACTION_DROP
+                    ) {
+                        game.dragLocation = null;
+                        game.setSelectedTower(null);
+                        setSelectionMenuVisible(false);
+                        return true;
+                    }
+                    return false;
+                }
+
+            });
+
         }
 
         // add drop listener to game
@@ -235,7 +263,8 @@ public class GameActivity extends AppCompatActivity {
             // drop tower onto game
             else if (event.getAction() == DragEvent.ACTION_DROP) {
                 game.dragLocation = null;
-                return game.placeTower(event.getX(), event.getY());
+
+                return game.placeTower(event.getX(), event.getY(), this.selectedTowerType);
             }
             return false;
         });

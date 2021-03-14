@@ -274,15 +274,12 @@ public class Game extends AbstractGame implements Serializable {
      * @param y y
      * @return whether position is valid
      */
-    public boolean placeTower(float x, float y) {
-        // Todo - Cost will need to be passed from GameActivity once there are different towers
-        int cost = 100;
-
-        if (isValidPlacement(new PointF(x, y)) && cost <= money) {
-            addBuffer = new Tower(new PointF(x, y), 384, 750f, 10, cost);
+    public boolean placeTower(float x, float y, Tower.Type tt) {
+        if (isValidPlacement(new PointF(x, y)) && tt.cost <= money) {
+            addBuffer = new Tower(new PointF(x, y), tt);
 
             // purchase tower
-            removeMoney(addBuffer.cost);
+            removeMoney(addBuffer.getCost());
             return true;
         }
 
@@ -293,7 +290,7 @@ public class Game extends AbstractGame implements Serializable {
         removeTower = true;
 
         // refund tower cost
-        addMoney(selectedTower.cost / 2);
+        addMoney(selectedTower.getCost() / 2);
     }
 
     /**

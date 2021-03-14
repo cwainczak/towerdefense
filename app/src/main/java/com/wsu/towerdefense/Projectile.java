@@ -6,6 +6,8 @@ import android.graphics.PointF;
 
 import static com.google.android.material.math.MathUtils.lerp;
 
+
+
 public class Projectile extends AbstractMapObject {
 
     // What percent of the bitmap height will be used for the hitbox
@@ -14,34 +16,69 @@ public class Projectile extends AbstractMapObject {
     // What percent of the bitmap width will be used for the hitbox
     private static final float hitboxScaleX = 0.8f;
 
-    private final float speed;
-    private final Enemy target;
+    enum Type {
+
+        HOMING(750f, R.mipmap.projectile),
+        LINEAR(1000f, R.mipmap.projectile);
+
+        final float speed;
+        final int resourceID;
+
+        /**
+         * @param someSpeed The speed of the projectile
+         * @param someResourceID    The Resource ID of the image of the projectile
+         */
+        Type(float someSpeed, int someResourceID){
+            this.speed = someSpeed;
+            this.resourceID = someResourceID;
+        }
+    }
+
+    private final Type type;
+    private Enemy target;   // Each projectile will have a target at some point, regardless of type
+    private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
+    private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
 
     /**
      * A projectile shot by Towers at Enemies
      *
      * @param location   A PointF representing the location of the bitmap's center
-     * @param speed      The Projectile's velocity
-     * @param resourceID The resource ID of the image of this Projectile object
-     * @param target     The Enemy this projectile is targeting
+     * @param target     The Enemy this projectile is targeting (if none, value is null)
      */
-    public Projectile(PointF location, int resourceID, float speed, Enemy target) {
-        super(location, resourceID);
-        this.speed = speed;
+    public Projectile(PointF location, Type pt, Enemy target) {
+        super(location, pt.resourceID);
+        this.type = pt;
         this.target = target;
+        if (this.type == Type.LINEAR){
+            this.setVelocity();
+        }
     }
 
     public void update(Game game, double delta) {
-        double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
-            Math.abs(location.y - target.location.y));
-        double distanceMoved = speed * delta;
+        if (this.type == Type.HOMING){
+            double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x), Math.abs(location.y - target.location.y));
+            double distanceMoved = this.type.speed * delta;
 
-        // If the projectile moved far enough to reach the target set it at the target location
-        if (distanceMoved >= distanceToTarget) {
-            location.set(target.location);
-        } else {
-            // Otherwise move the projectile towards the target
-            location.set(calculateNewLocation(delta));
+            // If the projectile moved far enough to reach the target set it at the target location
+            if (distanceMoved >= distanceToTarget) {
+                location.set(target.location);
+            } else {
+                // Otherwise move the projectile towards the target
+                location.set(calculateNewLocation(delta));
+            }
+        }
+        else if (this.type == Type.LINEAR){
+            boolean hasHit = false;
+            for (Enemy e : game.getEnemies()){
+                this.target = e;
+                if (this.hitTarget()){
+                    location.set(target.location);
+                    hasHit = true;
+                }
+            }
+            if (!hasHit){
+                this.location.set(this.calculateNewLocation(delta));
+            }
         }
     }
 
@@ -89,21 +126,43 @@ public class Projectile extends AbstractMapObject {
      * @return The new location this Projectile should move to
      */
     private PointF calculateNewLocation(double delta) {
-        double distanceToTarget = Math.hypot(
-            Math.abs(location.x - target.location.x),
-            Math.abs(location.y - target.location.y)
-        );
-        double distanceMoved = speed * delta;
+        if (this.type == Type.HOMING) {
+            double distanceToTarget = Math.hypot(
+                    Math.abs(location.x - target.location.x),
+                    Math.abs(location.y - target.location.y)
+            );
+            double distanceMoved = this.type.speed * delta;
 
-        float amount = (float) (distanceMoved / distanceToTarget);
+            float amount = (float) (distanceMoved / distanceToTarget);
 
-        return new PointF(
-            lerp(location.x, target.location.x, amount),
-            lerp(location.y, target.location.y, amount)
-        );
+            return new PointF(
+                    lerp(location.x, target.location.x, amount),
+                    lerp(location.y, target.location.y, amount)
+            );
+        }
+        else if (this.type == Type.LINEAR){
+            double xDistanceMoved = this.velX * delta;
+            double yDistanceMoved = this.velY * delta;
+            return new PointF((float) (this.location.x + xDistanceMoved), (float) (this.location.y + yDistanceMoved));
+        }
+        return null;
     }
 
     public Enemy getTarget() {
         return target;
     }
+
+    public boolean isOffScreen(int screenWidth, int screenHeight){
+        return (this.location.x < 0 || this.location.x > screenWidth ||
+                this.location.y < 0 || this.location.y > screenHeight);
+    }
+
+    private void setVelocity(){
+        float dx = this.target.location.x - this.location.x;
+        float dy = this.target.location.y - this.location.y;
+        double distance = Math.hypot(dx, dy);
+        this.velX = type.speed * (float) (dx / distance);
+        this.velY = type.speed * (float) (dy / distance);
+    }
+
 }
