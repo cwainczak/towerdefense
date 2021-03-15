@@ -25,7 +25,7 @@ public class Tower extends AbstractMapObject implements Serializable {
         final float projectiveVelocity;
         final int damage;
         final double fireRate;
-        final int cost;
+        public final int cost;
         final int projectileResID;
 
 
