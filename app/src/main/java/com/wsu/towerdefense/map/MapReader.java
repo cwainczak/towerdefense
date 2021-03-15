@@ -1,14 +1,16 @@
 package com.wsu.towerdefense.map;
 
 import android.content.Context;
-import android.graphics.Point;
+import android.graphics.PointF;
 import android.util.Log;
 import com.wsu.towerdefense.R;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,9 +18,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Map format:
+ * <ul>
+ *     <li><code>displayName</code> : string - name of the map that is shown to the user</li>
+ *     <li><code>image</code> : string - name of the image file, without extension</li>
+ *     <li><code>pathRadius</code> : integer - width of the path, in pixels; used to calculate bounds</li>
+ *     <li><code>path</code> : array - list of objects <code>{x:double, y:double}</code> representing the path, coordinates normalized from 0 to 1</li>
+ * </ul>
+ */
 public class MapReader {
 
-    private static final java.util.Map<String, Map> maps = new HashMap<>();
+    private static final java.util.Map<String, AbstractMap> maps = new HashMap<>();
 
     /**
      * Reads all maps from disk and stores them in {@link #maps}
@@ -34,7 +45,7 @@ public class MapReader {
 
                 String data = readFile(context, "maps/" + mapFile);
 
-                Map map = parseMap(mapName, data);
+                AbstractMap map = parseMap(context, mapName, data);
                 maps.put(mapName, map);
                 Log.i(context.getString(R.string.logcatKey), "Registered map '" + mapName + "'");
             } catch (IOException | JSONException | IllegalArgumentException e) {
@@ -52,12 +63,16 @@ public class MapReader {
      * @return corresponding {@link Map}
      * @throws IllegalArgumentException when map called <code>name</code> cannot be found
      */
-    public static Map get(String name) {
+    public static AbstractMap get(String name) {
         if (maps.containsKey(name)) {
             return maps.get(name);
         } else {
             throw new IllegalArgumentException("Invalid map '" + name + "'");
         }
+    }
+
+    public static Collection<AbstractMap> getMaps() {
+        return maps.values();
     }
 
     /**
@@ -68,26 +83,40 @@ public class MapReader {
      * @return corresponding {@link Map}
      * @throws JSONException            when JSON cannot be parsed
      * @throws IllegalArgumentException when map is invalid
+     * @throws FileNotFoundException    when image file is invalid
      */
-    private static Map parseMap(String name, String data)
-        throws JSONException, IllegalArgumentException {
+    private static AbstractMap parseMap(Context context, String name, String data)
+        throws JSONException, IllegalArgumentException, FileNotFoundException {
         JSONObject json = new JSONObject(data);
 
-        List<Point> pathList = new ArrayList<>();
+        String displayName = json.getString("displayName");
+        String imageName = json.getString("image");
+        float pathRadius = (float) json.getDouble("pathRadius");
+
+        List<PointF> pathList = new ArrayList<>();
 
         JSONArray path = json.getJSONArray("path");
         for (int i = 0; i < path.length(); i++) {
             JSONObject point = (JSONObject) path.get(i);
-            int x = point.getInt("x");
-            int y = point.getInt("y");
-            pathList.add(new Point(x, y));
+            float x = (float) point.getDouble("x");
+            float y = (float) point.getDouble("y");
+            pathList.add(new PointF(x, y));
         }
 
         if (pathList.size() < 2) {
             throw new IllegalArgumentException("Map path must have at least two points");
         }
 
-        return new Map(name, pathList);
+        int imageID = context.getResources().getIdentifier(
+            imageName,
+            "mipmap",
+            context.getPackageName()
+        );
+        if (imageID == 0) {
+            throw new FileNotFoundException("Map image not found");
+        }
+
+        return new AbstractMap(context, name, displayName, imageID, pathList, pathRadius);
     }
 
     /**
@@ -101,9 +130,7 @@ public class MapReader {
     private static String readFile(Context context, String fileName) throws IOException {
         InputStream stream = context.getAssets().open(fileName);
 
-        String data = new BufferedReader(new InputStreamReader(stream)).lines()
+        return new BufferedReader(new InputStreamReader(stream)).lines()
             .collect(Collectors.joining("\n"));
-
-        return data;
     }
 }

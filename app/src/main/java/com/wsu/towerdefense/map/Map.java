@@ -3,88 +3,110 @@ package com.wsu.towerdefense.map;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
+import android.graphics.Paint.Align;
 import android.graphics.PointF;
 import android.graphics.RectF;
-
+import com.wsu.towerdefense.Application;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class Map {
+/**
+ * A map that has been adjusted for a particular screen size
+ */
+public class Map extends AbstractMap {
 
     /**
-     * Name of the map
+     * Cached colors for path rectangles drawn in debug mode
      */
-    private final String name;
+    private static final int[] PATH_COLORS = new int[]{
+        -65536, -32768, -256, -8323328, -16711936, -16711808,
+        -16711681, -16744193, -16776961, -8388353, -65281, -65408
+    };
 
     /**
-     * List of points representing the path enemies can take, in tile units
+     * Rectangles representing the path hitbox
      */
-    private final List<Point> path;
-    private final List<RectF> tiles;
+    private final List<RectF> bounds;
 
-    Map(String name, List<Point> path) {
-        this.name = name;
-        this.path = path;
-        this.tiles = new ArrayList<>();
+    public Map(AbstractMap baseMap, int gameWidth, int gameHeight) {
+        super(baseMap.name, baseMap.displayName, baseMap.imageID, baseMap.image,
+            adjustPath(baseMap.path, gameWidth, gameHeight), baseMap.pathRadius);
+
+        // generate bounds rectangles based on adjusted path
+        this.bounds = generateBounds();
+    }
+
+    /**
+     * Adjust path (scale up) to fit dimensions of the game
+     */
+    private static List<PointF> adjustPath(List<PointF> path, int gameWidth, int gameHeight) {
+        List<PointF> adjustedPath = new ArrayList<>();
+        for (PointF point : path) {
+            adjustedPath.add(new PointF(
+                point.x * gameWidth, point.y * gameHeight
+            ));
+        }
+        return adjustedPath;
     }
 
     public void render(Canvas canvas, Paint paint) {
-        for (RectF tile : tiles) {
-            paint.setColor(Color.YELLOW);
-            canvas.drawRect(tile, paint);
-        }
-    }
+        canvas.drawBitmap(this.image, 0, 0, null);
 
-    /**
-     * Generates a RectF of size cellSize for each cell along the path Note: only works with
-     * horizontal and vertical movement. Angled movement will not work
-     *
-     * @param cellSize size of each cell within the grid
-     */
-    public void generateTiles(PointF cellSize) {
-        int x;
-        int y;
-
-        for (int i = 0; i < path.size() - 1; i++) {
-            x = path.get(i).x;
-            y = path.get(i).y;
-
-            while (x != path.get(i + 1).x || y != path.get(i + 1).y) {
-                //add rect at cell
-                tiles.add(new RectF(x * cellSize.x, y * cellSize.y,
-                    (x * cellSize.x) + cellSize.x,
-                    (y * cellSize.y) + cellSize.y));
-
-                //if x is not at next point, determine direction and increment x
-                if (x != path.get(i + 1).x) {
-                    if (path.get(i + 1).x - x > 0) {        // x needs to move right
-                        x++;
-                    } else {                                // x needs to move left
-                        x--;
-                    }
-                    //if y is not at next point, determine direction and increment y
-                } else {                                    // y needs to move towards point
-                    if (path.get(i + 1).y - y > 0) {        // y needs to move down
-                        y++;
-                    } else {                                // y needs to move up
-                        y--;
-                    }
-                }
+        if (Application.DEBUG) {
+            for (int i = 0; i < bounds.size(); i++) {
+                paint.reset();
+                paint.setColor(PATH_COLORS[i % PATH_COLORS.length]);
+                paint.setAlpha(100);
+                canvas.drawRect(bounds.get(i), paint);
+            }
+            for (int i = 0; i < path.size(); i++) {
+                PointF point = path.get(i);
+                paint.reset();
+                paint.setTextSize(75);
+                paint.setColor(Color.WHITE);
+                paint.setTextAlign(Align.CENTER);
+                canvas.drawText(
+                    "" + i,
+                    point.x,
+                    point.y - ((paint.descent() + paint.ascent()) / 2f),
+                    paint
+                );
             }
         }
     }
 
-    public List<RectF> getTiles() {
+    /**
+     * Generate bounds rectangles from path
+     */
+    private List<RectF> generateBounds() {
+        List<RectF> tiles = new ArrayList<>();
+
+        for (int i = 1; i < path.size(); i++) {
+            PointF p1 = path.get(i - 1);
+            PointF p2 = path.get(i);
+
+            // assume straight path
+            if (p1.x == p2.x) {
+                tiles.add(new RectF(
+                    p1.x - pathRadius,
+                    Math.min(p1.y, p2.y) - pathRadius,
+                    p1.x + pathRadius,
+                    Math.max(p1.y, p2.y) + pathRadius
+                ));
+            } else if (p1.y == p2.y) {
+                tiles.add(new RectF(
+                    Math.min(p1.x, p2.x) - pathRadius,
+                    p1.y - pathRadius,
+                    Math.max(p1.x, p2.x) + pathRadius,
+                    p1.y + pathRadius
+                ));
+            }
+        }
+
         return tiles;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<Point> getPath() {
-        return Collections.unmodifiableList(path);
+    public List<RectF> getBounds() {
+        return bounds;
     }
 }

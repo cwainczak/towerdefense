@@ -1,12 +1,9 @@
 package com.wsu.towerdefense.activity;
 
 import android.content.Intent;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
 
 public class MainActivity extends AppCompatActivity {

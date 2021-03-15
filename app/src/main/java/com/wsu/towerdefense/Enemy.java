@@ -3,83 +3,64 @@ package com.wsu.towerdefense;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
-
 import java.util.List;
 import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
-    /**
-     * Enemy's velocity in the x direction
-     */
-    private float velocityX;
-    /**
-     * Enemy's velocity in the y direction
-     */
-    private float velocityY;
-    /**
-     * pixels per second
-     */
-    private final float speed;
+    public enum Type {
+        //Standard enemy types
+        S1(400, 40, 20, R.mipmap.enemy),
+        S2(450, 50, 20, R.mipmap.enemy),
+        S3(500, 60, 20, R.mipmap.enemy);
 
-    private PointF pixTarget;
-    private final ListIterator<Point> path;
-    private Point target;
-    private final PointF cellSize;
-    private final PointF offset;
+        final float speed;
+        final int hp;
+        final int price;
+        final int resource;
 
-    /**
-     * Is the enemy alive
-     */
+        Type(float speed, int hp, int price, int resource) {
+            this.speed = speed;
+            this.hp = hp;
+            this.price = price;
+            this.resource = resource;
+        }
+    }
+
+    private final Type type;
+
+    private int hp;
     private boolean isAlive;
 
-    /**
-     * Did the enemy reach the last point in its path
-     */
+    private float velocityX;
+    private float velocityY;
+
+    private final ListIterator<PointF> path;
     private boolean isAtPathEnd;
-
-    /**
-     * Enemy's hit points
-     */
-    private int hp;
-
-    /**
-     * Amount of money added to player's total money count when this enemy is defeated
-     */
-    private int price;
+    private PointF target;
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
      * Map they are placed on. They will continue moving along the path until they reach the end or
      * are killed by a Projectile.
      *
-     * @param path     A List of Points for the current location to move towards
-     * @param cellSize Dimensions of each cell in the grid making up the map area
-     * @param hp       The amount of hit points this Enemy has
-     * @param speed    distance enemy moves, pixels per second
-     * @param price    Amount of money given to player when this enemy is defeated
+     * @param path A List of Points for the current location to move towards
+     * @param type enum containing information which will be consistent across all enemies of the
+     *             same type (speed, hp, price, resource)
      */
-    public Enemy(List<Point> path, PointF cellSize, int hp, float speed, int price) {
-        super(new PointF(path.get(0).x * cellSize.x + (cellSize.x / 2),
-            path.get(0).y * cellSize.y + (cellSize.y / 2)), R.mipmap.enemy);
+    public Enemy(Type type, List<PointF> path) {
+        super(path.get(0), type.resource);
 
-        this.speed = speed;
-        this.cellSize = cellSize;
-        this.offset = new PointF(cellSize.x / 2, cellSize.y / 2);
-
+        this.type = type;
         this.path = path.listIterator();
-        this.target = this.path.next();
-        this.pixTarget = new PointF(
-            target.x * cellSize.x + offset.x,
-            target.y * cellSize.y + offset.y
-        );
+        this.hp = type.hp;
 
-        this.hp = hp;
-        this.price = price;
+        this.target = this.path.next();
         this.isAlive = true;
         this.isAtPathEnd = false;
+        this.velocityX = 0;
+        this.velocityY = 0;
     }
 
     /**
@@ -91,7 +72,34 @@ public class Enemy extends AbstractMapObject {
      */
     @Override
     protected void update(Game game, double delta) {
-        moveEnemy(delta);
+        // Moves this Enemy to its next location using velocity and delta. If enemy will be at or past
+        // target, and there are more Points in path, set location to target instead and set target to
+        // next Point in path.
+
+        //check if distance between location and target is less than or equal to distance between
+        //location and next location, and there are more Points int path
+        double distance = Math.hypot(location.x - target.x, location.y - target.y);
+
+        if (distance <= Math.abs(type.speed * delta)) {
+            if (path.hasNext()) {
+                //set location to target, and update target
+                location = new PointF(target.x, target.y);
+                target = path.next();
+
+                float dx = target.x - location.x;
+                float dy = target.y - location.y;
+                distance = Math.hypot(dx, dy);
+                velocityX = type.speed * (float) (dx / distance);
+                velocityY = type.speed * (float) (dy / distance);
+            } else {
+                // If there are no more points in the path
+                isAtPathEnd = true;
+            }
+        }
+
+        //increment location based on velocity values
+        location.x += velocityX * delta;
+        location.y += velocityY * delta;
     }
 
     /**
@@ -115,10 +123,10 @@ public class Enemy extends AbstractMapObject {
             // Draw the Enemy hp above the bitmap
             int offset = 10;
 
-            paint.setColor(Color.RED);
+            paint.reset();
+            paint.setColor(Color.WHITE);
             paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(40);
-
+            paint.setTextSize(50);
             canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
         }
     }
@@ -151,44 +159,6 @@ public class Enemy extends AbstractMapObject {
             y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
     }
 
-    /**
-     * Moves this Enemy to its next location using velocity and delta. If enemy will be at or past
-     * target, and there are more Points in path, set location to target instead and set target to
-     * next Point in path.
-     *
-     * @param delta Time since last update
-     */
-    private void moveEnemy(double delta) {
-        //check if distance between location and target is less than or equal to distance between
-        //location and next location, and there are more Points int path
-        double distance = Math.hypot(location.x - pixTarget.x, location.y - pixTarget.y);
-
-        if (distance <= Math.abs(speed * delta)) {
-            if (path.hasNext()) {
-                //set location to target, and update target
-                location = pixTarget;
-                target = path.next();
-                pixTarget = new PointF(
-                    target.x * cellSize.x + offset.x,
-                    target.y * cellSize.y + offset.y
-                );
-
-                float dx = pixTarget.x - location.x;
-                float dy = pixTarget.y - location.y;
-                distance = Math.hypot(dx, dy);
-                velocityX = speed * (float) (dx / distance);
-                velocityY = speed * (float) (dy / distance);
-            } else {
-                // If there are no more points in the path
-                isAtPathEnd = true;
-            }
-        }
-
-        //increment location based on velocity values
-        location.x += velocityX * delta;
-        location.y += velocityY * delta;
-    }
-
     public boolean isAlive() {
         return this.isAlive;
     }
@@ -197,5 +167,7 @@ public class Enemy extends AbstractMapObject {
         return this.isAtPathEnd;
     }
 
-    public int getPrice() { return this.price; }
+    public int getPrice() {
+        return this.type.price;
+    }
 }
