@@ -1,32 +1,29 @@
 package com.wsu.towerdefense.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
-import java.util.Arrays;
+import com.wsu.towerdefense.map.AbstractMap;
+import com.wsu.towerdefense.map.MapReader;
+import com.wsu.towerdefense.save.Serializer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapSelectionActivity extends AppCompatActivity {
 
-    ImageView map_1;
-    ImageView map_2;
-    ImageView map_3;
-    ImageView map_4;
-    ImageView map_5;
-    ImageView map_6;
-    ImageView map_7;
-    ImageView map_8;
-    ImageView map_9;
+    private List<ImageView> mapList;
+    private TextView txt_mapName;
+    private Button btn_play;
 
-    List<ImageView> mapList;
-
-    TextView txt_mapName;
+    private AbstractMap selectedMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +31,57 @@ public class MapSelectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map_selection);
         onWindowFocusChanged(true);
 
-        map_1 = findViewById(R.id.img_Map1);
-        map_2 = findViewById(R.id.img_Map2);
-        map_3 = findViewById(R.id.img_Map3);
-        map_4 = findViewById(R.id.img_Map4);
-        map_5 = findViewById(R.id.img_Map5);
-        map_6 = findViewById(R.id.img_Map6);
-        map_7 = findViewById(R.id.img_Map7);
-        map_8 = findViewById(R.id.img_Map8);
-        map_9 = findViewById(R.id.img_Map9);
-        mapList = Arrays.asList(map_1, map_2, map_3, map_4, map_5, map_6, map_7, map_8, map_9);
-
         txt_mapName = findViewById(R.id.txt_mapName);
-        txt_mapName.setVisibility(View.INVISIBLE);
+        showText(null);
+        addImageViews();
+
+        btn_play = findViewById(R.id.play_button);
+        btn_play.setEnabled(false);
     }
 
+    private void addImageViews() {
+        final int imageWidth = dpToPixels(275);
+        final int imageHeight = dpToPixels(173);
+        final int marginStart = dpToPixels(10);
+        final int marginEnd = dpToPixels(20);
+
+        LinearLayout imageContainer = findViewById(R.id.imageContainer);
+        mapList = new ArrayList<>();
+
+        for (AbstractMap map : MapReader.getMaps()) {
+            ImageView image = new ImageView(this);
+            image.setImageResource(map.getImageID());
+            image.setOnClickListener(this::mapSelected);
+            image.setTag(map.getName());
+
+            LayoutParams layout = new LayoutParams(imageWidth, imageHeight);
+            layout.setMarginStart(marginStart);
+            layout.setMarginEnd(marginEnd);
+            image.setLayoutParams(layout);
+
+            mapList.add(image);
+            imageContainer.addView(image);
+        }
+    }
+
+    private int dpToPixels(int dp) {
+        return (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            getResources().getDisplayMetrics()
+        );
+    }
+
+
+    private void showText(String str) {
+        if (str != null) {
+            txt_mapName.setText(str);
+            txt_mapName.setVisibility(View.VISIBLE);
+        } else {
+            txt_mapName.setText("");
+            txt_mapName.setVisibility(View.INVISIBLE);
+        }
+    }
 
     /**
      * This method is for when the play button is clicked. If the play button is clicked before a
@@ -58,13 +91,13 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnPlayClicked(View view) {
-        if (
-            txt_mapName.getText().equals("Map Name") || txt_mapName.getText().equals("Select a Map")
-        ) {
-            txt_mapName.setText("Select a Map");
-            txt_mapName.setVisibility(View.VISIBLE);
-        } else {
+        if (selectedMap != null) {
+            // delete save file when new game is started
+            Serializer.delete(this, Serializer.SAVEFILE);
+
+            // open game
             Intent intent = new Intent(this, GameActivity.class);
+            intent.putExtra("map", selectedMap.getName());
             startActivity(intent);
         }
     }
@@ -87,13 +120,15 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void mapSelected(View view) {
+        ImageView imageView = (ImageView) view;
         for (int i = 0; i < mapList.size(); i++) {
             if (mapList.get(i).isPressed()) {
-                ImageView imageView = (ImageView) findViewById(mapList.get(i).getId());
-                String imageName = String.valueOf(imageView.getTag());
-
-                txt_mapName.setText(imageName);
-                txt_mapName.setVisibility(View.VISIBLE);
+                // select map
+                selectedMap = MapReader.get((String) imageView.getTag());
+                // update ui
+                btn_play.setEnabled(true);
+                showText(selectedMap.getDisplayName());
+                return;
             }
         }
     }

@@ -20,11 +20,10 @@
         app:srcCompat="@mipmap/main_menu_background" />
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/select_a_map"
+        android:text="@string/map_selection"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,114 +36,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/img_Map1"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 1"
-                app:srcCompat="@mipmap/map_1" />
-
-            <ImageView
-                android:id="@+id/img_Map2"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 2"
-                app:srcCompat="@mipmap/map_2" />
-
-            <ImageView
-                android:id="@+id/img_Map3"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 3"
-                app:srcCompat="@mipmap/map_3" />
-
-            <ImageView
-                android:id="@+id/img_Map4"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 4"
-                app:srcCompat="@mipmap/map_4" />
-
-            <ImageView
-                android:id="@+id/img_Map5"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 5"
-                app:srcCompat="@mipmap/map_5" />
-
-            <ImageView
-                android:id="@+id/img_Map6"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 6"
-                app:srcCompat="@mipmap/map_6" />
-
-            <ImageView
-                android:id="@+id/img_Map7"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 7"
-                app:srcCompat="@mipmap/map_7" />
-
-            <ImageView
-                android:id="@+id/img_Map8"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 8"
-                app:srcCompat="@mipmap/map_8" />
-
-            <ImageView
-                android:id="@+id/img_Map9"
-                android:layout_width="275.33dp"
-                android:layout_height="177.33dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="20dp"
-                android:contentDescription="@string/todo"
-                android:onClick="mapSelected"
-                android:tag="Map 9"
-                app:srcCompat="@mipmap/map_9" />
-
+          android:id="@+id/imageContainer"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
         </LinearLayout>
     </HorizontalScrollView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/play_button"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -164,10 +64,12 @@
         android:layout_height="39dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
-        android:background="@mipmap/back"
         android:backgroundTint="#009688"
-        android:contentDescription="@string/todo"
         android:onClick="btnBackClicked"
+        android:text="@string/back"
+        android:textSize="18sp"
+        app:icon="@mipmap/back"
+        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

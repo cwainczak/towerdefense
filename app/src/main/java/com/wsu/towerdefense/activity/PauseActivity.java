@@ -7,12 +7,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.annotation.Nullable;
-
 import com.wsu.towerdefense.R;
 
 public class PauseActivity extends Activity {
+
+    public static boolean rerender = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class PauseActivity extends Activity {
         Intent intent = new Intent().setClass(PauseActivity.this, GameSelectionActivity.class);
         startActivity(intent);
         finishAffinity();
-        Log.i(getString(R.string.logcatKey), "Exiting game and returning to Game Select Menu.");
+        Log.i(getString(R.string.logcatKey), "Exiting game");
     }
 
     private void resizeButton(Button b, float ratio) {
@@ -74,4 +74,11 @@ public class PauseActivity extends Activity {
             ActivityUtil.hideNavigator(getWindow());
         }
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        rerender = true;
+    }
+
 }

@@ -13,15 +13,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cl_towerLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_towerInfoLayout"
-        android:visibility="invisible"
         android:layout_width="93dp"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -63,17 +61,17 @@
             app:layout_constraintTop_toBottomOf="@+id/txt_towerName2" />
 
         <Button
-          android:id="@+id/button7"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:backgroundTint="#F44336"
-          android:onClick="removeSelectedTower"
-          android:text="@string/remove"
-          android:textColor="#000000"
-          android:textSize="12sp"
-          app:layout_constraintBottom_toBottomOf="@+id/imageView9"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent" />
+            android:id="@+id/button7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F44336"
+            android:onClick="removeSelectedTower"
+            android:text="@string/remove"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,6 +81,7 @@
         android:layout_height="39dp"
         android:background="@mipmap/pause"
         android:backgroundTint="#009688"
+        android:onClick="btnPauseOnClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.86"
@@ -116,7 +115,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="75dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -262,6 +262,20 @@
 
             </LinearLayout>
         </ScrollView>
+
+        <ImageButton
+            android:id="@+id/btn_play"
+            android:layout_width="64dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="10dp"
+            android:background="@mipmap/play"
+            android:backgroundTint="#009688"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/txt_towerName"

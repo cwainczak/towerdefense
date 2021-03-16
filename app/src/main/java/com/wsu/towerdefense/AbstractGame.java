@@ -8,6 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import androidx.annotation.NonNull;
+import com.wsu.towerdefense.activity.PauseActivity;
 
 /**
  * Base class for the game. Manages the {@link SurfaceView}, game loop {@link Thread}, and {@link
@@ -33,7 +34,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      * Whether the game state should update. Set to false when app is minimized.
      */
     protected boolean running;
-    private boolean isPaused;
+    private boolean isPaused = false;
     private int gameWidth;
     private int gameHeight;
 
@@ -91,10 +92,11 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
             }
             // keep updating the game until passed time < minimum
 
-            // when done updating, render the game
+            // when done updating, render the game, unless the game is paused
             // remaining unprocessed time is used by render method to interpolate
-            if (!this.isPaused) {
+            if (!this.isPaused || PauseActivity.rerender) {
                 _render(acc / TIMESTEP);
+                PauseActivity.rerender = false;
             }
 
         }
@@ -234,4 +236,5 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
 }
