@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
+import java.util.List;
+
 public class Projectile extends AbstractMapObject {
 
     // What percent of the bitmap height will be used for the hitbox
@@ -16,26 +18,30 @@ public class Projectile extends AbstractMapObject {
 
     enum Type {
 
-        HOMING(750f, R.mipmap.projectile),
-        LINEAR(1000f, R.mipmap.projectile);
+        HOMING(750f, 15, R.mipmap.projectile),
+        LINEAR(1000f, 10, R.mipmap.projectile);
 
         final float speed;
+        final int damage;
         final int resourceID;
 
         /**
          * @param someSpeed The speed of the projectile
+         * @param damage    Damage done to an Enemy hit by this projectile
          * @param someResourceID    The Resource ID of the image of the projectile
          */
-        Type(float someSpeed, int someResourceID){
+        Type(float someSpeed, int damage, int someResourceID){
             this.speed = someSpeed;
+            this.damage = damage;
             this.resourceID = someResourceID;
         }
     }
 
     private final Type type;
-    private Enemy target;   // Each projectile will have a target at some point, regardless of type
+    private Enemy target;
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
+    public boolean remove;
 
     /**
      * A projectile shot by Towers at Enemies
@@ -66,24 +72,20 @@ public class Projectile extends AbstractMapObject {
             }
         }
         else if (this.type == Type.LINEAR){
-            boolean hasHit = false;
-            for (Enemy e : game.getEnemies()){
-                this.target = e;
-                if (this.hitTarget()){
-                    location.set(target.location);
-                    hasHit = true;
-                }
-            }
-            if (!hasHit){
-                this.location.set(this.calculateNewLocation(delta));
-            }
+            location.set(calculateNewLocation(delta));
+        }
+
+        checkCollision(game.getEnemies());
+
+        if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
+            remove = true;
         }
     }
 
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-        PointF newLoc = calculateNewLocation(lerp);
-        if (!hitTarget(newLoc.x, newLoc.y)) {
+        if (!remove) {
+            PointF newLoc = calculateNewLocation(lerp);
             canvas.drawBitmap(bitmap,
                 newLoc.x - bitmap.getWidth() / 2f,
                 newLoc.y - bitmap.getHeight() / 2f,
@@ -91,30 +93,17 @@ public class Projectile extends AbstractMapObject {
         }
     }
 
-    /**
-     * Deals damage to this Projectile's target.
-     *
-     * @param damage The amount of damage to deal.
-     */
-    public void damageTarget(int damage) {
-        target.takeDamage(damage);
-    }
+    private void checkCollision(List<Enemy> enemies) {
+        for (Enemy e : enemies) {
+            if (e.collides(location.x, location.y,
+                    bitmap.getWidth() * hitboxScaleX,
+                    bitmap.getHeight() * hitboxScaleY)) {
 
-    /**
-     * A method that checks whether the hitbox of this Projectile overlaps with the hitbox of the
-     * Enemy this Projectile is targeting.
-     *
-     * @return true if this Projectile hit its target, otherwise false
-     */
-    public boolean hitTarget() {
-        return hitTarget(location.x, location.y);
-    }
-
-    private boolean hitTarget(float x, float y) {
-        return target.collides(x, y,
-            bitmap.getWidth() * hitboxScaleX,
-            bitmap.getHeight() * hitboxScaleY
-        );
+                e.takeDamage(type.damage);
+                remove = true;
+                break;
+            }
+        }
     }
 
     /**
@@ -146,13 +135,9 @@ public class Projectile extends AbstractMapObject {
         return null;
     }
 
-    public Enemy getTarget() {
-        return target;
-    }
-
-    public boolean isOffScreen(int screenWidth, int screenHeight){
-        return (this.location.x < 0 || this.location.x > screenWidth ||
-                this.location.y < 0 || this.location.y > screenHeight);
+    private boolean isOffScreen(int screenWidth, int screenHeight){
+        return  this.location.x < 0 || this.location.x > screenWidth ||
+                this.location.y < 0 || this.location.y > screenHeight;
     }
 
     private void setVelocity(){
@@ -162,5 +147,4 @@ public class Projectile extends AbstractMapObject {
         this.velX = type.speed * (float) (dx / distance);
         this.velY = type.speed * (float) (dy / distance);
     }
-
 }

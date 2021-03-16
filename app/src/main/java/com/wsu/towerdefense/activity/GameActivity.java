@@ -193,10 +193,8 @@ public class GameActivity extends AppCompatActivity {
                     View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
                     v.startDragAndDrop(data, dragshadow, v, 0);
 
-                    // Get the tower Type using the image tag
-                    String tag = v.getTag().toString();
-                    int towerNum = Character.getNumericValue(tag.charAt(tag.length()-1));
-                    selectedTowerType = towerTypes.get(towerNum-1);
+                    // Get the tower Type using the image
+                    selectedTowerType = towerTypes.get(towerList.indexOf(v));
                     return true;
                 }
             );
@@ -275,12 +273,22 @@ public class GameActivity extends AppCompatActivity {
             // than cost of their respective Type
             if (money >= towerTypes.get(i).cost) {
                 towerImage.setColorFilter(null);
-                towerImage.setEnabled(true);
+                towerImage.setOnLongClickListener((v -> {
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                    v.startDragAndDrop(data, dragshadow, v, 0);
+
+                    // Get the tower Type using the image
+                    selectedTowerType = towerTypes.get(towerList.indexOf(v));
+                    return true;
+                }));
             }
             // Disable towers (in menu) with cost greater than money
             else {
                 towerImage.setColorFilter(NO_MONEY_TINT);
-                towerImage.setEnabled(false);
+                towerImage.setOnLongClickListener(null);
             }
         }
     }

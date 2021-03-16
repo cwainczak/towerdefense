@@ -43,6 +43,7 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private double timeSinceShot = 0.0;
+    private Projectile.Type projectileType;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -55,6 +56,15 @@ public class Tower extends AbstractMapObject implements Serializable {
     public Tower(PointF location, Type tt) {
         super(location, R.mipmap.tower);
         this.type = tt;
+
+        if (tt == Type.BASIC_LINEAR) {
+            projectileType = Projectile.Type.LINEAR;
+        } else if (tt == Type.BASIC_HOMING) {
+            projectileType = Projectile.Type.HOMING;
+        } else {
+            projectileType = null;
+        }
+
         this.projectiles = new ArrayList<>();
     }
 
@@ -66,8 +76,9 @@ public class Tower extends AbstractMapObject implements Serializable {
      */
     @Override
     protected void update(Game game, double delta) {
-        // Remove target if it goes out of range
-        if (distanceToEnemy(target) > this.type.radius) {
+        // Remove target if it goes out of range or reaches end of path
+        if (distanceToEnemy(target) > this.type.radius ||
+                (target != null && target.isAtPathEnd())) {
             target = null;
         }
 
@@ -88,16 +99,6 @@ public class Tower extends AbstractMapObject implements Serializable {
 
         // Shoot another projectile if there is a target and enough time has passed
         if (target != null && timeSinceShot >= this.type.fireRate) {
-            Projectile.Type projectileType;
-            if (this.type == Type.BASIC_HOMING){
-                projectileType = Projectile.Type.HOMING;
-            }
-            else if (this.type == Type.BASIC_LINEAR){
-                projectileType = Projectile.Type.LINEAR;
-            }
-            else {
-                projectileType = null;
-            }
             projectiles.add(new Projectile(new PointF(location.x, location.y), projectileType, target));
             timeSinceShot = 0;
         }
@@ -107,15 +108,7 @@ public class Tower extends AbstractMapObject implements Serializable {
             Projectile p = projectileIt.next();
             p.update(game, delta);
 
-            // If the projectile hits its target deal damage to the target
-            if (p.hitTarget()) {
-                p.damageTarget(this.type.damage);
-
-                // Remove the projectile from the projectile list
-                projectileIt.remove();
-            }
-            // If the projectile goes off-screen
-            else if (p.isOffScreen(game.getGameWidth(), game.getGameHeight())){
+            if (p.remove) {
                 projectileIt.remove();
             }
         }
