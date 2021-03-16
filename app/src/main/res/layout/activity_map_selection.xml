@@ -59,17 +59,15 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_pause6"
+        android:id="@+id/btn_pause7"
         android:layout_width="45dp"
         android:layout_height="39dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
+        android:background="@mipmap/back"
         android:backgroundTint="#009688"
+        android:contentDescription="@string/todo"
         android:onClick="btnBackClicked"
-        android:text="@string/back"
-        android:textSize="18sp"
-        app:icon="@mipmap/back"
-        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
