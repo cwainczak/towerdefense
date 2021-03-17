@@ -1,8 +1,19 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Each wave is split up into sets. Each set contains an Enemy.Type, amount of enemies to be
@@ -23,12 +34,17 @@ public class Waves {
     List<List<Double>> delays;
     List<List<Enemy.Type>> types;
 
-    /**
-     * gets amount, delays, and types by reading from json file within {@link #init()}
-     * using {@link #readJSON()}
-     */
-    public Waves(){
-        init();
+    public Waves(Context context){
+        amounts = new ArrayList<>();
+        delays = new ArrayList<>();
+        types = new ArrayList<>();
+
+        try {
+            parseWaves(context, "waves/standard.json");
+        }
+        catch (IOException | JSONException e) {
+            Log.e(context.getString(R.string.logcatKey), "Error while initializing Waves", e);
+        }
     }
 
     /**
@@ -45,12 +61,32 @@ public class Waves {
         this.waves = waves;
     }
 
-    private void init(){
+    public void parseWaves(Context context, String fileName) throws JSONException, IOException {
+        InputStream stream = context.getAssets().open(fileName);
 
-    }
+        String data = new BufferedReader(new InputStreamReader(stream)).lines()
+                .collect(Collectors.joining("\n"));
 
-    public void readJSON(){
+        JSONObject waveReader = new JSONObject(data);
 
+        JSONArray a = waveReader.getJSONArray("amounts");
+        JSONArray d = waveReader.getJSONArray("delays");
+        JSONArray t = waveReader.getJSONArray("types");
+
+        waves = a.length();
+
+        // it is assumed that all arrays within amounts, delays, and types are of the same size
+        for (int i = 0; i < a.length(); i++) {
+            amounts.add(new ArrayList<>());
+            delays.add(new ArrayList<>());
+            types.add(new ArrayList<>());
+
+            for (int j = 0; j < a.getJSONArray(i).length(); j++) {
+                amounts.get(i).add(a.getJSONArray(i).getInt(j));
+                delays.get(i).add(d.getJSONArray(i).getDouble(j));
+                types.get(i).add(Enemy.Type.valueOf(t.getJSONArray(i).getString(j)));
+            }
+        }
     }
 
     //potential issue: running out of waves results in fall through to elseif

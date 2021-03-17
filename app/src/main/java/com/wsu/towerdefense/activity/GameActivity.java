@@ -112,7 +112,6 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btn_play.setOnClickListener(view -> {
-                Log.i("play clicked, running: ",  "" + game.getWaves().isRunning());
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
                     game.getWaves().setRunning(true);
                     game.save();

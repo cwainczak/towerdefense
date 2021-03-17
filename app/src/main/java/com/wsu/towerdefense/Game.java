@@ -12,6 +12,9 @@ import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
+
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +67,7 @@ public class Game extends AbstractGame {
     public PointF dragLocation = null;
 
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
-        String mapName) {
+        String mapName){
         super(context, gameWidth, gameHeight);
 
         boolean hasSave = saveState != null;
@@ -81,7 +84,7 @@ public class Game extends AbstractGame {
             getGameHeight()
         );
 //        waves = hasSave ? saveState.waves : new Waves();
-        waves = new Waves(a1, d1, t1, 3);
+        waves = new Waves(context);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
@@ -253,8 +256,8 @@ public class Game extends AbstractGame {
 
         // check against path
         for (RectF rect : map.getBounds()) {
-            if (rect.left + towerRadius <= location.x &&
-                location.x + towerRadius <= rect.right &&
+            if (rect.left - towerRadius <= location.x &&
+                location.x - towerRadius <= rect.right &&
                 rect.top - towerRadius <= location.y &&
                 location.y - towerRadius <= rect.bottom) {
                 return false;
@@ -376,13 +379,13 @@ public class Game extends AbstractGame {
     List<List<Integer>> a1 = Arrays.asList(
             Arrays.asList(3, 2),
             Arrays.asList(5, 4, 3),
-            Arrays.asList(0, 1, 2)
+            Arrays.asList(2, 1, 2)
     );
 
     List<List<Double>> d1 = Arrays.asList(
             Arrays.asList(0.5, 0.6),
             Arrays.asList(0.1, 0.2, 0.3),
-            Arrays.asList(0.03, 0.0, 0.02)
+            Arrays.asList(0.03, 0.07, 0.02)
     );
 
     List<List<Enemy.Type>> t1 = Arrays.asList(
