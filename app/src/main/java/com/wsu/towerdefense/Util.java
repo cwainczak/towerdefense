@@ -21,5 +21,19 @@ public class Util {
         return new PointF((float) (curLoc.x + xDistanceMoved), (float) (curLoc.y + yDistanceMoved));
     }
 
+    /**
+     * Gets velocity based on distance to target.
+     * @param curLoc       Current Location of the object
+     * @param targetLoc    Current location of the target (next coordinate on path)
+     * @param speed        Speed of the object
+     */
+    public static PointF getNewVelocity(PointF curLoc, PointF targetLoc, float speed){
+        float dx = targetLoc.x - curLoc.x;
+        float dy = targetLoc.y - curLoc.y;
+        double distance = Math.hypot(dx, dy);
+        float velX = speed * (float) (dx / distance);
+        float velY = speed * (float) (dy / distance);
+        return new PointF(velX, velY);
+    }
 
 }

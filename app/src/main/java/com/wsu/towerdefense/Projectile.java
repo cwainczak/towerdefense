@@ -54,7 +54,9 @@ public class Projectile extends AbstractMapObject {
         this.type = pt;
         this.target = target;
         if (this.type == Type.LINEAR){
-            this.setVelocity();
+            PointF newVel = Util.getNewVelocity(this.location, this.target.location, this.type.speed);
+            this.velX = newVel.x;
+            this.velY = newVel.y;
         }
     }
 
@@ -138,11 +140,4 @@ public class Projectile extends AbstractMapObject {
                 this.location.y < 0 || this.location.y > screenHeight;
     }
 
-    private void setVelocity(){
-        float dx = this.target.location.x - this.location.x;
-        float dy = this.target.location.y - this.location.y;
-        double distance = Math.hypot(dx, dy);
-        this.velX = type.speed * (float) (dx / distance);
-        this.velY = type.speed * (float) (dy / distance);
-    }
 }
