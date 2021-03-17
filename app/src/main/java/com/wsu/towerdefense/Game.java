@@ -14,6 +14,7 @@ import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class Game extends AbstractGame {
 
     private final List<Tower> towers;
     private final List<Enemy> enemies;
+
+    private final Waves waves;
 
     private final Map map;
 
@@ -77,6 +80,8 @@ public class Game extends AbstractGame {
             getGameWidth(),
             getGameHeight()
         );
+//        waves = hasSave ? saveState.waves : new Waves();
+        waves = new Waves(a1, d1, t1, 3);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
@@ -91,7 +96,7 @@ public class Game extends AbstractGame {
     /**
      * Saves the current game state to the default save file
      */
-    private void save() {
+    public void save() {
         try {
             Serializer.save(getContext(), Serializer.SAVEFILE, this);
         } catch (IOException e) {
@@ -101,6 +106,7 @@ public class Game extends AbstractGame {
 
     @Override
     protected void update(double delta) {
+        spawnEnemy(delta);
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
@@ -247,8 +253,10 @@ public class Game extends AbstractGame {
 
         // check against path
         for (RectF rect : map.getBounds()) {
-            if (rect.left <= location.x && location.x <= rect.right &&
-                rect.top <= location.y && location.y <= rect.bottom) {
+            if (rect.left + towerRadius <= location.x &&
+                location.x + towerRadius <= rect.right &&
+                rect.top - towerRadius <= location.y &&
+                location.y - towerRadius <= rect.bottom) {
                 return false;
             }
         }
@@ -275,12 +283,14 @@ public class Game extends AbstractGame {
         ((GameActivity) getContext()).gameOver();
     }
 
-    public void spawnEnemies() {
-        save();
+    public void spawnEnemy(double delta){
+        if(waves.isRunning()) {
+            waves.updateTimeSinceSpawn(delta);
 
-        enemies.add(new Enemy(Enemy.Type.S1, map.getPath()));
-        enemies.add(new Enemy(Enemy.Type.S2, map.getPath()));
-        enemies.add(new Enemy(Enemy.Type.S3, map.getPath()));
+            if (waves.delayPassed()){
+                enemies.add(new Enemy(waves.next(), map.getPath()));
+            }
+        }
     }
 
     public void setSelectedTower(Tower tower) {
@@ -343,6 +353,10 @@ public class Game extends AbstractGame {
         return lives;
     }
 
+    public Waves getWaves() {
+        return waves;
+    }
+
     /**
      * A custom listener for Game objects
      */
@@ -356,4 +370,24 @@ public class Game extends AbstractGame {
     public void setGameListener(GameListener listener) {
         this.listener = listener;
     }
+
+
+    //TEMP VALUES FOR TESTING
+    List<List<Integer>> a1 = Arrays.asList(
+            Arrays.asList(3, 2),
+            Arrays.asList(5, 4, 3),
+            Arrays.asList(0, 1, 2)
+    );
+
+    List<List<Double>> d1 = Arrays.asList(
+            Arrays.asList(0.5, 0.6),
+            Arrays.asList(0.1, 0.2, 0.3),
+            Arrays.asList(0.03, 0.0, 0.02)
+    );
+
+    List<List<Enemy.Type>> t1 = Arrays.asList(
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2),
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2, Enemy.Type.S3),
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2, Enemy.Type.S3)
+    );
 }

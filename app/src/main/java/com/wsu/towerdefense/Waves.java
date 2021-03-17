@@ -1,0 +1,109 @@
+package com.wsu.towerdefense;
+
+import android.util.Log;
+
+import java.util.List;
+
+/**
+ * Each wave is split up into sets. Each set contains an Enemy.Type, amount of enemies to be
+ * spawned, and a delay to wait before spawning the next enemy.
+ *
+ */
+public class Waves {
+
+    private int waves;
+    private int wave = 0;
+    private int set = 0;
+    private int spawned = 0;
+    double timeSinceSpawn = 0.0;
+
+    boolean running = false;
+
+    List<List<Integer>> amounts;
+    List<List<Double>> delays;
+    List<List<Enemy.Type>> types;
+
+    /**
+     * gets amount, delays, and types by reading from json file within {@link #init()}
+     * using {@link #readJSON()}
+     */
+    public Waves(){
+        init();
+    }
+
+    /**
+     * alternate constructor for manually passing List values. Primarily used for testing
+     */
+    public Waves(List<List<Integer>> amounts,
+                 List<List<Double>> delays,
+                 List<List<Enemy.Type>> types,
+                 int waves
+    ){
+        this.amounts = amounts;
+        this.delays = delays;
+        this.types = types;
+        this.waves = waves;
+    }
+
+    private void init(){
+
+    }
+
+    public void readJSON(){
+
+    }
+
+    //potential issue: running out of waves results in fall through to elseif
+    private void progressWave(){
+        spawned++;
+
+        //if all enemies have been spawned in the set
+        if(spawned - amounts.get(wave).get(set) >= 0){
+            spawned = 0;
+            set++;
+        }
+        //if all sets in a wave have passed and there are more waves
+        if(set - amounts.get(wave).size() >= 0 &&
+                wave < waves){
+            Log.i("incrementing wave: ", wave + " -> " + wave + 1);
+            wave++;
+            set = 0;
+            running = false;
+        }
+    }
+
+    /**
+     * @return current enemyType and progresses Wave
+     */
+    public Enemy.Type next(){
+        Enemy.Type tempType = types.get(wave).get(set);
+        progressWave();
+        return tempType;
+    }
+
+    public void updateTimeSinceSpawn(double delta){
+        timeSinceSpawn += delta;
+    }
+
+    public boolean delayPassed(){
+        if(timeSinceSpawn >= delays.get(wave).get(set)){
+            timeSinceSpawn = 0;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public int getWave() {
+        return wave + 1;
+    }
+
+    public boolean isRunning(){
+        return running;
+    }
+
+    public void setRunning(boolean running){
+        this.running = running;
+    }
+}
