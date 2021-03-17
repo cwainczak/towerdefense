@@ -128,9 +128,7 @@ public class Projectile extends AbstractMapObject {
             );
         }
         else if (this.type == Type.LINEAR){
-            double xDistanceMoved = this.velX * delta;
-            double yDistanceMoved = this.velY * delta;
-            return new PointF((float) (this.location.x + xDistanceMoved), (float) (this.location.y + yDistanceMoved));
+                return Util.getNewLoc(this.location, this.velX, this.velY, delta);
         }
         return null;
     }

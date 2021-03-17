@@ -97,9 +97,8 @@ public class Enemy extends AbstractMapObject {
             }
         }
 
-        //increment location based on velocity values
-        location.x += velocityX * delta;
-        location.y += velocityY * delta;
+        // get new location based on velocity values and current location
+        this.location = Util.getNewLoc(this.location, this.velocityX, this.velocityY, delta);
     }
 
     /**
