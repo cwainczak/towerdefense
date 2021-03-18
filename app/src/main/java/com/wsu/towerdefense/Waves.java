@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  * spawned, and a delay to wait before spawning the next enemy.
  *
  */
-public class Waves {
+public class Waves implements Serializable {
 
     private int waves;
     private int wave = 0;
@@ -34,6 +35,11 @@ public class Waves {
     List<List<Double>> delays;
     List<List<Enemy.Type>> types;
 
+    /**
+     * Constructor which uses {@link #parseWaves(Context, String)} to populate List values
+     *
+     * @param context   Used to access files
+     */
     public Waves(Context context){
         amounts = new ArrayList<>();
         delays = new ArrayList<>();
@@ -48,7 +54,7 @@ public class Waves {
     }
 
     /**
-     * alternate constructor for manually passing List values. Primarily used for testing
+     * alternate constructor for manually passing Lists. Primarily used for testing
      */
     public Waves(List<List<Integer>> amounts,
                  List<List<Double>> delays,
@@ -61,6 +67,14 @@ public class Waves {
         this.waves = waves;
     }
 
+    /**
+     * Parse JSON file to populate amounts, delays, types, and waves
+     *
+     * @param context   Used to access files through context.getAssets
+     * @param fileName  String name of the JSON file to be read into a buffer
+     * @throws JSONException    If issue calling get methods of JSONObject
+     * @throws IOException      If File fileName does ot exist
+     */
     public void parseWaves(Context context, String fileName) throws JSONException, IOException {
         InputStream stream = context.getAssets().open(fileName);
 
@@ -89,7 +103,9 @@ public class Waves {
         }
     }
 
-    //potential issue: running out of waves results in fall through to elseif
+    /**
+     * helper function of {@link #next()} which increments spawned, set and wave accordingly
+     */
     private void progressWave(){
         spawned++;
 
@@ -101,7 +117,7 @@ public class Waves {
         //if all sets in a wave have passed and there are more waves
         if(set - amounts.get(wave).size() >= 0 &&
                 wave < waves){
-            Log.i("incrementing wave: ", wave + " -> " + wave + 1);
+            Log.i("TowerDefense", "incrementing wave" +  wave + " -> " + (wave + 1));
             wave++;
             set = 0;
             running = false;

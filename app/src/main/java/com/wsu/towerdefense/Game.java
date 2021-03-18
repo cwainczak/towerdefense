@@ -84,7 +84,7 @@ public class Game extends AbstractGame {
             getGameHeight()
         );
 //        waves = hasSave ? saveState.waves : new Waves();
-        waves = new Waves(context);
+        waves = hasSave ? saveState.waves : new Waves(context);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
@@ -286,6 +286,11 @@ public class Game extends AbstractGame {
         ((GameActivity) getContext()).gameOver();
     }
 
+    /**
+     * Called every update. Checks if an enemy should be spawned. If so, spawn next enemy from waves
+     *
+     * @param delta amount of time that has passed between updates
+     */
     public void spawnEnemy(double delta){
         if(waves.isRunning()) {
             waves.updateTimeSinceSpawn(delta);
