@@ -18,7 +18,7 @@ public class Tower extends AbstractMapObject implements Serializable {
     public enum Type {
 
         BASIC_HOMING(384, 750f, 10, 2, 150),
-        BASIC_LINEAR(384, 1000f, 10, 1, 100);
+        BASIC_LINEAR(384, 1000f, 15, 1, 100);
 
         final int radius;
         final float projectiveVelocity;

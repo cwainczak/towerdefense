@@ -11,9 +11,9 @@ public class Enemy extends AbstractMapObject {
 
     public enum Type {
         //Standard enemy types
-        S1(400, 40, 20, R.mipmap.enemy),
-        S2(450, 50, 20, R.mipmap.enemy),
-        S3(500, 60, 20, R.mipmap.enemy);
+        S1(200, 10, 25, R.mipmap.enemy),
+        S2(250, 20, 35, R.mipmap.enemy),
+        S3(400, 30 , 45, R.mipmap.enemy);
 
         final float speed;
         final int hp;
