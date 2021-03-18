@@ -1,6 +1,7 @@
 package com.wsu.towerdefense.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -124,7 +125,8 @@ public class GameActivity extends AppCompatActivity {
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
-                startActivity(new Intent(GameActivity.this, PauseActivity.class));
+                startActivity(new Intent(GameActivity.this, PauseActivity.class),
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             });
 
             btn_play.setOnClickListener(view -> {
@@ -323,7 +325,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Called when pause button is clicked
      */
-    public void btnPauseOnClick(View view){
+    public void btnPauseOnClick(View view) {
         game.setPaused(true);
         startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
