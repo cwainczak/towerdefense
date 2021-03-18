@@ -30,6 +30,7 @@ public class Waves implements Serializable {
     double timeSinceSpawn = 0.0;
 
     boolean running = false;
+    boolean wavesEnded = false;
 
     List<List<Integer>> amounts;
     List<List<Double>> delays;
@@ -109,17 +110,26 @@ public class Waves implements Serializable {
     private void progressWave(){
         spawned++;
 
-        //if all enemies have been spawned in the set
-        if(spawned - amounts.get(wave).get(set) >= 0){
+        // if all enemies have been spawned in the set
+        if(spawned - amounts.get(wave - 1).get(set) >= 0){
             spawned = 0;
             set++;
         }
-        //if all sets in a wave have passed and there are more waves
-        if(set - amounts.get(wave).size() >= 0 &&
+        // if all sets in a wave have passed and there are more waves
+        if(set - amounts.get(wave - 1).size() >= 0 &&
                 wave < waves){
             Log.i("TowerDefense", "incrementing wave" +  wave + " -> " + (wave + 1));
-            wave++;
             set = 0;
+            running = false;
+        }
+        // if user has won. all sets in last wave have passed
+        else if(set - amounts.get(wave - 1).size() >= 0 &&
+                wave >= waves){
+            System.out.println("game has ended-----------------------------------------");
+            // TODO: end game and redirect to win screen. Currently resets wave back to 0
+//            wavesEnded = true;
+            set = 0;
+            wave = 0;
             running = false;
         }
     }
@@ -128,7 +138,7 @@ public class Waves implements Serializable {
      * @return current enemyType and progresses Wave
      */
     public Enemy.Type next(){
-        Enemy.Type tempType = types.get(wave).get(set);
+        Enemy.Type tempType = types.get(wave - 1).get(set);
         progressWave();
         return tempType;
     }
@@ -138,7 +148,7 @@ public class Waves implements Serializable {
     }
 
     public boolean delayPassed(){
-        if(timeSinceSpawn >= delays.get(wave).get(set)){
+        if(timeSinceSpawn >= delays.get(wave - 1).get(set)){
             timeSinceSpawn = 0;
             return true;
         }
@@ -147,8 +157,16 @@ public class Waves implements Serializable {
         }
     }
 
+    public void nextWave(){
+        wave++;
+    }
+
     public int getWave() {
-        return wave + 1;
+        return wave;
+    }
+
+    public boolean isWavesEnded() {
+        return wavesEnded;
     }
 
     public boolean isRunning(){

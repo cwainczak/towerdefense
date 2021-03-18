@@ -17,21 +17,19 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_HOMING(384, 750f, 10, 2, 150),
-        BASIC_LINEAR(384, 1000f, 15, 1, 100);
+        BASIC_HOMING(384, 750f, 2, 150),
+        BASIC_LINEAR(384, 1000f, 1, 100);
 
         final int radius;
         final float projectiveVelocity;
-        final int damage;
         final double fireRate;
         public final int cost;
         final int projectileResID;
 
 
-        Type(int someRadius, float someProjectiveVelocity, int someDamage, double someFireRate, int someCost){
+        Type(int someRadius, float someProjectiveVelocity, double someFireRate, int someCost){
             this.radius = someRadius;
             this.projectiveVelocity = someProjectiveVelocity;
-            this.damage = someDamage;
             this.fireRate = someFireRate;
             this.cost = someCost;
             this.projectileResID = R.mipmap.projectile;

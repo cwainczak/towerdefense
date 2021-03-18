@@ -24,7 +24,7 @@ import java.util.List;
 public class Game extends AbstractGame {
 
     private static final int START_LIVES = 5;
-    private static final int START_MONEY = 300;
+    private static final int START_MONEY = 600;
     private static final int VALID_RANGE_COLOR = Color.argb(255, 80, 80, 80);
     private static final int INVALID_RANGE_COLOR = Color.argb(255, 180, 0, 0);
     private static final int RANGE_OPACITY = 90;
