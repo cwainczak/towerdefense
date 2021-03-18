@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:onClick="btnBackClicked"
     tools:context=".activity.MapSelectionActivity">
 
     <ImageView
@@ -57,18 +58,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+    <ImageButton
+        android:id="@+id/btn_pause7"
+        android:layout_width="45dp"
+        android:layout_height="39dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
+        android:background="@mipmap/back"
         android:backgroundTint="#009688"
+        android:contentDescription="@string/todo"
         android:onClick="btnBackClicked"
-        android:text="@string/back"
-        android:textSize="18sp"
-        app:icon="@mipmap/back"
-        app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
