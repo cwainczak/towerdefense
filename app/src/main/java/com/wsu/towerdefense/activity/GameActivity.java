@@ -111,23 +111,14 @@ public class GameActivity extends AppCompatActivity {
                 startActivity(new Intent(GameActivity.this, PauseActivity.class));
             });
 
-            btn_play.setOnClickListener(view -> {
-                if (game.getEnemies().isEmpty()) {
-                    game.spawnEnemies();
-                }
-            });
+            btn_play.setOnClickListener(view -> game.spawnEnemies());
 
             List<Tower> towers = game.getTowers();
             game.setOnTouchListener((v, event) -> {
-
-                for (int i = 0; i < towers.size(); i++) {
-                    Tower tower = towers.get(i);
-
-                    PointF delta = new PointF(
-                        event.getX() - tower.getLocation().x,
-                        event.getY() - tower.getLocation().y
-                    );
-                    double distance = Math.hypot(delta.x, delta.y);
+                for (Tower tower : towers) {
+                    float dx = event.getX() - tower.getLocation().x;
+                    float dy = event.getY() - tower.getLocation().y;
+                    double distance = Math.hypot(dx, dy);
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
@@ -140,13 +131,13 @@ public class GameActivity extends AppCompatActivity {
                                 "\n\nSell for: " + tower.cost / 2);
 
                         // Notify game of selected tower
-                        game.setSelectedTower(tower);
+                        game.selectTower(tower);
 
                         return true;
                     }
                 }
                 setSelectionMenuVisible(false);
-                game.setSelectedTower(null);
+                game.selectTower(null);
                 return false;
             });
 
@@ -173,8 +164,8 @@ public class GameActivity extends AppCompatActivity {
                 event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
                     event.getAction() == DragEvent.ACTION_DROP
             ) {
-                game.dragLocation = null;
-                game.setSelectedTower(null);
+                game.drag(null);
+                game.selectTower(null);
                 setSelectionMenuVisible(false);
                 return true;
             }
@@ -208,17 +199,17 @@ public class GameActivity extends AppCompatActivity {
                 boolean onScreen = dragLocation.x < cl_gameLayout.getWidth() &&
                     dragLocation.y < cl_gameLayout.getHeight();
                 if (onScreen) {
-                    game.dragLocation = dragLocation;
-                    game.setSelectedTower(null);
+                    game.drag(dragLocation);
+                    game.selectTower(null);
                     setSelectionMenuVisible(false);
                 } else {
-                    game.dragLocation = null;
+                    game.drag(null);
                 }
             }
             // drop tower onto game
             else if (event.getAction() == DragEvent.ACTION_DROP) {
-                game.dragLocation = null;
-                return game.placeTower(event.getX(), event.getY());
+                game.drag(null);
+                return game.placeTower(new PointF(event.getX(), event.getY()));
             }
             return false;
         });
@@ -271,7 +262,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Called when pause button is clicked
      */
-    public void btnPauseOnClick(View view){
+    public void btnPauseOnClick(View view) {
         game.setPaused(true);
         startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
