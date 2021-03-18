@@ -19,29 +19,6 @@ public class PauseActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_pause);
         onWindowFocusChanged(true);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        int fullscreenWidth = dm.widthPixels; // Width of the default display
-        int fullscreenHeight = dm.heightPixels;   // Height of the default display
-
-        float sizeRatio = 0.7f;    // this window is 70% of the default landscape window size
-
-        int windowWidth = (int) (fullscreenWidth * sizeRatio);  // width of the pop-up window
-        int windowHeight = (int) (fullscreenHeight * sizeRatio);    // height of the pop-up window
-
-        getWindow().setLayout(windowWidth, windowHeight);
-
-        // initialize and resize all buttons
-        Button btn_resume = findViewById(R.id.btn_resume);
-        resizeButton(btn_resume, sizeRatio);
-
-        Button btn_pause_settings = findViewById(R.id.btn_pause_settings);
-        resizeButton(btn_pause_settings, sizeRatio);
-
-        Button btn_exit = findViewById(R.id.btn_exit);
-        resizeButton(btn_exit, sizeRatio);
     }
 
     public void btnPauseSettingsOnClick(View view) {
@@ -49,7 +26,7 @@ public class PauseActivity extends Activity {
     }
 
     public void btnResumeOnClick(View view) {
-        finish();   // finishes pause activity and resumes game activity
+        finishAfterTransition();   // finishes pause activity and resumes game activity
     }
 
     public void btnExitOnClick(View view) {
@@ -58,13 +35,6 @@ public class PauseActivity extends Activity {
         startActivity(intent);
         finishAffinity();
         Log.i(getString(R.string.logcatKey), "Exiting game");
-    }
-
-    private void resizeButton(Button b, float ratio) {
-        int newWidth = (int) (b.getWidth() * ratio);
-        int newHeight = (int) (b.getHeight() * ratio);
-        b.setWidth(newWidth);
-        b.setHeight(newHeight);
     }
 
     @Override
@@ -76,9 +46,8 @@ public class PauseActivity extends Activity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         rerender = true;
     }
-
 }
