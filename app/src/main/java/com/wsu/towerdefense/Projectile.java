@@ -16,7 +16,7 @@ public class Projectile extends AbstractMapObject {
     // What percent of the bitmap width will be used for the hitbox
     private static final float hitboxScaleX = 0.8f;
 
-    enum Type {
+    public enum Type {
 
         HOMING(750f, 15, R.mipmap.projectile),
         LINEAR(1000f, 10, R.mipmap.projectile);

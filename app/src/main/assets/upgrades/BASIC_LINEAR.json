@@ -1,0 +1,46 @@
+{
+  "path1": [
+    {
+      "displayName": "long range",
+      "description": "shoots farther",
+      "cost": "50",
+      "image": "yellow_tower",
+      "effect": {
+        "type": "RANGE",
+        "value": 2
+      }
+    },
+    {
+      "displayName": "faster",
+      "description": "shoots faster",
+      "cost": "100",
+      "image": "blue_tower",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": 2
+      }
+    }
+  ],
+  "path2": [
+    {
+      "displayName": "velocity",
+      "description": "shoots faster projectiles",
+      "cost": "50",
+      "image": "green_tower",
+      "effect": {
+        "type": "PROJECTILE_VELOCITY",
+        "value": 2
+      }
+    },
+    {
+      "displayName": "homing",
+      "description": "shoots homing projectiles",
+      "cost": "100",
+      "image": "red_tower",
+      "effect": {
+        "type": "PROJECTILE",
+        "value": "HOMING"
+      }
+    }
+  ]
+}
