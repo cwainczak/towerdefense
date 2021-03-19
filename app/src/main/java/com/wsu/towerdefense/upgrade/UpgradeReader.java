@@ -6,6 +6,8 @@ import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.upgrade.Upgrade.Effect;
+import com.wsu.towerdefense.upgrade.Upgrade.StatType;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,14 +19,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Each upgrade file contains the upgrades for a single tower. The file must be named with a value from {@link Tower.Type}.
+ * Each upgrade file contains the upgrades for a single tower. The file must be named with a value
+ * from {@link Tower.Type}.
  * <p>
  * File format:
  * <ul>
  *     <li><code>path1</code> : <code>Upgrade</code> array</li>
  *     <li><code>path2</code> : <code>Upgrade</code> array</li>
  * </ul>
- *
+ * <p>
  * Upgrade format:
  * <ul>
  *     <li><code>displayName</code> : string - name of the upgrade that is shown to the user</li>
@@ -32,12 +35,14 @@ import org.json.JSONObject;
  *     <li><code>cost</code> : int - cost of the upgrade</li>
  *     <li><code>image</code> : string - name of the image file, without extension</li>
  *     <li>
- *         <code>effect</code> : object
- *         <ul>
- *             <li><code>type</code> : <code>Upgrade.Effect</code> - type of upgrade</li>
- *             <li><code>value</code> - value associated with the upgrade</li>
- *         </ul>
+ *         <code>effect</code> : <code>Effect</code> <em>or</em> <code>effects</code> : <code>Effect</code> array
  *     </li>
+ * </ul>
+ * <p>
+ * Effect format:
+ * <ul>
+ *     <li><code>type</code> : <code>Upgrade.StatType</code> - stat that is affected</li>
+ *     <li><code>value</code> : value associated with the effect</li>
  * </ul>
  */
 public class UpgradeReader {
@@ -104,27 +109,29 @@ public class UpgradeReader {
         throws JSONException, IllegalArgumentException, FileNotFoundException {
         JSONObject json = new JSONObject(data);
 
-        List<Upgrade<?>> path1List = new ArrayList<>();
-        JSONArray path1 = json.getJSONArray("path1");
-        for (int i = 0; i < path1.length(); i++) {
-            Upgrade<?> upgrade = parseUpgrade(context, (JSONObject) path1.get(i));
-            path1List.add(upgrade);
-        }
-
-        List<Upgrade<?>> path2List = new ArrayList<>();
-        JSONArray path2 = json.getJSONArray("path2");
-        for (int i = 0; i < path2.length(); i++) {
-            Upgrade<?> upgrade = parseUpgrade(context, (JSONObject) path2.get(i));
-            path2List.add(upgrade);
-        }
+        List<Upgrade> path1 = parsePath(context, json, "path1");
+        List<Upgrade> path2 = parsePath(context, json, "path2");
 
         return new TowerUpgradeData(
-            path1List.toArray(new Upgrade<?>[0]),
-            path2List.toArray(new Upgrade<?>[0])
+            path1.toArray(new Upgrade[0]),
+            path2.toArray(new Upgrade[0])
         );
     }
 
-    private static Upgrade<?> parseUpgrade(Context context, JSONObject upgrade)
+    private static List<Upgrade> parsePath(Context context, JSONObject json, String key)
+        throws JSONException, FileNotFoundException {
+        List<Upgrade> pathList = new ArrayList<>();
+
+        JSONArray path = json.getJSONArray(key);
+        for (int i = 0; i < path.length(); i++) {
+            Upgrade upgrade = parseUpgrade(context, (JSONObject) path.get(i));
+            pathList.add(upgrade);
+        }
+
+        return pathList;
+    }
+
+    private static Upgrade parseUpgrade(Context context, JSONObject upgrade)
         throws JSONException, FileNotFoundException {
         String displayName = upgrade.getString("displayName");
         String description = upgrade.getString("description");
@@ -134,24 +141,53 @@ public class UpgradeReader {
         if (imageID == 0) {
             throw new FileNotFoundException("Upgrade image not found");
         }
+        List<Effect<?>> effects = parseEffects(upgrade);
 
-        JSONObject effectObj = upgrade.getJSONObject("effect");
-        Upgrade.Effect effect = Upgrade.Effect.valueOf(effectObj.getString("type"));
-        switch (effect) {
+        return new Upgrade(
+            context,
+            displayName,
+            description,
+            cost,
+            imageID,
+            effects.toArray(new Effect[0])
+        );
+    }
+
+    private static List<Effect<?>> parseEffects(JSONObject upgrade) throws JSONException {
+        List<Effect<?>> effectsList = new ArrayList<>();
+
+        // determine whether effects is an array or an object
+        JSONArray effects = upgrade.optJSONArray("effects");
+
+        // array
+        if (effects != null) {
+            for (int i = 0; i < effects.length(); i++) {
+                JSONObject effect = (JSONObject) effects.get(i);
+                effectsList.add(parseEffect(effect));
+            }
+        }
+        // object
+        else {
+            JSONObject effect = upgrade.getJSONObject("effect");
+            effectsList.add(parseEffect(effect));
+        }
+
+        return effectsList;
+    }
+
+    private static Effect<?> parseEffect(JSONObject effect) throws JSONException {
+        StatType type = StatType.valueOf(effect.getString("type"));
+        switch (type) {
             case RANGE:
             case FIRE_RATE:
-            case PROJECTILE_VELOCITY:
+            case PROJECTILE_SPEED:
             case PROJECTILE_DAMAGE: {
-                double value = effectObj.getDouble("value");
-                return new Upgrade<>(
-                    context, displayName, description, cost, imageID, effect, value
-                );
+                float value = (float) effect.getDouble("value");
+                return new Effect<>(type, value);
             }
             case PROJECTILE: {
-                Projectile.Type value = Projectile.Type.valueOf(effectObj.getString("value"));
-                return new Upgrade<>(
-                    context, displayName, description, cost, imageID, effect, value
-                );
+                Projectile.Type value = Projectile.Type.valueOf(effect.getString("value"));
+                return new Effect<>(type, value);
             }
             default: {
                 return null;

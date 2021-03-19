@@ -79,17 +79,17 @@ public class GameActivity extends AppCompatActivity {
         );
 
         towerTypes = Arrays.asList(
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING
         );
 
         addDragListeners();
@@ -153,11 +153,12 @@ public class GameActivity extends AppCompatActivity {
 
                         // temporary position text
                         txt_towerInfo.setText(
-                                "Tower Type:\n"
+                            "Tower Type:\n"
                                 + tower.getType() +
                                 "\n\nx: " + tower.getLocation().x +
                                 "\ny: " + tower.getLocation().y +
-                                "\n\nSell for: " + tower.getCost() / 2);
+                                "\n\nSell for: " + tower.getCost() / 2 +
+                                "\n\nUpgrades: " + tower.getUpgradeProgress(0) + ", " + tower.getUpgradeProgress(1));
 
                         // Notify game of selected tower
                         game.setSelectedTower(tower);
@@ -207,8 +208,8 @@ public class GameActivity extends AppCompatActivity {
                 }
                 // remove range circle when dragging over side bar
                 else if (
-                        event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
-                                event.getAction() == DragEvent.ACTION_DROP
+                    event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
+                        event.getAction() == DragEvent.ACTION_DROP
                 ) {
                     game.dragLocation = null;
                     game.setSelectedTower(null);
@@ -325,7 +326,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Called when pause button is clicked
      */
-    public void btnPauseOnClick(View view){
+    public void btnPauseOnClick(View view) {
         game.setPaused(true);
         startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }

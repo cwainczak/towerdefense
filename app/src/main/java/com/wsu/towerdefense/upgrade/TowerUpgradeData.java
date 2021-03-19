@@ -7,19 +7,18 @@ import java.util.Arrays;
  */
 public class TowerUpgradeData {
 
-    public final Upgrade<?>[] path1;
-    public final Upgrade<?>[] path2;
+    /**
+     * Maximum number of upgrade paths the user can choose before the rest are locked
+     */
+    public static final int MAX_PATHS = 2;
+    /**
+     * When an upgrade path reaches this number, other paths cannot be upgraded further
+     */
+    public static final int LOCK_THRESHOLD = 3;
 
-    public TowerUpgradeData(Upgrade<?>[] path1, Upgrade<?>[] path2) {
-        this.path1 = path1;
-        this.path2 = path2;
-    }
+    public final Upgrade[][] paths;
 
-    @Override
-    public String toString() {
-        return "TowerUpgrades{" +
-            "path1=" + Arrays.toString(path1) +
-            ", path2=" + Arrays.toString(path2) +
-            '}';
+    public TowerUpgradeData(Upgrade[]... paths) {
+        this.paths = paths;
     }
 }

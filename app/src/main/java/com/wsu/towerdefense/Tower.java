@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import com.wsu.towerdefense.upgrade.TowerStats;
+import com.wsu.towerdefense.upgrade.Upgrade;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,31 +19,31 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_HOMING(384, 750f, 2, 150),
-        BASIC_LINEAR(384, 1000f, 1, 100);
+        BASIC_HOMING(384, 1, 2, 150, Projectile.Type.HOMING),
+        BASIC_LINEAR(384, 1, 1, 100, Projectile.Type.LINEAR);
 
-        final int radius;
-        final float projectiveVelocity;
-        final double fireRate;
+        public final int range;
+        public final float projectiveSpeed;
+        public final float fireRate;
         public final int cost;
-        final int projectileResID;
+        public final Projectile.Type projectileType;
 
-
-        Type(int someRadius, float someProjectiveVelocity, double someFireRate, int someCost){
-            this.radius = someRadius;
-            this.projectiveVelocity = someProjectiveVelocity;
+        Type(int someRange, float someProjectiveSpeed, float someFireRate, int someCost,
+            Projectile.Type projectileType) {
+            this.range = someRange;
+            this.projectiveSpeed = someProjectiveSpeed;
             this.fireRate = someFireRate;
             this.cost = someCost;
-            this.projectileResID = R.mipmap.projectile;
+            this.projectileType = projectileType;
         }
-
     }
 
-    private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
+    private transient Enemy target;   // The Enemy this Tower will shoot at
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private double timeSinceShot = 0.0;
-    private Projectile.Type projectileType;
+
+    private final TowerStats stats;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -49,21 +51,14 @@ public class Tower extends AbstractMapObject implements Serializable {
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
      * range.
      *
-     *  @param location           A PointF representing the location of the towerBitmap's center
+     * @param location A PointF representing the location of the towerBitmap's center
      */
     public Tower(PointF location, Type tt) {
         super(location, R.mipmap.tower);
         this.type = tt;
 
-        if (tt == Type.BASIC_LINEAR) {
-            projectileType = Projectile.Type.LINEAR;
-        } else if (tt == Type.BASIC_HOMING) {
-            projectileType = Projectile.Type.HOMING;
-        } else {
-            projectileType = null;
-        }
-
         this.projectiles = new ArrayList<>();
+        this.stats = new TowerStats(tt);
     }
 
     /**
@@ -75,8 +70,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     @Override
     protected void update(Game game, double delta) {
         // Remove target if it goes out of range or reaches end of path
-        if (distanceToEnemy(target) > this.type.radius ||
-                (target != null && target.isAtPathEnd())) {
+        if (distanceToEnemy(target) > stats.getRange() ||
+            (target != null && target.isAtPathEnd())) {
             target = null;
         }
 
@@ -84,7 +79,7 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (target == null) {
             List<Enemy> enemies = game.getEnemies();
             for (int i = 0; i < enemies.size(); i++) {
-                if (distanceToEnemy(enemies.get(i)) < this.type.radius) {
+                if (distanceToEnemy(enemies.get(i)) < stats.getRange()) {
                     target = enemies.get(i);
 
                     break; // Stop looking for a target
@@ -96,8 +91,16 @@ public class Tower extends AbstractMapObject implements Serializable {
         timeSinceShot += delta;
 
         // Shoot another projectile if there is a target and enough time has passed
-        if (target != null && timeSinceShot >= this.type.fireRate) {
-            projectiles.add(new Projectile(new PointF(location.x, location.y), projectileType, target));
+        if (target != null && timeSinceShot >= stats.getFireRate()) {
+            projectiles.add(
+                new Projectile(
+                    new PointF(location.x, location.y),
+                    stats.getProjectileType(),
+                    target,
+                    stats.getProjectileSpeed(),
+                    stats.getProjectileDamage()
+                )
+            );
             timeSinceShot = 0;
         }
 
@@ -166,6 +169,31 @@ public class Tower extends AbstractMapObject implements Serializable {
         }
     }
 
+    public int getUpgradeProgress(int pathNumber) {
+        return stats.getUpgradeProgress(pathNumber);
+    }
+
+    public void upgrade(int pathNumber) {
+        // TODO: currency check here
+
+        Upgrade upgrade = stats.upgrade(pathNumber);
+        if (upgrade != null) {
+            setBitmap(upgrade.imageID, upgrade.image);
+        }
+    }
+
+    public TowerStats getStats() {
+        return stats;
+    }
+
+    public int getCost() {
+        return type.cost;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }
@@ -175,17 +203,4 @@ public class Tower extends AbstractMapObject implements Serializable {
 
         this.projectiles = new ArrayList<>();
     }
-
-    public float getRange() {
-        return this.type.radius;
-    }
-
-    public int getCost(){
-        return this.type.cost;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
 }

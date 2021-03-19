@@ -12,12 +12,8 @@ import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
-
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -67,7 +63,7 @@ public class Game extends AbstractGame {
     public PointF dragLocation = null;
 
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
-        String mapName){
+        String mapName) {
         super(context, gameWidth, gameHeight);
 
         boolean hasSave = saveState != null;
@@ -107,8 +103,27 @@ public class Game extends AbstractGame {
         }
     }
 
+    int timer = 0;
+
     @Override
     protected void update(double delta) {
+        // TODO: temporary code; replace with UI
+
+        timer++;
+        if (timer == 400) {
+            towers.get(0).upgrade(0);
+        }
+        if (timer == 1000) {
+            towers.get(0).upgrade(0);
+        }
+
+        if (timer == 1500) {
+            towers.get(0).upgrade(1);
+        }
+        if (timer == 2000) {
+            towers.get(0).upgrade(1);
+        }
+
         spawnEnemy(delta);
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
@@ -153,7 +168,7 @@ public class Game extends AbstractGame {
                 t.drawLine(canvas, paint);
             }
             if (selectedTower == t) {
-                drawRange(canvas, paint, t.getLocation(), t.getRange(), true);
+                drawRange(canvas, paint, t.getLocation(), t.getStats().getRange(), true);
             }
 
             t.render(lerp, canvas, paint);
@@ -284,15 +299,16 @@ public class Game extends AbstractGame {
     }
 
     /**
-     * Called every update. Checks if an enemy should be spawned. If so, spawn next enemy from waves
+     * Called every update. Checks if an enemy should be spawned. If so, spawn next enemy from
+     * waves
      *
      * @param delta amount of time that has passed between updates
      */
-    public void spawnEnemy(double delta){
-        if(waves.isRunning()) {
+    public void spawnEnemy(double delta) {
+        if (waves.isRunning()) {
             waves.updateTimeSinceSpawn(delta);
 
-            if (waves.delayPassed()){
+            if (waves.delayPassed()) {
                 enemies.add(new Enemy(waves.next(), map.getPath()));
             }
         }
@@ -366,6 +382,7 @@ public class Game extends AbstractGame {
      * A custom listener for Game objects
      */
     public interface GameListener {
+
         /**
          * This method is called whenever the game's money increases or decreases
          */

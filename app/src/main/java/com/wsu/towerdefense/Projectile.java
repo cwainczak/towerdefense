@@ -26,11 +26,11 @@ public class Projectile extends AbstractMapObject {
         final int resourceID;
 
         /**
-         * @param someSpeed The speed of the projectile
-         * @param damage    Damage done to an Enemy hit by this projectile
-         * @param someResourceID    The Resource ID of the image of the projectile
+         * @param someSpeed      The speed of the projectile
+         * @param damage         Damage done to an Enemy hit by this projectile
+         * @param someResourceID The Resource ID of the image of the projectile
          */
-        Type(float someSpeed, int damage, int someResourceID){
+        Type(float someSpeed, int damage, int someResourceID) {
             this.speed = someSpeed;
             this.damage = damage;
             this.resourceID = someResourceID;
@@ -38,32 +38,42 @@ public class Projectile extends AbstractMapObject {
     }
 
     private final Type type;
-    private Enemy target;
+    private final Enemy target;
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
     public boolean remove;
 
+    private final float speedModifier;
+    private final float damageModifier;
+
     /**
      * A projectile shot by Towers at Enemies
      *
-     * @param location   A PointF representing the location of the bitmap's center
-     * @param target     The Enemy this projectile is targeting (if none, value is null)
+     * @param location A PointF representing the location of the bitmap's center
+     * @param target   The Enemy this projectile is targeting (if none, value is null)
      */
-    public Projectile(PointF location, Type pt, Enemy target) {
+    public Projectile(PointF location, Type pt, Enemy target, float speedModifier,
+        float damageModifier) {
         super(location, pt.resourceID);
         this.type = pt;
         this.target = target;
-        if (this.type == Type.LINEAR){
-            PointF newVel = Util.getNewVelocity(this.location, this.target.location, this.type.speed);
+        this.speedModifier = speedModifier;
+        this.damageModifier = damageModifier;
+
+        if (this.type == Type.LINEAR) {
+            PointF newVel = Util.getNewVelocity(
+                this.location, this.target.location, getEffectiveSpeed()
+            );
             this.velX = newVel.x;
             this.velY = newVel.y;
         }
     }
 
     public void update(Game game, double delta) {
-        if (this.type == Type.HOMING){
-            double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x), Math.abs(location.y - target.location.y));
-            double distanceMoved = this.type.speed * delta;
+        if (this.type == Type.HOMING) {
+            double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
+                Math.abs(location.y - target.location.y));
+            double distanceMoved = getEffectiveSpeed() * delta;
 
             // If the projectile moved far enough to reach the target set it at the target location
             if (distanceMoved >= distanceToTarget) {
@@ -72,8 +82,7 @@ public class Projectile extends AbstractMapObject {
                 // Otherwise move the projectile towards the target
                 location.set(calculateNewLocation(delta));
             }
-        }
-        else if (this.type == Type.LINEAR){
+        } else if (this.type == Type.LINEAR) {
             location.set(calculateNewLocation(delta));
         }
 
@@ -98,10 +107,10 @@ public class Projectile extends AbstractMapObject {
     private void checkCollision(List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
-                    bitmap.getWidth() * hitboxScaleX,
-                    bitmap.getHeight() * hitboxScaleY)) {
+                bitmap.getWidth() * hitboxScaleX,
+                bitmap.getHeight() * hitboxScaleY)) {
 
-                e.takeDamage(type.damage);
+                e.takeDamage((int) getEffectiveDamage());
                 remove = true;
                 break;
             }
@@ -117,27 +126,33 @@ public class Projectile extends AbstractMapObject {
     private PointF calculateNewLocation(double delta) {
         if (this.type == Type.HOMING) {
             double distanceToTarget = Math.hypot(
-                    Math.abs(location.x - target.location.x),
-                    Math.abs(location.y - target.location.y)
+                Math.abs(location.x - target.location.x),
+                Math.abs(location.y - target.location.y)
             );
-            double distanceMoved = this.type.speed * delta;
+            double distanceMoved = getEffectiveSpeed() * delta;
 
             float amount = (float) (distanceMoved / distanceToTarget);
 
             return new PointF(
-                    lerp(location.x, target.location.x, amount),
-                    lerp(location.y, target.location.y, amount)
+                lerp(location.x, target.location.x, amount),
+                lerp(location.y, target.location.y, amount)
             );
-        }
-        else if (this.type == Type.LINEAR){
-                return Util.getNewLoc(this.location, this.velX, this.velY, delta);
+        } else if (this.type == Type.LINEAR) {
+            return Util.getNewLoc(this.location, this.velX, this.velY, delta);
         }
         return null;
     }
 
-    private boolean isOffScreen(int screenWidth, int screenHeight){
-        return  this.location.x < 0 || this.location.x > screenWidth ||
-                this.location.y < 0 || this.location.y > screenHeight;
+    private boolean isOffScreen(int screenWidth, int screenHeight) {
+        return this.location.x < 0 || this.location.x > screenWidth ||
+            this.location.y < 0 || this.location.y > screenHeight;
     }
 
+    private float getEffectiveSpeed() {
+        return this.type.speed * this.speedModifier;
+    }
+
+    private float getEffectiveDamage() {
+        return this.type.damage * this.damageModifier;
+    }
 }

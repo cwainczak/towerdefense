@@ -3,52 +3,48 @@ package com.wsu.towerdefense.upgrade;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import com.wsu.towerdefense.Projectile;
+import java.util.Arrays;
 
 /**
  * A static upgrade that can be applied to a tower
  * <p>
  * See documentation for upgrade format in {@link UpgradeReader}
- *
- * @param <T> the type of the value that is upgraded
  */
-public class Upgrade<T> {
+public class Upgrade {
 
-    public enum Effect {
+    public enum StatType {
         RANGE,
         FIRE_RATE,
-        PROJECTILE_VELOCITY,
+        PROJECTILE_SPEED,
         PROJECTILE_DAMAGE,
         PROJECTILE
+    }
+
+    public static class Effect<T> {
+
+        public final StatType type;
+        public final T value;
+
+        public Effect(StatType type, T value) {
+            this.type = type;
+            this.value = value;
+        }
     }
 
     public final String displayName;
     public final String description;
     public final int cost;
-    public final Effect effect;
+    public final int imageID;
     public final Bitmap image;
-    public final T value;
+    public final Effect<?>[] effects;
 
     public Upgrade(Context context, String displayName, String description, int cost, int imageID,
-        Effect effect,
-        T value) {
+        Effect<?>[] effects) {
         this.displayName = displayName;
         this.description = description;
         this.cost = cost;
+        this.imageID = imageID;
         this.image = BitmapFactory.decodeResource(context.getResources(), imageID);
-        this.effect = effect;
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return "Upgrade{" +
-            "displayName='" + displayName + '\'' +
-            ", description='" + description + '\'' +
-            ", cost=" + cost +
-            ", effect=" + effect +
-            ", image=" + image +
-            ", value=" + value +
-            '}';
+        this.effects = effects;
     }
 }
