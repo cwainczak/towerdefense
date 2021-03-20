@@ -129,7 +129,13 @@ public class GameActivity extends AppCompatActivity {
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             });
 
-            btn_play.setOnClickListener(view -> game.spawnEnemies());
+            btn_play.setOnClickListener(view -> {
+                if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
+                    game.save();
+                    game.getWaves().nextWave();
+                    game.getWaves().setRunning(true);
+                }
+            });
 
             List<Tower> towers = game.getTowers();
             game.setOnTouchListener((v, event) -> {

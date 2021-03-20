@@ -16,13 +16,14 @@ import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public class Game extends AbstractGame {
 
     private static final int START_LIVES = 5;
-    private static final int START_MONEY = 300;
+    private static final int START_MONEY = 600;
     private static final int RANGE_OPACITY = 90;
     public static final float towerRadius = 56; //radius of tower object using tower.png
 
@@ -31,6 +32,8 @@ public class Game extends AbstractGame {
 
     private final List<Tower> towers;
     private final List<Enemy> enemies;
+
+    private final Waves waves;
 
     private final Map map;
 
@@ -69,6 +72,7 @@ public class Game extends AbstractGame {
             getGameWidth(),
             getGameHeight()
         );
+        waves = hasSave ? saveState.waves : new Waves(context);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
@@ -97,7 +101,7 @@ public class Game extends AbstractGame {
     /**
      * Saves the current game state to the default save file
      */
-    private void save() {
+    public void save() {
         try {
             Serializer.save(getContext(), Serializer.SAVEFILE, this);
         } catch (IOException e) {
@@ -109,6 +113,7 @@ public class Game extends AbstractGame {
 
     @Override
     protected void update(double delta) {
+        spawnEnemy(delta);
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
@@ -194,21 +199,23 @@ public class Game extends AbstractGame {
 
         // check against path
         for (RectF rect : map.getBounds()) {
-            if (rect.left <= location.x && location.x <= rect.right &&
-                rect.top <= location.y && location.y <= rect.bottom) {
+            if (rect.left - towerRadius <= location.x &&
+                location.x - towerRadius <= rect.right &&
+                rect.top - towerRadius <= location.y &&
+                location.y - towerRadius <= rect.bottom) {
                 return false;
             }
         }
         return true;
     }
 
-    public void spawnEnemies() {
-        if (enemies.isEmpty()) {
-            save();
+    public void spawnEnemy(double delta) {
+        if (waves.isRunning()) {
+            waves.updateTimeSinceSpawn(delta);
 
-            spawnEnemy(Enemy.Type.S1);
-            spawnEnemy(Enemy.Type.S2);
-            spawnEnemy(Enemy.Type.S3);
+            if (waves.delayPassed()) {
+                enemies.add(new Enemy(waves.next(), map.getPath()));
+            }
         }
     }
 
@@ -350,6 +357,10 @@ public class Game extends AbstractGame {
     public int getLives() {
         return lives;
     }
+
+        public Waves getWaves() {
+            return waves;
+        }
 
     public int getMoney() {
         return money;

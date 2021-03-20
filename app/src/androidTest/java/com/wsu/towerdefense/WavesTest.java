@@ -1,0 +1,85 @@
+package com.wsu.towerdefense;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+@RunWith(AndroidJUnit4.class)
+public class WavesTest extends TestCase {
+    List<List<Integer>> a1 = Arrays.asList(
+            Arrays.asList(3, 2),
+            Arrays.asList(5, 4, 3),
+            Arrays.asList(2, 1, 2)
+    );
+
+    List<List<Double>> d1 = Arrays.asList(
+            Arrays.asList(0.5, 0.6),
+            Arrays.asList(0.1, 0.2, 0.3),
+            Arrays.asList(0.03, 0.07, 0.02)
+    );
+
+    List<List<Enemy.Type>> t1 = Arrays.asList(
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2),
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2, Enemy.Type.S3),
+            Arrays.asList(Enemy.Type.S1, Enemy.Type.S2, Enemy.Type.S3)
+    );
+
+    @Test
+    public void firstNext() {
+        Waves w = new Waves(a1, d1, t1, 3);
+        Enemy.Type expected = Enemy.Type.S1;
+        Enemy.Type actual = w.next();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void secondNext() {
+        Waves w = new Waves(a1, d1, t1, 3);
+        Enemy.Type expected = Enemy.Type.S1;
+        w.next();
+        Enemy.Type actual = w.next();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void firstNextOfSecondSet() {
+        Waves w = new Waves(a1, d1, t1, 3);
+        Enemy.Type expected = Enemy.Type.S2;
+        w.next();
+        w.next();
+        w.next();
+        w.next();
+        Enemy.Type actual = w.next();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void firstNextOfSecondWave() {
+        Waves w = new Waves(a1, d1, t1, 3);
+        Enemy.Type expected = Enemy.Type.S1;
+        for(int i = 0; i < 6; i++){
+            w.next();
+        }
+        Enemy.Type actual = w.next();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void lastNextOfLastWave() {
+        Waves w = new Waves(a1, d1, t1, 3);
+        Enemy.Type expected = Enemy.Type.S3;
+        for(int i = 0; i < 20; i++){
+            w.next();
+        }
+        Enemy.Type actual = w.next();
+        assertEquals(expected, actual);
+    }
+}
