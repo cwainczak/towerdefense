@@ -7,16 +7,15 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
+import com.wsu.towerdefense.Enemy.Type;
 import com.wsu.towerdefense.activity.GameActivity;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
-
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -25,9 +24,11 @@ public class Game extends AbstractGame {
 
     private static final int START_LIVES = 5;
     private static final int START_MONEY = 600;
-    private static final int VALID_RANGE_COLOR = Color.argb(255, 80, 80, 80);
-    private static final int INVALID_RANGE_COLOR = Color.argb(255, 180, 0, 0);
     private static final int RANGE_OPACITY = 90;
+    public static final float towerRadius = 56; //radius of tower object using tower.png
+
+    public final int validRangeColor;
+    public final int invalidRangeColor;
 
     private final List<Tower> towers;
     private final List<Enemy> enemies;
@@ -36,42 +37,30 @@ public class Game extends AbstractGame {
 
     private final Map map;
 
-    public static final float towerRadius = 56; //radius of tower object using tower.png
-
     private int lives;
-
-    /**
-     * The money available for the player to spend
-     */
     private int money;
+
     /**
      * A custom listener used to send data to the GameActivity whenever certain actions occur
      */
     private GameListener listener = null;
-
-    /**
-     * The next tower to be added; prevents {@link java.util.ConcurrentModificationException} when
-     * iterating
-     */
-    private Tower addBuffer = null;
-
-    /**
-     * The currently selected tower
-     */
     private Tower selectedTower = null;
-    /**
-     * Whether or not to remove the currently selected tower
-     */
-    private boolean removeTower = false;
+    private PointF dragLocation = null;
+    private final List<MapEvent> mapEvents;
 
-    public PointF dragLocation = null;
 
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
-        String mapName){
+        String mapName) {
         super(context, gameWidth, gameHeight);
 
-        boolean hasSave = saveState != null;
+        mapEvents = new ArrayList<>();
 
+        validRangeColor = getResources().getColor(R.color.valid_range, null);
+        invalidRangeColor = getResources().getColor(R.color.invalid_range, null);
+
+        // game state
+
+        boolean hasSave = saveState != null;
         if (hasSave) {
             Log.i(context.getString(R.string.logcatKey),
                 "Loading save file '" + saveState.saveFile + "'"
@@ -83,7 +72,6 @@ public class Game extends AbstractGame {
             getGameWidth(),
             getGameHeight()
         );
-//        waves = hasSave ? saveState.waves : new Waves();
         waves = hasSave ? saveState.waves : new Waves(context);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
@@ -97,6 +85,20 @@ public class Game extends AbstractGame {
     }
 
     /**
+     * Ends this game and returns to the the menu
+     */
+    private void gameOver() {
+        // stop game loop
+        running = false;
+
+        // delete save file
+        Serializer.delete(getContext(), Serializer.SAVEFILE);
+
+        // return to menu
+        ((GameActivity) getContext()).gameOver();
+    }
+
+    /**
      * Saves the current game state to the default save file
      */
     public void save() {
@@ -106,6 +108,8 @@ public class Game extends AbstractGame {
             Log.e(getContext().getString(R.string.logcatKey), "Error while saving", e);
         }
     }
+
+    // GAME STATE
 
     @Override
     protected void update(double delta) {
@@ -135,13 +139,15 @@ public class Game extends AbstractGame {
             }
         }
 
-        checkBuffers();
+        handleEvents();
 
         // Update the Towers
         for (Tower t : towers) {
             t.update(this, delta);
         }
     }
+
+    // RENDERING
 
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
@@ -171,18 +177,45 @@ public class Game extends AbstractGame {
         }
     }
 
-    private void checkBuffers() {
-        // add tower from buffer
-        if (addBuffer != null) {
-            towers.add(addBuffer);
-            addBuffer = null;
+    /**
+     * Calculates the distance between a new tower and every existing object to determine if the
+     * placement of the new tower is valid. Assumes the new tower exists at time of valid check.
+     *
+     * @param location Location of new tower to be placed
+     * @return True if valid placement, false if not
+     */
+    public boolean isValidPlacement(PointF location) {
+        // check against towers
+        for (Tower tower : towers) {
+            // TODO: move into util
+            float dx = location.x - tower.getLocation().x;
+            float dy = location.y - tower.getLocation().y;
+            double distance = Math.hypot(dx, dy);
+
+            if (distance < towerRadius * 2) {
+                return false;
+            }
         }
 
-        // remove tower from list based on buffer
-        if (removeTower) {
-            towers.remove(selectedTower);
-            selectedTower = null;
-            removeTower = false;
+        // check against path
+        for (RectF rect : map.getBounds()) {
+            if (rect.left - towerRadius <= location.x &&
+                location.x - towerRadius <= rect.right &&
+                rect.top - towerRadius <= location.y &&
+                location.y - towerRadius <= rect.bottom) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void spawnEnemy(double delta) {
+        if (waves.isRunning()) {
+            waves.updateTimeSinceSpawn(delta);
+
+            if (waves.delayPassed()) {
+                enemies.add(new Enemy(waves.next(), map.getPath()));
+            }
         }
     }
 
@@ -210,99 +243,6 @@ public class Game extends AbstractGame {
     }
 
     /**
-     * Place a tower at given coordinates if placement is valid
-     *
-     * @param x x
-     * @param y y
-     * @return whether position is valid
-     */
-    public boolean placeTower(float x, float y, Tower.Type tt) {
-        if (isValidPlacement(new PointF(x, y)) && tt.cost <= money) {
-            addBuffer = new Tower(new PointF(x, y), tt);
-
-            // purchase tower
-            removeMoney(addBuffer.getCost());
-            return true;
-        }
-
-        return false;
-    }
-
-    public void removeSelectedTower() {
-        removeTower = true;
-
-        // refund tower cost
-        addMoney(selectedTower.getCost() / 2);
-    }
-
-    /**
-     * Calculates the distance between a new tower and every existing object to determine if the
-     * placement of the new tower is valid. Assumes the new tower exists at time of valid check.
-     *
-     * @param location Location of new tower to be placed
-     * @return True if valid placement, false if not
-     */
-    public boolean isValidPlacement(PointF location) {
-        // check against towers
-        for (Tower tower : getTowers()) {
-            double distance = distanceToPoint(location, tower.getLocation());
-            if (distance < towerRadius * 2) {
-                return false;
-            }
-        }
-
-        // check against path
-        for (RectF rect : map.getBounds()) {
-            if (rect.left - towerRadius <= location.x &&
-                location.x - towerRadius <= rect.right &&
-                rect.top - towerRadius <= location.y &&
-                location.y - towerRadius <= rect.bottom) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private double distanceToPoint(PointF location, PointF point) {
-        float dx = location.x - point.x;
-        float dy = location.y - point.y;
-        return Math.hypot(dx, dy);
-    }
-
-    /**
-     * Ends this game and returns to the the menu
-     */
-    private void gameOver() {
-        // stop game loop
-        running = false;
-
-        // delete save file
-        Serializer.delete(getContext(), Serializer.SAVEFILE);
-
-        // return to menu
-        ((GameActivity) getContext()).gameOver();
-    }
-
-    /**
-     * Called every update. Checks if an enemy should be spawned. If so, spawn next enemy from waves
-     *
-     * @param delta amount of time that has passed between updates
-     */
-    public void spawnEnemy(double delta){
-        if(waves.isRunning()) {
-            waves.updateTimeSinceSpawn(delta);
-
-            if (waves.delayPassed()){
-                enemies.add(new Enemy(waves.next(), map.getPath()));
-            }
-        }
-    }
-
-    public void setSelectedTower(Tower tower) {
-        selectedTower = tower;
-    }
-
-    /**
      * A helper method that draws a circular outline representing the range of this Tower.
      *
      * @param canvas The Canvas to draw the range on.
@@ -313,10 +253,74 @@ public class Game extends AbstractGame {
         float radius,
         boolean valid
     ) {
-        paint.setColor(valid ? VALID_RANGE_COLOR : INVALID_RANGE_COLOR);
+        paint.setColor(valid ? validRangeColor : invalidRangeColor);
         paint.setAlpha(RANGE_OPACITY);
         canvas.drawCircle(location.x, location.y, radius, paint);
     }
+
+    // UI
+
+    /**
+     * A custom listener for Game objects
+     */
+    public interface GameListener {
+
+        /**
+         * This method is called whenever the game's money increases or decreases
+         */
+        void onMoneyChanged();
+    }
+
+    public void setGameListener(GameListener listener) {
+        this.listener = listener;
+    }
+
+    // MAP EVENTS
+
+    private void handleEvents() {
+        while (!mapEvents.isEmpty()) {
+            MapEvent e = mapEvents.get(0);
+
+            if (e instanceof MapEvent.PlaceTower) {
+                towers.add(((MapEvent.PlaceTower) e).tower);
+            } else if (e instanceof MapEvent.RemoveTower) {
+                towers.remove(selectedTower);
+            } else if (e instanceof MapEvent.SpawnEnemy) {
+                enemies.add(((MapEvent.SpawnEnemy) e).enemy);
+            }
+
+            mapEvents.remove(e);
+        }
+    }
+
+    // PlaceTower event
+    public boolean placeTower(PointF location, Tower.Type type) {
+        if (isValidPlacement(new PointF(location.x, location.y)) && type.cost <= money) {
+            Tower tower = new Tower(new PointF(location.x, location.y), type);
+            mapEvents.add(new MapEvent.PlaceTower(tower));
+
+            // purchase tower
+            removeMoney(type.cost);
+            return true;
+        }
+
+        return false;
+    }
+
+    // RemoveTower event
+    public void removeSelectedTower() {
+        mapEvents.add(new MapEvent.RemoveTower());
+
+        // refund tower cost
+        addMoney(selectedTower.getCost() / 2);
+    }
+
+    // SpawnEnemy event
+    private void spawnEnemy(Type type) {
+        mapEvents.add(new MapEvent.SpawnEnemy(new Enemy(type, map.getPath())));
+    }
+
+    // GETTERS/SETTERS
 
     /**
      * Adds a specified amount to the game's money and triggers the game's listener
@@ -338,41 +342,35 @@ public class Game extends AbstractGame {
         listener.onMoneyChanged();
     }
 
-    public int getMoney() {
-        return money;
+    public List<Tower> getTowers() {
+        return Collections.unmodifiableList(towers);
+    }
+
+    public List<Enemy> getEnemies() {
+        return Collections.unmodifiableList(enemies);
     }
 
     public Map getMap() {
         return map;
     }
 
-    public List<Enemy> getEnemies() {
-        return enemies;
-    }
-
-    public List<Tower> getTowers() {
-        return towers;
-    }
-
     public int getLives() {
         return lives;
     }
 
-    public Waves getWaves() {
-        return waves;
+        public Waves getWaves() {
+            return waves;
+        }
+
+    public int getMoney() {
+        return money;
     }
 
-    /**
-     * A custom listener for Game objects
-     */
-    public interface GameListener {
-        /**
-         * This method is called whenever the game's money increases or decreases
-         */
-        void onMoneyChanged();
+    public void selectTower(Tower tower) {
+        selectedTower = tower;
     }
 
-    public void setGameListener(GameListener listener) {
-        this.listener = listener;
+    public void drag(PointF location) {
+        dragLocation = location;
     }
 }

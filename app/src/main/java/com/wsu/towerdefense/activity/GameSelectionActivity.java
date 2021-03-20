@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageButton;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;

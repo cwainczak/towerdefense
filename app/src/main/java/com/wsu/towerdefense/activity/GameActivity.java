@@ -124,7 +124,8 @@ public class GameActivity extends AppCompatActivity {
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
-                startActivity(new Intent(GameActivity.this, PauseActivity.class));
+                startActivity(new Intent(GameActivity.this, PauseActivity.class),
+                    ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             });
 
             btn_play.setOnClickListener(view -> {
@@ -137,15 +138,10 @@ public class GameActivity extends AppCompatActivity {
 
             List<Tower> towers = game.getTowers();
             game.setOnTouchListener((v, event) -> {
-
-                for (int i = 0; i < towers.size(); i++) {
-                    Tower tower = towers.get(i);
-
-                    PointF delta = new PointF(
-                        event.getX() - tower.getLocation().x,
-                        event.getY() - tower.getLocation().y
-                    );
-                    double distance = Math.hypot(delta.x, delta.y);
+                for (Tower tower : towers) {
+                    float dx = event.getX() - tower.getLocation().x;
+                    float dy = event.getY() - tower.getLocation().y;
+                    double distance = Math.hypot(dx, dy);
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
@@ -160,13 +156,13 @@ public class GameActivity extends AppCompatActivity {
                                 "\n\nSell for: " + tower.getCost() / 2);
 
                         // Notify game of selected tower
-                        game.setSelectedTower(tower);
+                        game.selectTower(tower);
 
                         return true;
                     }
                 }
                 setSelectionMenuVisible(false);
-                game.setSelectedTower(null);
+                game.selectTower(null);
                 return false;
             });
 
@@ -188,18 +184,18 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < towerList.size(); i++) {
             ImageView image = towerList.get(i);
 
+            final int _i = i;
             image.setOnLongClickListener(v -> {
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                    String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                    v.startDragAndDrop(data, dragshadow, v, 0);
+                ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
+                View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
+                v.startDragAndDrop(data, dragshadow, v, 0);
 
-                    // Get the tower Type using the image
-                    selectedTowerType = towerTypes.get(towerList.indexOf(v));
-                    return true;
-                }
-            );
+                // Get the tower Type using the image
+                selectedTowerType = towerTypes.get(_i);
+                return true;
+            });
             image.setOnDragListener((OnDragListener) (v, event) -> {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
@@ -210,8 +206,8 @@ public class GameActivity extends AppCompatActivity {
                         event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
                                 event.getAction() == DragEvent.ACTION_DROP
                 ) {
-                    game.dragLocation = null;
-                    game.setSelectedTower(null);
+                    game.drag(null);
+                    game.selectTower(null);
                     setSelectionMenuVisible(false);
                     return true;
                 }
@@ -231,18 +227,17 @@ public class GameActivity extends AppCompatActivity {
                 boolean onScreen = dragLocation.x < cl_gameLayout.getWidth() &&
                     dragLocation.y < cl_gameLayout.getHeight();
                 if (onScreen) {
-                    game.dragLocation = dragLocation;
-                    game.setSelectedTower(null);
+                    game.drag(dragLocation);
+                    game.selectTower(null);
                     setSelectionMenuVisible(false);
                 } else {
-                    game.dragLocation = null;
+                    game.drag(null);
                 }
             }
             // drop tower onto game
             else if (event.getAction() == DragEvent.ACTION_DROP) {
-                game.dragLocation = null;
-
-                return game.placeTower(event.getX(), event.getY(), this.selectedTowerType);
+                game.drag(null);
+                return game.placeTower(new PointF(event.getX(), event.getY()), selectedTowerType);
             }
             return false;
         });
@@ -269,13 +264,14 @@ public class GameActivity extends AppCompatActivity {
         int money = game.getMoney();
 
         for (int i = 0; i < towerList.size(); i++) {
-            ImageView towerImage = towerList.get(i);
+            ImageView image = towerList.get(i);
 
             // Enable towers (in menu) with cost equal to or lower
             // than cost of their respective Type
             if (money >= towerTypes.get(i).cost) {
-                towerImage.setColorFilter(null);
-                towerImage.setOnLongClickListener((v -> {
+                image.setColorFilter(null);
+                final int _i = i;
+                image.setOnLongClickListener(v -> {
                     ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
                     String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
                     ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
@@ -283,14 +279,14 @@ public class GameActivity extends AppCompatActivity {
                     v.startDragAndDrop(data, dragshadow, v, 0);
 
                     // Get the tower Type using the image
-                    selectedTowerType = towerTypes.get(towerList.indexOf(v));
+                    selectedTowerType = towerTypes.get(_i);
                     return true;
-                }));
+                });
             }
             // Disable towers (in menu) with cost greater than money
             else {
-                towerImage.setColorFilter(NO_MONEY_TINT);
-                towerImage.setOnLongClickListener(null);
+                image.setColorFilter(NO_MONEY_TINT);
+                image.setOnLongClickListener(null);
             }
         }
     }
@@ -325,7 +321,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Called when pause button is clicked
      */
-    public void btnPauseOnClick(View view){
+    public void btnPauseOnClick(View view) {
         game.setPaused(true);
         startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
