@@ -181,7 +181,7 @@ public class Game extends AbstractGame {
      */
     public boolean isValidPlacement(PointF location) {
         // check against towers
-        for (Tower tower : getTowers()) {
+        for (Tower tower : towers) {
             // TODO: move into util
             float dx = location.x - tower.getLocation().x;
             float dy = location.y - tower.getLocation().y;
@@ -287,16 +287,13 @@ public class Game extends AbstractGame {
     }
 
     // PlaceTower event
-    public boolean placeTower(PointF location) {
-        // Todo - Cost will need to be passed from GameActivity once there are different towers
-        int cost = 100;
-
-        if (isValidPlacement(new PointF(location.x, location.y)) && cost <= money) {
-            Tower tower = new Tower(new PointF(location.x, location.y), 384, 750f, 10, cost);
+    public boolean placeTower(PointF location, Tower.Type type) {
+        if (isValidPlacement(new PointF(location.x, location.y)) && type.cost <= money) {
+            Tower tower = new Tower(new PointF(location.x, location.y), type);
             mapEvents.add(new MapEvent.PlaceTower(tower));
 
             // purchase tower
-            removeMoney(tower.cost);
+            removeMoney(type.cost);
             return true;
         }
 
@@ -308,7 +305,7 @@ public class Game extends AbstractGame {
         mapEvents.add(new MapEvent.RemoveTower());
 
         // refund tower cost
-        addMoney(selectedTower.cost / 2);
+        addMoney(selectedTower.getCost() / 2);
     }
 
     // SpawnEnemy event

@@ -1,15 +1,20 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.TowerDefense" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
+<resources>
+  <!-- Base application theme. -->
+  <style name="Theme.TowerDefense" parent="Theme.Design.NoActionBar">
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowContentOverlay">@null</item>
+  </style>
 
-    <!-- Style for the In-game Pause Pop-up Window -->
-    <style name="Theme.CustomTheme" parent="Theme.AppCompat">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
+  <!-- Style for the In-game Pause Pop-up Window -->
+  <style name="Theme.CustomTheme" parent="Theme.TowerDefense">
+    <item name="android:windowBackground">@color/pause_background</item>
+    <item name="android:colorBackgroundCacheHint">@null</item>
+    <item name="android:windowIsTranslucent">true</item>
 
+    <item name="android:windowActivityTransitions">true</item>
+    <item name="android:windowEnterTransition">@android:transition/fade</item>
+    <item name="android:windowExitTransition">@android:transition/fade</item>
+  </style>
 </resources>
