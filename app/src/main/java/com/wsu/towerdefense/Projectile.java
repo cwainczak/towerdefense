@@ -5,7 +5,6 @@ import static com.google.android.material.math.MathUtils.lerp;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import java.util.List;
 
 public class Projectile extends AbstractMapObject {
@@ -38,7 +37,7 @@ public class Projectile extends AbstractMapObject {
     }
 
     private final Type type;
-    private Enemy target;
+    private final Enemy target;
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
     public boolean remove;

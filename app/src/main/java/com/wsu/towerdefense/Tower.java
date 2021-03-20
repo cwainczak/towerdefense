@@ -42,8 +42,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
-    private double timeSinceShot = 0.0;
-    private Projectile.Type projectileType;
+    private transient double timeSinceShot = 0.0;
+    private transient Projectile.Type projectileType;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -176,6 +176,14 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
+
+        if (type == Type.BASIC_LINEAR) {
+            projectileType = Projectile.Type.LINEAR;
+        } else if (type == Type.BASIC_HOMING) {
+            projectileType = Projectile.Type.HOMING;
+        } else {
+            projectileType = null;
+        }
     }
 
     public float getRange() {

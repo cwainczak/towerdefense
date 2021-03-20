@@ -3,6 +3,7 @@ package com.wsu.towerdefense.save;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Tower;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,7 @@ public class SaveState implements Serializable {
         this.saveFile = saveFile;
 
         this.mapName = game.getMap().getName();
-        // TODO: save only relevant tower data
-        this.towers = game.getTowers();
+        this.towers = new ArrayList<>(game.getTowers());
         this.lives = game.getLives();
         this.money = game.getMoney();
     }
