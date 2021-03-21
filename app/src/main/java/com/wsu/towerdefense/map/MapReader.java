@@ -130,9 +130,7 @@ public class MapReader {
     private static String readFile(Context context, String fileName) throws IOException {
         InputStream stream = context.getAssets().open(fileName);
 
-        String data = new BufferedReader(new InputStreamReader(stream)).lines()
+        return new BufferedReader(new InputStreamReader(stream)).lines()
             .collect(Collectors.joining("\n"));
-
-        return data;
     }
 }

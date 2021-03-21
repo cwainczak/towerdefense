@@ -11,9 +11,9 @@ public class Enemy extends AbstractMapObject {
 
     public enum Type {
         //Standard enemy types
-        S1(400, 40, 20, R.mipmap.enemy),
-        S2(450, 50, 20, R.mipmap.enemy),
-        S3(500, 60, 20, R.mipmap.enemy);
+        S1(200, 10, 25, R.mipmap.enemy),
+        S2(250, 20, 35, R.mipmap.enemy),
+        S3(400, 30 , 45, R.mipmap.enemy);
 
         final float speed;
         final int hp;
@@ -33,8 +33,8 @@ public class Enemy extends AbstractMapObject {
     private int hp;
     private boolean isAlive;
 
-    private float velocityX;
-    private float velocityY;
+    private float velX;
+    private float velY;
 
     private final ListIterator<PointF> path;
     private boolean isAtPathEnd;
@@ -59,8 +59,8 @@ public class Enemy extends AbstractMapObject {
         this.target = this.path.next();
         this.isAlive = true;
         this.isAtPathEnd = false;
-        this.velocityX = 0;
-        this.velocityY = 0;
+        this.velX = 0;
+        this.velY = 0;
     }
 
     /**
@@ -86,20 +86,17 @@ public class Enemy extends AbstractMapObject {
                 location = new PointF(target.x, target.y);
                 target = path.next();
 
-                float dx = target.x - location.x;
-                float dy = target.y - location.y;
-                distance = Math.hypot(dx, dy);
-                velocityX = type.speed * (float) (dx / distance);
-                velocityY = type.speed * (float) (dy / distance);
+                PointF newVel = Util.getNewVelocity(this.location, this.target, this.type.speed);
+                this.velX = newVel.x;
+                this.velY = newVel.y;
             } else {
                 // If there are no more points in the path
                 isAtPathEnd = true;
             }
         }
 
-        //increment location based on velocity values
-        location.x += velocityX * delta;
-        location.y += velocityY * delta;
+        // get new location based on velocity values and current location
+        this.location = Util.getNewLoc(this.location, this.velX, this.velY, delta);
     }
 
     /**
@@ -113,8 +110,8 @@ public class Enemy extends AbstractMapObject {
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
         if (hp > 0) {
-            float x = (float) Math.round(location.x + velocityX * lerp);
-            float y = (float) Math.round(location.y + velocityY * lerp);
+            float x = (float) Math.round(location.x + velX * lerp);
+            float y = (float) Math.round(location.y + velY * lerp);
 
             // Draw the Enemy bitmap image
             canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f,
@@ -170,4 +167,21 @@ public class Enemy extends AbstractMapObject {
     public int getPrice() {
         return this.type.price;
     }
+
+    public void setVelX(float velX) {
+        this.velX = velX;
+    }
+
+    public void setVelY(float velY) {
+        this.velY = velY;
+    }
+
+    public PointF getTarget() {
+        return target;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
 }
