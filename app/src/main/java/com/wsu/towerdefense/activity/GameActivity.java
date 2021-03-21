@@ -154,8 +154,8 @@ public class GameActivity extends AppCompatActivity {
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
-
                         isTowerMenuScrollable = false;
+                        enableOrDisableImageViews(towerList, false);
                         setSelectionMenuVisible(true);
 
                         // temporary position text
@@ -173,10 +173,12 @@ public class GameActivity extends AppCompatActivity {
                     }
                 }
                 isTowerMenuScrollable = true;
+                enableOrDisableImageViews(towerList, true);
                 setSelectionMenuVisible(false);
                 game.selectTower(null);
                 return false;
-            });
+            }
+            );
 
             // Add Custom listener to game
             game.setGameListener(new Game.GameListener() {
@@ -328,6 +330,7 @@ public class GameActivity extends AppCompatActivity {
     public void removeSelectedTower(View view) {
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+        enableOrDisableImageViews(towerList, true);
         isTowerMenuScrollable = true;
     }
 
@@ -367,6 +370,16 @@ public class GameActivity extends AppCompatActivity {
                 return !GameActivity.this.isTowerMenuScrollable;
             }
         });
+    }
+
+    /**
+     * @param imageViews    the image views to enable or disable
+     * @param enable    if true, enable imageviews, otherwise disable them
+     */
+    private void enableOrDisableImageViews(List<ImageView> imageViews, boolean enable){
+        for (ImageView imageView : imageViews){
+            imageView.setEnabled(enable);
+        }
     }
 
 }
