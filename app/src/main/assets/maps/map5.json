@@ -1,7 +1,7 @@
 {
   "displayName": "Desert",
   "image": "map_5",
-  "pathRadius": 55,
+  "pathRadius": 70,
   "path": [
     {
       "x": 0,
