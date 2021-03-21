@@ -14,10 +14,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -44,6 +46,8 @@ public class GameActivity extends AppCompatActivity {
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
+    private ScrollView sv_tower;
+    private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
     private TextView txt_towerInfo;
     private List<ImageView> towerList;
@@ -61,6 +65,10 @@ public class GameActivity extends AppCompatActivity {
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
+
+        sv_tower = findViewById(R.id.sv_tower);
+        scrollViewInit();
+        isTowerMenuScrollable = true;
 
         txt_towerName = findViewById(R.id.txt_towerName);
         txt_towerInfo = findViewById(R.id.txt_towerInfo);
@@ -146,6 +154,8 @@ public class GameActivity extends AppCompatActivity {
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
+
+                        isTowerMenuScrollable = false;
                         setSelectionMenuVisible(true);
 
                         // temporary position text
@@ -162,6 +172,7 @@ public class GameActivity extends AppCompatActivity {
                         return true;
                     }
                 }
+                isTowerMenuScrollable = true;
                 setSelectionMenuVisible(false);
                 game.selectTower(null);
                 return false;
@@ -341,4 +352,20 @@ public class GameActivity extends AppCompatActivity {
             game.setPaused(false);
         }
     }
+
+    /**
+     * Initializes the Tower ScrollView, allowing the scroll to be disabled
+     * Enabled when isTowerMenuScrollable is True
+     * Disabled when isTowerMenuScrollable is False
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private void scrollViewInit(){
+        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                return !GameActivity.this.isTowerMenuScrollable;
+            }
+        });
+    }
+
 }
