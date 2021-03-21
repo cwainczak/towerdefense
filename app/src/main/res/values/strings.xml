@@ -31,4 +31,8 @@
     <string name="save">Save</string>
     <string name="resume">Resume</string>
     <string name="version">Version 2.0</string>
+    <string name="option_1">Option 1</string>
+    <string name="buy">Buy</string>
+    <string name="option_2">option_2</string>
+    <string name="upgrades">Upgrades</string>
 </resources>
