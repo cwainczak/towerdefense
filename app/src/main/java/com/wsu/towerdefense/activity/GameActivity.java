@@ -328,6 +328,7 @@ public class GameActivity extends AppCompatActivity {
     public void removeSelectedTower(View view) {
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+        isTowerMenuScrollable = true;
     }
 
     /**
