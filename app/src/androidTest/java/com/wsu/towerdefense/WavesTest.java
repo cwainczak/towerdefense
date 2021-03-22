@@ -35,6 +35,7 @@ public class WavesTest extends TestCase {
     @Test
     public void firstNext() {
         Waves w = new Waves(a1, d1, t1, 3);
+        w.nextWave();
         Enemy.Type expected = Enemy.Type.S1;
         Enemy.Type actual = w.next();
         assertEquals(expected, actual);
@@ -43,6 +44,7 @@ public class WavesTest extends TestCase {
     @Test
     public void secondNext() {
         Waves w = new Waves(a1, d1, t1, 3);
+        w.nextWave();
         Enemy.Type expected = Enemy.Type.S1;
         w.next();
         Enemy.Type actual = w.next();
@@ -52,6 +54,7 @@ public class WavesTest extends TestCase {
     @Test
     public void firstNextOfSecondSet() {
         Waves w = new Waves(a1, d1, t1, 3);
+        w.nextWave();
         Enemy.Type expected = Enemy.Type.S2;
         w.next();
         w.next();
@@ -64,10 +67,13 @@ public class WavesTest extends TestCase {
     @Test
     public void firstNextOfSecondWave() {
         Waves w = new Waves(a1, d1, t1, 3);
+        w.nextWave();
         Enemy.Type expected = Enemy.Type.S1;
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < 5; i++){
             w.next();
         }
+        w.nextWave();
+        w.next();
         Enemy.Type actual = w.next();
         assertEquals(expected, actual);
     }
@@ -75,8 +81,17 @@ public class WavesTest extends TestCase {
     @Test
     public void lastNextOfLastWave() {
         Waves w = new Waves(a1, d1, t1, 3);
+        w.nextWave();
         Enemy.Type expected = Enemy.Type.S3;
-        for(int i = 0; i < 20; i++){
+        for(int i = 0; i < 5; i++){
+            w.next();
+        }
+        w.nextWave();
+        for(int i = 0; i < 12; i++){
+            w.next();
+        }
+        w.nextWave();
+        for(int i = 0; i < 3; i++){
             w.next();
         }
         Enemy.Type actual = w.next();

@@ -9,6 +9,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
+import com.wsu.towerdefense.upgrade.TowerStats;
+import com.wsu.towerdefense.upgrade.Upgrade;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,30 +23,27 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_LINEAR(384, 1000f, 10, 1,
-                100, R.mipmap.tower_1_turret, Projectile.Type.LINEAR),
-        BASIC_HOMING(384, 750f, 10, 2,
-                150, R.mipmap.tower_2_turret, Projectile.Type.HOMING);
+        BASIC_HOMING(R.mipmap.tower_2_turret, 384, 2, 1, 1, Projectile.Type.HOMING, 150),
+        BASIC_LINEAR(R.mipmap.tower_1_turret, 384, 1, 1, 1, Projectile.Type.LINEAR, 100);
 
-        final int radius;
-        final float projectiveVelocity;
-        final int damage;
-        final double fireRate;
-        public final int cost;
         final int towerResID;
-        final Projectile.Type projectileType;
+        public final int range;
+        public final float fireRate;
+        public final float projectiveSpeed;
+        public final float projectileDamage;
+        public final Projectile.Type projectileType;
+        public final int cost;
 
-        Type(int someRadius, float someProjectiveVelocity, int someDamage, double someFireRate,
-             int someCost, int towerResID, Projectile.Type projectileType){
-            this.radius = someRadius;
-            this.projectiveVelocity = someProjectiveVelocity;
-            this.damage = someDamage;
-            this.fireRate = someFireRate;
-            this.cost = someCost;
+        Type(int towerResID, int range, float fireRate, float projectiveSpeed, int projectileDamage,
+             Projectile.Type projectileType, int cost) {
             this.towerResID = towerResID;
+            this.range = range;
+            this.fireRate = fireRate;
+            this.projectiveSpeed = projectiveSpeed;
+            this.projectileDamage = projectileDamage;
             this.projectileType = projectileType;
+            this.cost = cost;
         }
-
     }
 
     public static final float BASE_SIZE = 130 * 0.875f;
@@ -52,7 +51,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private transient double timeSinceShot = 0.0;
-    private transient Projectile.Type projectileType;
+
+    private final TowerStats stats;
 
     private transient Bitmap towerBitmap;
     private transient float angle = 0;
@@ -63,18 +63,14 @@ public class Tower extends AbstractMapObject implements Serializable {
      * Tower will track the Enemy they were shot at even if the Enemy is no longer in the Tower's
      * range.
      *
-     *  @param location           A PointF representing the location of the towerBitmap's center
+     * @param location A PointF representing the location of the towerBitmap's center
      */
     public Tower(PointF location, Type tt) {
         super(location, R.mipmap.tower_base);
         this.type = tt;
-        this.projectileType = tt.projectileType;
         this.projectiles = new ArrayList<>();
-
         this.towerBitmap = BitmapFactory.decodeResource(Application.context.getResources(), tt.towerResID);
-
-        float halfBitmapWidth = bitmap.getWidth()/2f;
-        float halfBitmapHeight = bitmap.getHeight()/2f;
+        this.stats = new TowerStats(tt);
     }
 
     /**
@@ -86,8 +82,8 @@ public class Tower extends AbstractMapObject implements Serializable {
     @Override
     protected void update(Game game, double delta) {
         // Remove target if it goes out of range or reaches end of path
-        if (distanceToEnemy(target) > this.type.radius ||
-                (target != null && target.isAtPathEnd())) {
+        if (distanceToEnemy(target) > stats.getRange() ||
+            (target != null && target.isAtPathEnd())) {
             target = null;
         }
 
@@ -95,7 +91,7 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (target == null) {
             List<Enemy> enemies = game.getEnemies();
             for (int i = 0; i < enemies.size(); i++) {
-                if (distanceToEnemy(enemies.get(i)) < this.type.radius) {
+                if (distanceToEnemy(enemies.get(i)) < stats.getRange()) {
                     target = enemies.get(i);
 
                     break; // Stop looking for a target
@@ -103,16 +99,24 @@ public class Tower extends AbstractMapObject implements Serializable {
             }
         }
 
-        // Calculate change in time since last projectile_1 was fired
+        // Calculate change in time since last projectile was fired
         timeSinceShot += delta;
 
-        // Shoot another projectile_1 if there is a target and enough time has passed
-        if (target != null && timeSinceShot >= this.type.fireRate) {
-            projectiles.add(new Projectile(new PointF(location.x, location.y), projectileType, target));
+        // Shoot another projectile if there is a target and enough time has passed
+        if (target != null && timeSinceShot >= stats.getFireRate()) {
+            projectiles.add(
+                new Projectile(
+                    new PointF(location.x, location.y),
+                    stats.getProjectileType(),
+                    target,
+                    stats.getProjectileSpeed(),
+                    stats.getProjectileDamage()
+                )
+            );
             timeSinceShot = 0;
         }
 
-        // Update each projectile_1
+        // Update each projectile
         for (Iterator<Projectile> projectileIt = projectiles.iterator(); projectileIt.hasNext(); ) {
             Projectile p = projectileIt.next();
             p.update(game, delta);
@@ -189,6 +193,35 @@ public class Tower extends AbstractMapObject implements Serializable {
         }
     }
 
+    public int getUpgradeProgress(int pathNumber) {
+        return stats.getUpgradeProgress(pathNumber);
+    }
+
+    public void upgrade(int pathNumber) {
+        // TODO: currency check here
+
+        Upgrade upgrade = stats.upgrade(pathNumber);
+        if (upgrade != null) {
+            setBitmap(upgrade.imageID, upgrade.image);
+        }
+    }
+
+    public TowerStats getStats() {
+        return stats;
+    }
+
+    public int getCost() {
+        return type.cost;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public float getRange() {
+        return this.type.range;
+    }
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }
@@ -197,7 +230,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
-        projectileType = type.projectileType;
 
         this.towerBitmap = BitmapFactory.decodeResource(
                 Application.context.getResources(),
@@ -219,17 +251,5 @@ public class Tower extends AbstractMapObject implements Serializable {
                 loc.x + width / 2 >= this.location.x - BASE_SIZE / 2f  &&
                 loc.y - height / 2 <= this.location.y + BASE_SIZE / 2f &&
                 loc.y + height / 2 >= this.location.y - BASE_SIZE / 2f;
-    }
-
-    public float getRange() {
-        return this.type.radius;
-    }
-
-    public int getCost(){
-        return this.type.cost;
-    }
-
-    public Type getType() {
-        return type;
     }
 }

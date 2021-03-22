@@ -33,6 +33,7 @@ public class Game extends AbstractGame {
     private final List<Enemy> enemies;
 
     private final Waves waves;
+    private final Difficulty difficulty;
 
     private final Map map;
 
@@ -48,9 +49,8 @@ public class Game extends AbstractGame {
     private Tower.Type dragType = null;
     private final List<MapEvent> mapEvents;
 
-
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
-        String mapName) {
+        String mapName, Difficulty difficulty) {
         super(context, gameWidth, gameHeight);
 
         mapEvents = new ArrayList<>();
@@ -72,7 +72,8 @@ public class Game extends AbstractGame {
             getGameWidth(),
             getGameHeight()
         );
-        waves = hasSave ? saveState.waves : new Waves(context);
+        this.difficulty = hasSave ? saveState.difficulty : difficulty;
+        waves = hasSave ? saveState.waves : new Waves(context, difficulty);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
@@ -80,7 +81,8 @@ public class Game extends AbstractGame {
         enemies = new ArrayList<>();
 
         Log.i(context.getString(R.string.logcatKey),
-            "Started game with map '" + map.getName() + "'"
+            "Started game with map '" + map.getName() + "'" +
+                " and difficulty '" + difficulty.toString() + "'"
         );
     }
 
@@ -113,7 +115,7 @@ public class Game extends AbstractGame {
 
     @Override
     protected void update(double delta) {
-        spawnEnemy(delta);
+
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
             Enemy e = enemyIt.next();
@@ -132,12 +134,15 @@ public class Game extends AbstractGame {
 
             } else {
                 // Add enemy's value to game balance
-                addMoney(e.getPrice());
+                addMoney((int) (e.getPrice() * difficulty.priceModifier));
 
                 // Remove dead Enemies
                 enemyIt.remove();
             }
         }
+
+        // Update Waves
+        waves.update(this, delta);
 
         handleEvents();
 
@@ -160,7 +165,7 @@ public class Game extends AbstractGame {
                 t.drawLine(canvas, paint);
             }
             if (selectedTower == t) {
-                drawRange(canvas, paint, t.getLocation(), t.getRange(), true);
+                drawRange(canvas, paint, t.getLocation(), t.getStats().getRange(), true);
             }
 
             t.render(lerp, canvas, paint);
@@ -171,7 +176,7 @@ public class Game extends AbstractGame {
         }
 
         if (dragLocation != null) {
-            drawRange(canvas, paint, dragLocation, dragType.radius, isValidPlacement(dragLocation));
+            drawRange(canvas, paint, dragLocation, dragType.range, isValidPlacement(dragLocation));
         }
 
         drawHUD(canvas, paint);
@@ -204,16 +209,6 @@ public class Game extends AbstractGame {
         return true;
     }
 
-    public void spawnEnemy(double delta) {
-        if (waves.isRunning()) {
-            waves.updateTimeSinceSpawn(delta);
-
-            if (waves.delayPassed()) {
-                enemies.add(new Enemy(waves.next(), map.getPath()));
-            }
-        }
-    }
-
     /**
      * Draws the money count and life count to the top left corner of the canvas
      *
@@ -235,6 +230,13 @@ public class Game extends AbstractGame {
 
         paint.setColor(Color.WHITE);
         canvas.drawText("Lives: " + lives, posX, posY + yOffset, paint);
+
+        if (waves.getCurWave() == 0) {
+            canvas.drawText("Wave: 1", posX, posY + (yOffset * 2), paint);
+        } else {
+            canvas.drawText("Wave: " + waves.getCurWave(), posX, posY + (yOffset * 2), paint);
+        }
+
     }
 
     /**
@@ -312,8 +314,24 @@ public class Game extends AbstractGame {
     }
 
     // SpawnEnemy event
-    private void spawnEnemy(Type type) {
+    protected void spawnEnemy(Type type) {
         mapEvents.add(new MapEvent.SpawnEnemy(new Enemy(type, map.getPath())));
+    }
+
+    // DIFFICULTY ENUM
+    public enum Difficulty {
+        EASY(40, 1),
+        MEDIUM(60, 0.9f),
+        HARD(80, 0.8f);
+
+        final int waves;
+        final float priceModifier;
+
+
+        Difficulty(int waves, float priceModifier) {
+            this.waves = waves;
+            this.priceModifier = priceModifier;
+        }
     }
 
     // GETTERS/SETTERS
@@ -354,12 +372,16 @@ public class Game extends AbstractGame {
         return lives;
     }
 
-        public Waves getWaves() {
-            return waves;
-        }
+    public Waves getWaves() {
+        return waves;
+    }
 
     public int getMoney() {
         return money;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
     }
 
     public void selectTower(Tower tower) {
@@ -368,6 +390,10 @@ public class Game extends AbstractGame {
 
     public void drag(PointF location) {
         dragLocation = location;
+    }
+
+    public Tower getSelectedTower() {
+        return selectedTower;
     }
 
     public void setDragType(Tower.Type dragType) { this.dragType = dragType; }

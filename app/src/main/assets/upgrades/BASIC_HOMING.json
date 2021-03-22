@@ -1,0 +1,138 @@
+{
+  "path1": [
+    {
+      "displayName": "1",
+      "description": "shoots farther",
+      "cost": "50",
+      "image": "yellow_tower",
+      "effect": {
+        "type": "RANGE",
+        "value": 1.0
+      }
+    },
+    {
+      "displayName": "2",
+      "description": "shoots faster",
+      "cost": "100",
+      "image": "blue_tower",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.5
+      }
+    },
+    {
+      "displayName": "3",
+      "description": "shoots faster",
+      "cost": "100",
+      "image": "blue_tower",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.5
+      }
+    }
+  ],
+  "path2": [
+    {
+      "displayName": "4",
+      "description": "shoots faster projectiles",
+      "cost": "50",
+      "image": "green_tower",
+      "effect": {
+        "type": "PROJECTILE_SPEED",
+        "value": 0.8
+      }
+    },
+    {
+      "displayName": "5",
+      "description": "shoots homing projectiles faster",
+      "cost": "100",
+      "image": "red_tower",
+      "effects": [
+        {
+          "type": "PROJECTILE",
+          "value": "HOMING"
+        },
+        {
+          "type": "FIRE_RATE",
+          "value": -0.4
+        },
+        {
+          "type": "PROJECTILE_DAMAGE",
+          "value": -0.8
+        }
+      ]
+    },
+    {
+      "displayName": "6",
+      "description": "shoots homing projectiles faster",
+      "cost": "100",
+      "image": "red_tower",
+      "effects": [
+        {
+          "type": "PROJECTILE",
+          "value": "HOMING"
+        },
+        {
+          "type": "FIRE_RATE",
+          "value": -0.4
+        },
+        {
+          "type": "PROJECTILE_DAMAGE",
+          "value": -0.8
+        }
+      ]
+    }
+  ],
+  "path3": [
+    {
+      "displayName": "7",
+      "description": "shoots faster projectiles",
+      "cost": "50",
+      "image": "green_tower",
+      "effect": {
+        "type": "PROJECTILE_SPEED",
+        "value": 0.8
+      }
+    },
+    {
+      "displayName": "8",
+      "description": "shoots homing projectiles faster",
+      "cost": "100",
+      "image": "red_tower",
+      "effects": [
+        {
+          "type": "PROJECTILE",
+          "value": "HOMING"
+        },
+        {
+          "type": "FIRE_RATE",
+          "value": -0.4
+        },
+        {
+          "type": "PROJECTILE_DAMAGE",
+          "value": -0.8
+        }
+      ]
+    },
+    {
+      "displayName": "9",
+      "description": "shoots homing projectiles faster",
+      "cost": "100",
+      "image": "red_tower",
+      "effects": [
+        {
+          "type": "PROJECTILE",
+          "value": "HOMING"
+        },
+        {
+          "type": "FIRE_RATE",
+          "value": -0.4
+        },
+        {
+          "type": "PROJECTILE_DAMAGE",
+          "value": -0.8
+        }
+      ]
+    }
+  ]
+}
