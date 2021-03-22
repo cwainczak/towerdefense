@@ -10,12 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Tower;
-import com.wsu.towerdefense.Tower.Type;
 import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.Serializer;

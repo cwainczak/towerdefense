@@ -2,10 +2,10 @@ package com.wsu.towerdefense;
 
 import static com.google.android.material.math.MathUtils.lerp;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.graphics.PointF;
 import java.util.List;
 
@@ -53,9 +53,9 @@ public class Projectile extends AbstractMapObject {
      * @param location A PointF representing the location of the bitmap's center
      * @param target   The Enemy this projectile is targeting (if none, value is null)
      */
-    public Projectile(PointF location, Type pt, Enemy target, float speedModifier,
+    public Projectile(Context context, PointF location, Type pt, Enemy target, float speedModifier,
         float damageModifier) {
-        super(location, pt.resourceID);
+        super(context, location, pt.resourceID);
         this.type = pt;
         this.target = target;
         this.speedModifier = speedModifier;
@@ -95,7 +95,7 @@ public class Projectile extends AbstractMapObject {
     }
 
     @Override
-    protected void render(double lerp, Canvas canvas, Paint paint) {
+    public void render(double lerp, Canvas canvas, Paint paint) {
         if (!remove) {
             PointF newLoc = calculateNewLocation(lerp);
 

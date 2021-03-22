@@ -1,5 +1,7 @@
 package com.wsu.towerdefense;
 
+import com.wsu.towerdefense.tower.Tower;
+
 public abstract class MapEvent {
 
     public static class PlaceTower extends MapEvent {

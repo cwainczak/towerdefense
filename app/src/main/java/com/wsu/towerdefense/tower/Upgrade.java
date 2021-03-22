@@ -1,9 +1,9 @@
-package com.wsu.towerdefense.upgrade;
+package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import java.util.Arrays;
+import com.wsu.towerdefense.Util;
 
 /**
  * A static upgrade that can be applied to a tower
@@ -44,7 +44,7 @@ public class Upgrade {
         this.description = description;
         this.cost = cost;
         this.imageID = imageID;
-        this.image = BitmapFactory.decodeResource(context.getResources(), imageID);
+        this.image = Util.getBitmapByID(context, imageID);
         this.effects = effects;
     }
 }

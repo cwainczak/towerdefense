@@ -2,11 +2,6 @@ package com.wsu.towerdefense;
 
 import android.content.Context;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Each wave is split up into sets. Each set contains an Enemy.Type, amount of enemies to be

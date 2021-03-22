@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -49,8 +50,8 @@ public class Enemy extends AbstractMapObject {
      * @param type enum containing information which will be consistent across all enemies of the
      *             same type (speed, hp, price, resource)
      */
-    public Enemy(Type type, List<PointF> path) {
-        super(path.get(0), type.resource);
+    public Enemy(Context context, Type type, List<PointF> path) {
+        super(context, path.get(0), type.resource);
 
         this.type = type;
         this.path = path.listIterator();

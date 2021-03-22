@@ -1,9 +1,12 @@
-package com.wsu.towerdefense.upgrade;
+package com.wsu.towerdefense.tower;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Projectile;
-import com.wsu.towerdefense.Tower;
-import com.wsu.towerdefense.upgrade.Upgrade.Effect;
-import com.wsu.towerdefense.upgrade.Upgrade.StatType;
+import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.tower.Upgrade.Effect;
+import com.wsu.towerdefense.tower.Upgrade.StatType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Manages the stats and upgrades of a particular {@link com.wsu.towerdefense.Tower Tower} instance
+ * Manages the stats and upgrades of a particular {@link Tower Tower} instance
  * <p>
  * Numeric modifiers are multiplied by the base stat value from {@link Tower.Type} to obtain the
  * effective (final) stat value. {@link #projectileType} overrides the {@link Projectile.Type} in
@@ -37,8 +40,10 @@ public class TowerStats implements Serializable {
     private float projectileSpeed;
     private float projectileDamage;
     private Projectile.Type projectileType;
+    private int turretImageID;
+    private transient Bitmap turretImage;
 
-    public TowerStats(Tower.Type type) {
+    public TowerStats(Context context, Tower.Type type) {
         this.type = type;
 
         this.upgradeData = UpgradeReader.get(type);
@@ -49,6 +54,8 @@ public class TowerStats implements Serializable {
         this.projectileSpeed = type.projectiveSpeed;
         this.projectileDamage = type.projectileDamage;
         this.projectileType = type.projectileType;
+        this.turretImageID = type.towerResID;
+        this.turretImage = Util.getBitmapByID(context, type.towerResID);
     }
 
     /**
@@ -77,6 +84,9 @@ public class TowerStats implements Serializable {
 
                 Upgrade upgrade = getUpgrade(pathNumber, false);
                 recache(upgrade);
+
+                turretImageID = upgrade.imageID;
+                turretImage = upgrade.image;
 
                 return upgrade;
             }
@@ -207,16 +217,18 @@ public class TowerStats implements Serializable {
         return projectileType;
     }
 
+    public Bitmap getTurretImage() {
+        return turretImage;
+    }
+
     public int getUpgradeProgress(int pathNumber) {
         return upgradeProgress[pathNumber];
     }
 
     public Upgrade getUpgrade(int pathNumber, boolean next) {
         Upgrade[] path = upgradeData.paths[pathNumber];
-        int a = upgradeProgress[pathNumber];
-        Upgrade upgrade = path[a - 1 + (next?1:0)];
-
-        return upgrade;
+        int upgradeIndex = upgradeProgress[pathNumber] - 1 + (next ? 1 : 0);
+        return path[upgradeIndex];
     }
 
     public boolean isMaxUpgraded(int pathNumber) {
@@ -231,6 +243,7 @@ public class TowerStats implements Serializable {
         in.defaultReadObject();
 
         upgradeData = UpgradeReader.get(type);
+        turretImage = Util.getBitmapByID(Application.context, turretImageID);
     }
 
 }

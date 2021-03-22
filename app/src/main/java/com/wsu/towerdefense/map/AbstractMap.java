@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import com.wsu.towerdefense.Util;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,9 +22,7 @@ public class AbstractMap {
 
     public AbstractMap(Context context, String name, String displayName, int imageID,
         List<PointF> path, float pathRadius) {
-        this(name, displayName, imageID,
-            BitmapFactory.decodeResource(context.getResources(), imageID),
-            path, pathRadius);
+        this(name, displayName, imageID, Util.getBitmapByID(context, imageID), path, pathRadius);
     }
 
     public AbstractMap(String name, String displayName, int imageID, Bitmap image,
