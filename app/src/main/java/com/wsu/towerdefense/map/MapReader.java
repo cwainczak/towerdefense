@@ -4,22 +4,19 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
 import com.wsu.towerdefense.R;
-import java.io.BufferedReader;
+import com.wsu.towerdefense.Util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Map format:
+ * File format:
  * <ul>
  *     <li><code>displayName</code> : string - name of the map that is shown to the user</li>
  *     <li><code>image</code> : string - name of the image file, without extension</li>
@@ -29,6 +26,8 @@ import org.json.JSONObject;
  */
 public class MapReader {
 
+    private static final String MAPS_DIR = "maps";
+
     private static final java.util.Map<String, AbstractMap> maps = new HashMap<>();
 
     /**
@@ -37,20 +36,20 @@ public class MapReader {
      * @throws IOException when 'assets/maps/' directory can't be read
      */
     public static void init(Context context) throws IOException {
-        String[] mapFiles = context.getAssets().list("maps");
-        for (String mapFile : mapFiles) {
+        String[] files = context.getAssets().list(MAPS_DIR);
+        for (String fileName : files) {
             try {
-                Log.i(context.getString(R.string.logcatKey), "Found map file '" + mapFile + "'");
-                String mapName = mapFile.substring(0, mapFile.lastIndexOf('.'));
+                Log.i(context.getString(R.string.logcatKey), "Found map file '" + fileName + "'");
+                String data = Util.readFile(context, MAPS_DIR + "/" + fileName);
 
-                String data = readFile(context, "maps/" + mapFile);
+                String mapName = fileName.substring(0, fileName.lastIndexOf('.'));
 
                 AbstractMap map = parseMap(context, mapName, data);
                 maps.put(mapName, map);
                 Log.i(context.getString(R.string.logcatKey), "Registered map '" + mapName + "'");
             } catch (IOException | JSONException | IllegalArgumentException e) {
                 Log.e(context.getString(R.string.logcatKey),
-                    "Error while reading map file '" + mapFile + "'"
+                    "Error while reading map file '" + fileName + "'"
                     , e);
             }
         }
@@ -117,20 +116,5 @@ public class MapReader {
         }
 
         return new AbstractMap(context, name, displayName, imageID, pathList, pathRadius);
-    }
-
-    /**
-     * Read a file from the assets directory
-     *
-     * @param context  context
-     * @param fileName file within 'assets/' to read
-     * @return contents of the file
-     * @throws IOException when file is invalid
-     */
-    private static String readFile(Context context, String fileName) throws IOException {
-        InputStream stream = context.getAssets().open(fileName);
-
-        return new BufferedReader(new InputStreamReader(stream)).lines()
-            .collect(Collectors.joining("\n"));
     }
 }
