@@ -15,8 +15,6 @@ import java.io.Serializable;
  */
 public abstract class AbstractMapObject implements Serializable {
 
-    private static final long serialVersionUID = 9019199404482143073L;
-
     /**
      * represents the location of the object on the screen
      */
@@ -26,7 +24,7 @@ public abstract class AbstractMapObject implements Serializable {
      */
     protected transient Bitmap bitmap;
 
-    protected final int resourceID;
+    protected int resourceID;
 
     public AbstractMapObject(PointF location, int resourceID) {
         this.location = location;
@@ -56,7 +54,9 @@ public abstract class AbstractMapObject implements Serializable {
         return this.bitmap;
     }
 
-    public void setBitmap(Bitmap bitmap) {
+    // TODO
+    public void setBitmap(int resourceID, Bitmap bitmap) {
+        this.resourceID = resourceID;
         this.bitmap = bitmap;
     }
 
