@@ -15,13 +15,12 @@ import java.util.List;
  * Manages the stats and upgrades of a particular {@link com.wsu.towerdefense.Tower Tower} instance
  * <p>
  * Numeric modifiers are multiplied by the base stat value from {@link Tower.Type} to obtain the
- * effective (final) stat value. {@link #projectileTypeModifier} overrides the {@link
- * Projectile.Type} in the tower's base stats.
+ * effective (final) stat value. {@link #projectileType} overrides the {@link Projectile.Type} in
+ * the tower's base stats.
  * <p>
- * To prevent excessive recalculations, numeric modifiers are cached in {@link #rangeModifier},
- * {@link #fireRateModifier}, {@link #projectileSpeedModifier}, and {@link
- * #projectileDamageModifier}, and are only recalculated when a new upgrade with the same stat type
- * is applied (see {@link #recache(Upgrade)}.
+ * To prevent excessive recalculations, numeric modifiers are cached in {@link #range}, {@link
+ * #fireRate}, {@link #projectileSpeed}, and {@link #projectileDamage}, and are only recalculated
+ * when a new upgrade with the same stat type is applied (see {@link #recache(Upgrade)}.
  */
 public class TowerStats implements Serializable {
 
@@ -33,11 +32,11 @@ public class TowerStats implements Serializable {
      */
     private final int[] upgradeProgress;
 
-    private float rangeModifier;
-    private float fireRateModifier;
-    private float projectileSpeedModifier;
-    private float projectileDamageModifier;
-    private Projectile.Type projectileTypeModifier;
+    private float range;
+    private float fireRate;
+    private float projectileSpeed;
+    private float projectileDamage;
+    private Projectile.Type projectileType;
 
     public TowerStats(Tower.Type type) {
         this.type = type;
@@ -45,15 +44,11 @@ public class TowerStats implements Serializable {
         this.upgradeData = UpgradeReader.get(type);
         this.upgradeProgress = new int[this.upgradeData.paths.length];
 
-        this.rangeModifier = 1.0f;
-        this.fireRateModifier = 1.0f;
-        this.projectileSpeedModifier = 1.0f;
-        this.projectileDamageModifier = 1.0f;
-        this.projectileTypeModifier = null;
-    }
-
-    public int getUpgradeProgress(int pathNumber) {
-        return upgradeProgress[pathNumber];
+        this.range = type.range;
+        this.fireRate = type.fireRate;
+        this.projectileSpeed = type.projectiveSpeed;
+        this.projectileDamage = type.projectileDamage;
+        this.projectileType = type.projectileType;
     }
 
     /**
@@ -80,7 +75,7 @@ public class TowerStats implements Serializable {
             if (upgradeProgress[pathNumber] < path.length && canUpgrade(pathNumber)) {
                 upgradeProgress[pathNumber]++;
 
-                Upgrade upgrade = path[upgradeProgress[pathNumber] - 1];
+                Upgrade upgrade = getUpgrade(pathNumber);
                 recache(upgrade);
 
                 return upgrade;
@@ -100,23 +95,23 @@ public class TowerStats implements Serializable {
 
             switch (effect.type) {
                 case RANGE: {
-                    this.rangeModifier = getModifier(activeEffects);
+                    this.range = type.range * getModifier(activeEffects);
                     break;
                 }
                 case FIRE_RATE: {
-                    this.fireRateModifier = getModifier(activeEffects);
+                    this.fireRate = type.fireRate * getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE_SPEED: {
-                    this.projectileSpeedModifier = getModifier(activeEffects);
+                    this.projectileSpeed = type.projectiveSpeed * getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE_DAMAGE: {
-                    this.projectileDamageModifier = getModifier(activeEffects);
+                    this.projectileDamage = type.projectileDamage * getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE: {
-                    this.projectileTypeModifier = (Projectile.Type) effect.value;
+                    this.projectileType = (Projectile.Type) effect.value;
                     break;
                 }
             }
@@ -193,23 +188,31 @@ public class TowerStats implements Serializable {
     }
 
     public float getRange() {
-        return type.range * rangeModifier;
+        return range;
     }
 
     public float getFireRate() {
-        return type.fireRate * fireRateModifier;
+        return fireRate;
     }
 
     public float getProjectileSpeed() {
-        return type.projectiveSpeed * projectileSpeedModifier;
+        return projectileSpeed;
     }
 
     public float getProjectileDamage() {
-        return 1.0f * projectileDamageModifier;
+        return projectileDamage;
     }
 
     public Projectile.Type getProjectileType() {
-        return projectileTypeModifier != null ? projectileTypeModifier : type.projectileType;
+        return projectileType;
+    }
+
+    public int getUpgradeProgress(int pathNumber) {
+        return upgradeProgress[pathNumber];
+    }
+
+    public Upgrade getUpgrade(int pathNumber) {
+        return upgradeData.paths[pathNumber][upgradeProgress[pathNumber] - 1];
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

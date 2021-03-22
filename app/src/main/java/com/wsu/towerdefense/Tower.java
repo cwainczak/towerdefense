@@ -19,22 +19,24 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_HOMING(384, 1, 2, 150, Projectile.Type.HOMING),
-        BASIC_LINEAR(384, 1, 1, 100, Projectile.Type.LINEAR);
+        BASIC_HOMING(384, 2, 1, 1, Projectile.Type.HOMING, 150),
+        BASIC_LINEAR(384, 1, 1, 1, Projectile.Type.LINEAR, 100);
 
         public final int range;
-        public final float projectiveSpeed;
         public final float fireRate;
-        public final int cost;
+        public final float projectiveSpeed;
+        public final float projectileDamage;
         public final Projectile.Type projectileType;
+        public final int cost;
 
-        Type(int someRange, float someProjectiveSpeed, float someFireRate, int someCost,
-            Projectile.Type projectileType) {
-            this.range = someRange;
-            this.projectiveSpeed = someProjectiveSpeed;
-            this.fireRate = someFireRate;
-            this.cost = someCost;
+        Type(int range, float fireRate, float projectiveSpeed, int projectileDamage,
+            Projectile.Type projectileType, int cost) {
+            this.range = range;
+            this.fireRate = fireRate;
+            this.projectiveSpeed = projectiveSpeed;
+            this.projectileDamage = projectileDamage;
             this.projectileType = projectileType;
+            this.cost = cost;
         }
     }
 
