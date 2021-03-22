@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.GameActivity">
@@ -13,15 +14,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cl_towerLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_towerInfoLayout"
         android:layout_width="93dp"
         android:layout_height="match_parent"
+        android:elevation="1dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -81,14 +83,14 @@
         android:layout_height="39dp"
         android:background="@mipmap/pause"
         android:backgroundTint="#009688"
+        android:contentDescription="@string/todo"
         android:onClick="btnPauseOnClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.86"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.00999999"
-        android:contentDescription="@string/todo" />
+        app:layout_constraintVertical_bias="0.00999999" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_towerLayout"
@@ -112,6 +114,7 @@
             app:srcCompat="@mipmap/tower_menu_background2" />
 
         <ScrollView
+            android:id="@+id/sv_tower"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="50dp"

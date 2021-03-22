@@ -43,7 +43,7 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final Type type;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
-    private double timeSinceShot = 0.0;
+    private transient double timeSinceShot = 0.0;
 
     private final TowerStats stats;
 

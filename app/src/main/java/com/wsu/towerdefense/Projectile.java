@@ -5,7 +5,6 @@ import static com.google.android.material.math.MathUtils.lerp;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import java.util.List;
 
 public class Projectile extends AbstractMapObject {
