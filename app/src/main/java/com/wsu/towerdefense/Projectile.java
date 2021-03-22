@@ -3,7 +3,9 @@ package com.wsu.towerdefense;
 import static com.google.android.material.math.MathUtils.lerp;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.graphics.PointF;
 import java.util.List;
 
@@ -17,17 +19,17 @@ public class Projectile extends AbstractMapObject {
 
     enum Type {
 
-        HOMING(750f, 15, R.mipmap.projectile),
-        LINEAR(1000f, 10, R.mipmap.projectile);
+        LINEAR(1000f, 10, R.mipmap.projectile_1),
+        HOMING(750f, 15, R.mipmap.projectile_2);
 
         final float speed;
         final int damage;
         final int resourceID;
 
         /**
-         * @param someSpeed The speed of the projectile
-         * @param damage    Damage done to an Enemy hit by this projectile
-         * @param someResourceID    The Resource ID of the image of the projectile
+         * @param someSpeed The speed of the projectile_1
+         * @param damage    Damage done to an Enemy hit by this projectile_1
+         * @param someResourceID    The Resource ID of the image of the projectile_1
          */
         Type(float someSpeed, int damage, int someResourceID){
             this.speed = someSpeed;
@@ -41,12 +43,14 @@ public class Projectile extends AbstractMapObject {
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
     public boolean remove;
+    private PointF front;
+
 
     /**
-     * A projectile shot by Towers at Enemies
+     * A projectile_1 shot by Towers at Enemies
      *
      * @param location   A PointF representing the location of the bitmap's center
-     * @param target     The Enemy this projectile is targeting (if none, value is null)
+     * @param target     The Enemy this projectile_1 is targeting (if none, value is null)
      */
     public Projectile(PointF location, Type pt, Enemy target) {
         super(location, pt.resourceID);
@@ -57,6 +61,8 @@ public class Projectile extends AbstractMapObject {
             this.velX = newVel.x;
             this.velY = newVel.y;
         }
+
+        front = new PointF(location.x - bitmap.getWidth()/2f, location.y - bitmap.getHeight()/2f);
     }
 
     public void update(Game game, double delta) {
@@ -68,7 +74,10 @@ public class Projectile extends AbstractMapObject {
             if (distanceMoved >= distanceToTarget) {
                 location.set(target.location);
             } else {
-                // Otherwise move the projectile towards the target
+                PointF newLoc = calculateNewLocation(delta);
+
+
+
                 location.set(calculateNewLocation(delta));
             }
         }
@@ -87,10 +96,14 @@ public class Projectile extends AbstractMapObject {
     protected void render(double lerp, Canvas canvas, Paint paint) {
         if (!remove) {
             PointF newLoc = calculateNewLocation(lerp);
-            canvas.drawBitmap(bitmap,
-                newLoc.x - bitmap.getWidth() / 2f,
-                newLoc.y - bitmap.getHeight() / 2f,
-                null);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) Util.getAngleBetweenPoints(newLoc, target.location) + 90,
+                    bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
+
+            matrix.postTranslate(newLoc.x - bitmap.getWidth() / 2f, newLoc.y - bitmap.getHeight() / 2f);
+
+            canvas.drawBitmap(bitmap, matrix, null);
         }
     }
 
@@ -138,5 +151,4 @@ public class Projectile extends AbstractMapObject {
         return  this.location.x < 0 || this.location.x > screenWidth ||
                 this.location.y < 0 || this.location.y > screenHeight;
     }
-
 }

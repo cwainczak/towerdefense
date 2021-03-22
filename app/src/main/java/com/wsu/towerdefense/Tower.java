@@ -1,9 +1,13 @@
 package com.wsu.towerdefense;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,31 +21,41 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_HOMING(384, 750f, 2, 150),
-        BASIC_LINEAR(384, 1000f, 1, 100);
+        BASIC_LINEAR(384, 1000f, 10, 1,
+                100, R.mipmap.tower_1_turret, Projectile.Type.LINEAR),
+        BASIC_HOMING(384, 750f, 10, 2,
+                150, R.mipmap.tower_2_turret, Projectile.Type.HOMING);
 
         final int radius;
         final float projectiveVelocity;
+        final int damage;
         final double fireRate;
         public final int cost;
-        final int projectileResID;
+        final int towerResID;
+        final Projectile.Type projectileType;
 
-
-        Type(int someRadius, float someProjectiveVelocity, double someFireRate, int someCost){
+        Type(int someRadius, float someProjectiveVelocity, int someDamage, double someFireRate,
+             int someCost, int towerResID, Projectile.Type projectileType){
             this.radius = someRadius;
             this.projectiveVelocity = someProjectiveVelocity;
+            this.damage = someDamage;
             this.fireRate = someFireRate;
             this.cost = someCost;
-            this.projectileResID = R.mipmap.projectile;
+            this.towerResID = towerResID;
+            this.projectileType = projectileType;
         }
 
     }
 
+    public static final float BASE_SIZE = 130 * 0.875f;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
     private transient double timeSinceShot = 0.0;
     private transient Projectile.Type projectileType;
+
+    private transient Bitmap towerBitmap;
+    private transient float angle = 0;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -52,18 +66,15 @@ public class Tower extends AbstractMapObject implements Serializable {
      *  @param location           A PointF representing the location of the towerBitmap's center
      */
     public Tower(PointF location, Type tt) {
-        super(location, R.mipmap.tower);
+        super(location, R.mipmap.tower_base);
         this.type = tt;
-
-        if (tt == Type.BASIC_LINEAR) {
-            projectileType = Projectile.Type.LINEAR;
-        } else if (tt == Type.BASIC_HOMING) {
-            projectileType = Projectile.Type.HOMING;
-        } else {
-            projectileType = null;
-        }
-
+        this.projectileType = tt.projectileType;
         this.projectiles = new ArrayList<>();
+
+        this.towerBitmap = BitmapFactory.decodeResource(Application.context.getResources(), tt.towerResID);
+
+        float halfBitmapWidth = bitmap.getWidth()/2f;
+        float halfBitmapHeight = bitmap.getHeight()/2f;
     }
 
     /**
@@ -92,16 +103,16 @@ public class Tower extends AbstractMapObject implements Serializable {
             }
         }
 
-        // Calculate change in time since last projectile was fired
+        // Calculate change in time since last projectile_1 was fired
         timeSinceShot += delta;
 
-        // Shoot another projectile if there is a target and enough time has passed
+        // Shoot another projectile_1 if there is a target and enough time has passed
         if (target != null && timeSinceShot >= this.type.fireRate) {
             projectiles.add(new Projectile(new PointF(location.x, location.y), projectileType, target));
             timeSinceShot = 0;
         }
 
-        // Update each projectile
+        // Update each projectile_1
         for (Iterator<Projectile> projectileIt = projectiles.iterator(); projectileIt.hasNext(); ) {
             Projectile p = projectileIt.next();
             p.update(game, delta);
@@ -115,6 +126,10 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (target != null && !target.isAlive()) {
             target = null;
         }
+
+        if (target != null) {
+            angle = (float) Util.getAngleBetweenPoints(location, target.location) + 90;
+        }
     }
 
     /**
@@ -126,13 +141,21 @@ public class Tower extends AbstractMapObject implements Serializable {
      */
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
-        // Draw the Tower's bitmap image
+        // Draw the tower base image
         canvas.drawBitmap(
             bitmap,
             location.x - bitmap.getWidth() / 2f,
             location.y - bitmap.getHeight() / 2f,
             null
         );
+
+        // Draw the tower turret image
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle,towerBitmap.getWidth() / 2f, towerBitmap.getHeight() / 2f);
+
+        matrix.postTranslate(location.x - bitmap.getWidth() / 2f, location.y - bitmap.getHeight() / 2f);
+
+        canvas.drawBitmap(towerBitmap, matrix, null);
 
         // Draw each projectile
         for (Projectile p : projectiles) {
@@ -174,14 +197,28 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
+        projectileType = type.projectileType;
 
-        if (type == Type.BASIC_LINEAR) {
-            projectileType = Projectile.Type.LINEAR;
-        } else if (type == Type.BASIC_HOMING) {
-            projectileType = Projectile.Type.HOMING;
-        } else {
-            projectileType = null;
-        }
+        this.towerBitmap = BitmapFactory.decodeResource(
+                Application.context.getResources(),
+                this.type.towerResID
+        );
+    }
+
+    /**
+     * A method to determine whether or not a given hitbox collides with the Tower's hitbox.
+     *
+     * @param loc    The center of the hitbox to check
+     * @param width  The width of the hitbox
+     * @param height The height of the hitbox
+     * @return true if the given hitbox overlaps the Tower's hitbox
+     */
+    public boolean collides(PointF loc, float width, float height) {
+        int offset = 0;
+        return loc.x - width / 2 <= this.location.x + BASE_SIZE / 2f &&
+                loc.x + width / 2 >= this.location.x - BASE_SIZE / 2f  &&
+                loc.y - height / 2 <= this.location.y + BASE_SIZE / 2f &&
+                loc.y + height / 2 >= this.location.y - BASE_SIZE / 2f;
     }
 
     public float getRange() {
@@ -195,5 +232,4 @@ public class Tower extends AbstractMapObject implements Serializable {
     public Type getType() {
         return type;
     }
-
 }

@@ -25,7 +25,6 @@ public class Game extends AbstractGame {
     private static final int START_LIVES = 5;
     private static final int START_MONEY = 600;
     private static final int RANGE_OPACITY = 90;
-    public static final float towerRadius = 56; //radius of tower object using tower.png
 
     public final int validRangeColor;
     public final int invalidRangeColor;
@@ -46,6 +45,7 @@ public class Game extends AbstractGame {
     private GameListener listener = null;
     private Tower selectedTower = null;
     private PointF dragLocation = null;
+    private Tower.Type dragType = null;
     private final List<MapEvent> mapEvents;
 
 
@@ -151,6 +151,7 @@ public class Game extends AbstractGame {
 
     @Override
     protected void render(double lerp, Canvas canvas, Paint paint) {
+        paint.reset();
         map.render(canvas, paint);
 
         for (Tower t : towers) {
@@ -169,12 +170,11 @@ public class Game extends AbstractGame {
             e.render(lerp, canvas, paint);
         }
 
-        drawHUD(canvas, paint);
-
         if (dragLocation != null) {
-            // TODO: change hardcoded radius based on dragged tower type
-            drawRange(canvas, paint, dragLocation, 384, isValidPlacement(dragLocation));
+            drawRange(canvas, paint, dragLocation, dragType.radius, isValidPlacement(dragLocation));
         }
+
+        drawHUD(canvas, paint);
     }
 
     /**
@@ -187,22 +187,17 @@ public class Game extends AbstractGame {
     public boolean isValidPlacement(PointF location) {
         // check against towers
         for (Tower tower : towers) {
-            // TODO: move into util
-            float dx = location.x - tower.getLocation().x;
-            float dy = location.y - tower.getLocation().y;
-            double distance = Math.hypot(dx, dy);
-
-            if (distance < towerRadius * 2) {
+            if (tower.collides(location, Tower.BASE_SIZE, Tower.BASE_SIZE)) {
                 return false;
             }
         }
 
         // check against path
         for (RectF rect : map.getBounds()) {
-            if (rect.left - towerRadius <= location.x &&
-                location.x - towerRadius <= rect.right &&
-                rect.top - towerRadius <= location.y &&
-                location.y - towerRadius <= rect.bottom) {
+            if (rect.left - Tower.BASE_SIZE/2 <= location.x &&
+                location.x - Tower.BASE_SIZE/2 <= rect.right &&
+                rect.top - Tower.BASE_SIZE/2 <= location.y &&
+                location.y - Tower.BASE_SIZE/2 <= rect.bottom) {
                 return false;
             }
         }
@@ -253,6 +248,7 @@ public class Game extends AbstractGame {
         float radius,
         boolean valid
     ) {
+        paint.reset();
         paint.setColor(valid ? validRangeColor : invalidRangeColor);
         paint.setAlpha(RANGE_OPACITY);
         canvas.drawCircle(location.x, location.y, radius, paint);
@@ -373,4 +369,6 @@ public class Game extends AbstractGame {
     public void drag(PointF location) {
         dragLocation = location;
     }
+
+    public void setDragType(Tower.Type dragType) { this.dragType = dragType; }
 }

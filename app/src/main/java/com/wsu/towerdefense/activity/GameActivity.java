@@ -67,28 +67,10 @@ public class GameActivity extends AppCompatActivity {
 
         towerList = Arrays.asList(
             findViewById(R.id.img_Tower1),
-            findViewById(R.id.img_Tower2),
-            findViewById(R.id.img_Tower3),
-            findViewById(R.id.img_Tower4),
-            findViewById(R.id.img_Tower5),
-            findViewById(R.id.img_Tower6),
-            findViewById(R.id.img_Tower7),
-            findViewById(R.id.img_Tower8),
-            findViewById(R.id.img_Tower9),
-            findViewById(R.id.img_Tower10),
-            findViewById(R.id.img_Tower11)
+            findViewById(R.id.img_Tower2)
         );
 
         towerTypes = Arrays.asList(
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
                 Tower.Type.BASIC_LINEAR,
                 Tower.Type.BASIC_HOMING
         );
@@ -145,7 +127,7 @@ public class GameActivity extends AppCompatActivity {
                     double distance = Math.hypot(dx, dy);
 
                     // check if distance from click to tower is within radius
-                    if (distance < Game.towerRadius * SELECT_TOLERANCE) {
+                    if (distance < Tower.BASE_SIZE/2 * SELECT_TOLERANCE) {
                         setSelectionMenuVisible(true);
 
                         // temporary position text
@@ -197,21 +179,28 @@ public class GameActivity extends AppCompatActivity {
                 selectedTowerType = towerTypes.get(_i);
                 return true;
             });
-            image.setOnDragListener((OnDragListener) (v, event) -> {
+            image.setOnDragListener((v, event) -> {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+                    game.setDragType(selectedTowerType);
                     return true;
                 }
                 // remove range circle when dragging over side bar
-                else if (
-                        event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
-                                event.getAction() == DragEvent.ACTION_DROP
-                ) {
+                else if ( event.getAction() == DragEvent.ACTION_DRAG_LOCATION) {
                     game.drag(null);
                     game.selectTower(null);
                     setSelectionMenuVisible(false);
                     return true;
                 }
+                else if (event.getAction() == DragEvent.ACTION_DROP) {
+                    game.drag(null);
+                    game.setDragType(null);
+                    game.selectTower(null);
+                    setSelectionMenuVisible(false);
+                    return true;
+                }
+
+
                 return false;
             });
 
