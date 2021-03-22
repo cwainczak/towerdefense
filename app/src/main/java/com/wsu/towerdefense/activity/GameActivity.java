@@ -186,6 +186,23 @@ public class GameActivity extends AppCompatActivity {
                         // setting sell button text
                         btn_sellTower.setText("Sell for: $" + tower.getCost() / 2);
 
+                        // setting the upgrade names and costs
+//                        txt_upgradeName_1.setText();
+//                        txt_UpgradeCost_1.setText();
+//                        txt_upgradeName_2.setText();
+//                        txt_UpgradeCost_2.setText();
+//                        txt_upgradeName_3.setText();
+//                        txt_UpgradeCost_3.setText();
+
+
+
+                        // setting the upgrade progress bars to 0, this should be changed to
+                        // show the current towers current upgrade progress
+//                        progBar_1.setProgress(0);
+//                        progBar_2.setProgress(0);
+//                        progBar_3.setProgress(0);
+
+
                         // Notify game of selected tower
                         game.selectTower(tower);
 
@@ -371,4 +388,31 @@ public class GameActivity extends AppCompatActivity {
             game.setPaused(false);
         }
     }
+
+
+    // upgrade button actions
+    public void btn_upgrade_1_Clicked(View view) {
+        progBar_1.setProgress(progBar_1.getProgress() + 25);
+
+        if (progBar_1.getProgress() == 100) {
+            btn_upgrade_1.setEnabled(false);
+        }
+    }
+
+    public void btn_upgrade_2_Clicked(View view) {
+        progBar_2.setProgress(progBar_2.getProgress() + 25);
+
+        if (progBar_2.getProgress() == 100) {
+            btn_upgrade_2.setEnabled(false);
+        }
+    }
+
+    public void btn_upgrade_3_Clicked(View view) {
+        progBar_3.setProgress(progBar_3.getProgress() + 25);
+
+        if (progBar_3.getProgress() == 100) {
+            btn_upgrade_3.setEnabled(false);
+        }
+    }
+
 }
