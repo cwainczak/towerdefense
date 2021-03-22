@@ -58,6 +58,8 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     private transient float angle = 0;
 
+    private int sellPrice;
+
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
      * dealing damage to the Enemy until it either dies or moves out of range. Projectiles shot by a
@@ -71,6 +73,7 @@ public class Tower extends AbstractMapObject implements Serializable {
         this.type = tt;
         this.projectiles = new ArrayList<>();
         this.stats = new TowerStats(context, tt);
+        this.sellPrice = tt.cost / 2;
     }
 
     /**
@@ -213,6 +216,14 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public float getRange() {
         return this.type.range;
+    }
+
+    public int getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(int sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
