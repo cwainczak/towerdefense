@@ -14,12 +14,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,6 +48,8 @@ public class GameActivity extends AppCompatActivity {
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
+    private ScrollView sv_tower;
+    private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
     private Button btn_sellTower;
 
@@ -81,6 +85,10 @@ public class GameActivity extends AppCompatActivity {
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
 
+        sv_tower = findViewById(R.id.sv_tower);
+        scrollViewInit();
+        isTowerMenuScrollable = true;
+
         txt_towerName = findViewById(R.id.txt_towerName);
 
         btn_sellTower = findViewById(R.id.btn_sell);
@@ -115,17 +123,17 @@ public class GameActivity extends AppCompatActivity {
         );
 
         towerTypes = Arrays.asList(
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING,
-                Tower.Type.BASIC_LINEAR,
-                Tower.Type.BASIC_HOMING
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING,
+            Tower.Type.BASIC_LINEAR,
+            Tower.Type.BASIC_HOMING
         );
 
         addDragListeners();
@@ -181,6 +189,8 @@ public class GameActivity extends AppCompatActivity {
 
                     // check if distance from click to tower is within radius
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
+                        isTowerMenuScrollable = false;
+                        enableOrDisableImageViews(towerList, false);
                         setSelectionMenuVisible(true);
 
                         // setting sell button text
@@ -202,17 +212,19 @@ public class GameActivity extends AppCompatActivity {
 //                        progBar_2.setProgress(0);
 //                        progBar_3.setProgress(0);
 
-
                         // Notify game of selected tower
                         game.selectTower(tower);
 
                         return true;
                     }
                 }
+                isTowerMenuScrollable = true;
+                enableOrDisableImageViews(towerList, true);
                 setSelectionMenuVisible(false);
                 game.selectTower(null);
                 return false;
-            });
+            }
+            );
 
             // Add Custom listener to game
             game.setGameListener(new Game.GameListener() {
@@ -251,8 +263,8 @@ public class GameActivity extends AppCompatActivity {
                 }
                 // remove range circle when dragging over side bar
                 else if (
-                        event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
-                                event.getAction() == DragEvent.ACTION_DROP
+                    event.getAction() == DragEvent.ACTION_DRAG_LOCATION ||
+                        event.getAction() == DragEvent.ACTION_DROP
                 ) {
                     game.drag(null);
                     game.selectTower(null);
@@ -364,6 +376,8 @@ public class GameActivity extends AppCompatActivity {
     public void removeSelectedTower(View view) {
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+        enableOrDisableImageViews(towerList, true);
+        isTowerMenuScrollable = true;
     }
 
     /**
@@ -386,6 +400,31 @@ public class GameActivity extends AppCompatActivity {
         super.onResume();
         if (game != null) {
             game.setPaused(false);
+        }
+    }
+
+    /**
+     * Initializes the Tower ScrollView, allowing the scroll to be disabled
+     * Enabled when isTowerMenuScrollable is True
+     * Disabled when isTowerMenuScrollable is False
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private void scrollViewInit(){
+        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                return !GameActivity.this.isTowerMenuScrollable;
+            }
+        });
+    }
+
+    /**
+     * @param imageViews    the image views to enable or disable
+     * @param enable    if true, enable imageviews, otherwise disable them
+     */
+    private void enableOrDisableImageViews(List<ImageView> imageViews, boolean enable){
+        for (ImageView imageView : imageViews){
+            imageView.setEnabled(enable);
         }
     }
 
@@ -414,5 +453,4 @@ public class GameActivity extends AppCompatActivity {
             btn_upgrade_3.setEnabled(false);
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.wsu.towerdefense;
 import android.content.Context;
 import android.util.Log;
 import com.wsu.towerdefense.map.MapReader;
+import com.wsu.towerdefense.upgrade.UpgradeReader;
 import java.io.IOException;
 
 public class Application extends android.app.Application {
@@ -28,6 +29,13 @@ public class Application extends android.app.Application {
             MapReader.init(this);
         } catch (IOException e) {
             Log.e(getString(R.string.logcatKey), "Error while initializing maps", e);
+        }
+
+        // initialize upgrades
+        try {
+            UpgradeReader.init(this);
+        } catch (IOException e) {
+            Log.e(getString(R.string.logcatKey), "Error while initializing upgrades", e);
         }
     }
 }
