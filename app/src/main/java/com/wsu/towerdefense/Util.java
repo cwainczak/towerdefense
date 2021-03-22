@@ -66,4 +66,16 @@ public class Util {
             context.getPackageName()
         );
     }
+    /**
+     * Calculates the angle between the line drawn between two points and the horizontal axis.
+     * @param start The point that starts the line
+     * @param end   The point that ends the line
+     * @return      The angle between the line and the horizontal axis
+     */
+    public static double getAngleBetweenPoints(PointF start, PointF end) {
+        double deltaY = (end.y - start.y);
+        double deltaX = (end.x - start.x);
+        double result = Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return (result < 0) ? (360d + result) : result;
+    }
 }

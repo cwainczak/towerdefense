@@ -3,7 +3,9 @@ package com.wsu.towerdefense;
 import static com.google.android.material.math.MathUtils.lerp;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.graphics.PointF;
 import java.util.List;
 
@@ -17,8 +19,8 @@ public class Projectile extends AbstractMapObject {
 
     public enum Type {
 
-        HOMING(750f, 15, R.mipmap.projectile),
-        LINEAR(1000f, 10, R.mipmap.projectile);
+        LINEAR(1000f, 10, R.mipmap.projectile_1),
+        HOMING(750f, 15, R.mipmap.projectile_2);
 
         final float speed;
         final int damage;
@@ -96,10 +98,14 @@ public class Projectile extends AbstractMapObject {
     protected void render(double lerp, Canvas canvas, Paint paint) {
         if (!remove) {
             PointF newLoc = calculateNewLocation(lerp);
-            canvas.drawBitmap(bitmap,
-                newLoc.x - bitmap.getWidth() / 2f,
-                newLoc.y - bitmap.getHeight() / 2f,
-                null);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate((float) Util.getAngleBetweenPoints(newLoc, target.location) + 90,
+                    bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
+
+            matrix.postTranslate(newLoc.x - bitmap.getWidth() / 2f, newLoc.y - bitmap.getHeight() / 2f);
+
+            canvas.drawBitmap(bitmap, matrix, null);
         }
     }
 

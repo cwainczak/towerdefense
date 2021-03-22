@@ -76,11 +76,9 @@
                 <ImageView
                     android:id="@+id/img_Tower1"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
                     android:contentDescription="@string/todo"
                     android:onClick="towerSelected"
                     android:tag="Tower 1"
@@ -89,122 +87,13 @@
                 <ImageView
                     android:id="@+id/img_Tower2"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
                     android:contentDescription="@string/todo"
                     android:onClick="towerSelected"
                     android:tag="Tower 2"
                     app:srcCompat="@mipmap/tower_2" />
-
-                <ImageView
-                    android:id="@+id/img_Tower3"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 3"
-                    app:srcCompat="@mipmap/tower_3" />
-
-                <ImageView
-                    android:id="@+id/img_Tower4"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 4"
-                    app:srcCompat="@mipmap/tower_4" />
-
-                <ImageView
-                    android:id="@+id/img_Tower5"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 5"
-                    app:srcCompat="@mipmap/tower_5" />
-
-                <ImageView
-                    android:id="@+id/img_Tower6"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 6"
-                    app:srcCompat="@mipmap/tower_6" />
-
-                <ImageView
-                    android:id="@+id/img_Tower7"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 7"
-                    app:srcCompat="@mipmap/tower_7" />
-
-                <ImageView
-                    android:id="@+id/img_Tower8"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 8"
-                    app:srcCompat="@mipmap/tower_8" />
-
-                <ImageView
-                    android:id="@+id/img_Tower9"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 9"
-                    app:srcCompat="@mipmap/tower_9" />
-
-                <ImageView
-                    android:id="@+id/img_Tower10"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 10"
-                    app:srcCompat="@mipmap/tower_10" />
-
-                <ImageView
-                    android:id="@+id/img_Tower11"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="@string/todo"
-                    android:onClick="towerSelected"
-                    android:tag="Tower 11"
-                    app:srcCompat="@mipmap/tower_11" />
 
             </LinearLayout>
         </ScrollView>
