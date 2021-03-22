@@ -75,7 +75,7 @@ public class TowerStats implements Serializable {
             if (upgradeProgress[pathNumber] < path.length && canUpgrade(pathNumber)) {
                 upgradeProgress[pathNumber]++;
 
-                Upgrade upgrade = getUpgrade(pathNumber);
+                Upgrade upgrade = getUpgrade(pathNumber, false);
                 recache(upgrade);
 
                 return upgrade;
@@ -211,8 +211,16 @@ public class TowerStats implements Serializable {
         return upgradeProgress[pathNumber];
     }
 
-    public Upgrade getUpgrade(int pathNumber) {
-        return upgradeData.paths[pathNumber][upgradeProgress[pathNumber] - 1];
+    public Upgrade getUpgrade(int pathNumber, boolean next) {
+        Upgrade[] path = upgradeData.paths[pathNumber];
+        int a = upgradeProgress[pathNumber];
+        Upgrade upgrade = path[a - 1 + (next?1:0)];
+
+        return upgrade;
+    }
+
+    public boolean isMaxUpgraded(int pathNumber) {
+        return upgradeProgress[pathNumber] == upgradeData.paths[pathNumber].length;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
@@ -224,4 +232,5 @@ public class TowerStats implements Serializable {
 
         upgradeData = UpgradeReader.get(type);
     }
+
 }
