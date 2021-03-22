@@ -29,6 +29,8 @@ import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
+import com.wsu.towerdefense.upgrade.Upgrade;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,7 +87,7 @@ public class GameActivity extends AppCompatActivity {
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
 
-        sv_tower = findViewById(R.id.sv_tower);
+        //sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
         isTowerMenuScrollable = true;
 
@@ -197,20 +199,25 @@ public class GameActivity extends AppCompatActivity {
                         btn_sellTower.setText("Sell for: $" + tower.getCost() / 2);
 
                         // setting the upgrade names and costs
-//                        txt_upgradeName_1.setText();
-//                        txt_UpgradeCost_1.setText();
-//                        txt_upgradeName_2.setText();
-//                        txt_UpgradeCost_2.setText();
-//                        txt_upgradeName_3.setText();
-//                        txt_UpgradeCost_3.setText();
 
+                        Upgrade u = tower.getStats().getUpgrade(0);
+                        System.out.println(u.displayName);
+
+                        txt_upgradeName_1.setText(tower.getStats().getUpgrade(0).displayName);
+
+
+                        txt_UpgradeCost_1.setText("" + tower.getStats().getUpgrade(0).cost);
+                        txt_upgradeName_2.setText(tower.getStats().getUpgrade(1).displayName);
+                        txt_UpgradeCost_2.setText("" + tower.getStats().getUpgrade(1).cost);
+                        txt_upgradeName_3.setText(tower.getStats().getUpgrade(2).displayName);
+                        txt_UpgradeCost_3.setText("" + tower.getStats().getUpgrade(2).cost);
 
 
                         // setting the upgrade progress bars to 0, this should be changed to
                         // show the current towers current upgrade progress
-//                        progBar_1.setProgress(0);
-//                        progBar_2.setProgress(0);
-//                        progBar_3.setProgress(0);
+                        progBar_1.setProgress(tower.getStats().getUpgradeProgress(0) * 33);
+                        progBar_2.setProgress(tower.getStats().getUpgradeProgress(1) * 33);
+                        progBar_3.setProgress(tower.getStats().getUpgradeProgress(2) * 33);
 
                         // Notify game of selected tower
                         game.selectTower(tower);
@@ -410,12 +417,12 @@ public class GameActivity extends AppCompatActivity {
      */
     @SuppressLint("ClickableViewAccessibility")
     private void scrollViewInit(){
-        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event){
-                return !GameActivity.this.isTowerMenuScrollable;
-            }
-        });
+//        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event){
+//                return !GameActivity.this.isTowerMenuScrollable;
+//            }
+//        });
     }
 
     /**
@@ -431,25 +438,28 @@ public class GameActivity extends AppCompatActivity {
 
     // upgrade button actions
     public void btn_upgrade_1_Clicked(View view) {
-        progBar_1.setProgress(progBar_1.getProgress() + 25);
+        progBar_1.setProgress(progBar_1.getProgress() + 33);
+        game.getSelectedTower().getStats().upgrade(0);
 
-        if (progBar_1.getProgress() == 100) {
+        if (progBar_1.getProgress() == 99) {
             btn_upgrade_1.setEnabled(false);
         }
     }
 
     public void btn_upgrade_2_Clicked(View view) {
-        progBar_2.setProgress(progBar_2.getProgress() + 25);
+        progBar_2.setProgress(progBar_2.getProgress() + 33);
+        game.getSelectedTower().getStats().upgrade(1);
 
-        if (progBar_2.getProgress() == 100) {
+        if (progBar_2.getProgress() == 99) {
             btn_upgrade_2.setEnabled(false);
         }
     }
 
     public void btn_upgrade_3_Clicked(View view) {
-        progBar_3.setProgress(progBar_3.getProgress() + 25);
+        progBar_3.setProgress(progBar_3.getProgress() + 33);
+        game.getSelectedTower().getStats().upgrade(2);
 
-        if (progBar_3.getProgress() == 100) {
+        if (progBar_3.getProgress() == 99) {
             btn_upgrade_3.setEnabled(false);
         }
     }

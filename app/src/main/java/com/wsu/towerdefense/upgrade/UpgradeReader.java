@@ -111,10 +111,13 @@ public class UpgradeReader {
 
         List<Upgrade> path1 = parsePath(context, json, "path1");
         List<Upgrade> path2 = parsePath(context, json, "path2");
+        List<Upgrade> path3 = parsePath(context, json, "path3");
+
 
         return new TowerUpgradeData(
             path1.toArray(new Upgrade[0]),
-            path2.toArray(new Upgrade[0])
+            path2.toArray(new Upgrade[0]),
+            path3.toArray(new Upgrade[0])
         );
     }
 

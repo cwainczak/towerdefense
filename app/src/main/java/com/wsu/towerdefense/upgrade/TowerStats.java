@@ -212,7 +212,7 @@ public class TowerStats implements Serializable {
     }
 
     public Upgrade getUpgrade(int pathNumber) {
-        return upgradeData.paths[pathNumber][upgradeProgress[pathNumber] - 1];
+        return upgradeData.paths[pathNumber][upgradeProgress[pathNumber]];
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

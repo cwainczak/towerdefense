@@ -112,27 +112,8 @@ public class Game extends AbstractGame {
 
     // GAME STATE
 
-    int timer = 0;
-
     @Override
     protected void update(double delta) {
-        // TODO: temporary code; replace with UI
-
-        timer++;
-        if (timer == 400) {
-            towers.get(0).upgrade(0);
-        }
-        if (timer == 1000) {
-            towers.get(0).upgrade(0);
-        }
-
-        if (timer == 1500) {
-            towers.get(0).upgrade(1);
-        }
-        if (timer == 2000) {
-            towers.get(0).upgrade(1);
-        }
-
         spawnEnemy(delta);
         // Update the Enemies, remove any dead Enemies
         for (Iterator<Enemy> enemyIt = enemies.iterator(); enemyIt.hasNext(); ) {
@@ -392,5 +373,9 @@ public class Game extends AbstractGame {
 
     public void drag(PointF location) {
         dragLocation = location;
+    }
+
+    public Tower getSelectedTower() {
+        return selectedTower;
     }
 }
