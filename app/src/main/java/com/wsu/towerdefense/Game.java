@@ -72,7 +72,7 @@ public class Game extends AbstractGame {
             getGameWidth(),
             getGameHeight()
         );
-        this.difficulty = difficulty;
+        this.difficulty = hasSave ? saveState.difficulty : difficulty;
         waves = hasSave ? saveState.waves : new Waves(context, difficulty);
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
@@ -82,7 +82,7 @@ public class Game extends AbstractGame {
 
         Log.i(context.getString(R.string.logcatKey),
             "Started game with map '" + map.getName() + "'" +
-                    " and difficulty '" + difficulty.toString() + "'"
+                " and difficulty '" + difficulty.toString() + "'"
         );
     }
 
@@ -110,7 +110,6 @@ public class Game extends AbstractGame {
             Log.e(getContext().getString(R.string.logcatKey), "Error while saving", e);
         }
     }
-
 
     // GAME STATE
 
@@ -255,10 +254,9 @@ public class Game extends AbstractGame {
         paint.setColor(Color.WHITE);
         canvas.drawText("Lives: " + lives, posX, posY + yOffset, paint);
 
-        if(waves.getCurWave() == 0){
-            canvas.drawText("Wave: 1" , posX, posY + (yOffset * 2), paint);
-        }
-        else {
+        if (waves.getCurWave() == 0) {
+            canvas.drawText("Wave: 1", posX, posY + (yOffset * 2), paint);
+        } else {
             canvas.drawText("Wave: " + waves.getCurWave(), posX, posY + (yOffset * 2), paint);
         }
 
@@ -279,7 +277,6 @@ public class Game extends AbstractGame {
         paint.setAlpha(RANGE_OPACITY);
         canvas.drawCircle(location.x, location.y, radius, paint);
     }
-
 
     // UI
 
@@ -344,7 +341,7 @@ public class Game extends AbstractGame {
     }
 
     // DIFFICULTY ENUM
-    public enum Difficulty{
+    public enum Difficulty {
         EASY(40, 1),
         MEDIUM(60, 0.9f),
         HARD(80, 0.8f);
@@ -353,7 +350,7 @@ public class Game extends AbstractGame {
         final float priceModifier;
 
 
-        Difficulty(int waves, float priceModifier){
+        Difficulty(int waves, float priceModifier) {
             this.waves = waves;
             this.priceModifier = priceModifier;
         }
@@ -398,14 +395,14 @@ public class Game extends AbstractGame {
     }
 
     public Waves getWaves() {
-    return waves;
-        }
+        return waves;
+    }
 
     public int getMoney() {
         return money;
     }
 
-    public Difficulty getDifficulty(){
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 

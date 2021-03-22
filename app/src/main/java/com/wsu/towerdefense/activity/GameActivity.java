@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.wsu.towerdefense.Game;
+import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
@@ -112,7 +113,7 @@ public class GameActivity extends AppCompatActivity {
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
             String map = getIntent().getStringExtra("map");
-            String difficulty = getIntent().getStringExtra("difficulty");
+            Difficulty difficulty = (Difficulty) getIntent().getSerializableExtra("difficulty");
 
             try {
                 game = new Game(
@@ -121,8 +122,7 @@ public class GameActivity extends AppCompatActivity {
                     cl_gameLayout.getHeight(),
                     saveState,
                     map,
-                    difficulty == null ? Game.Difficulty.valueOf(saveState.difficulty)
-                            : Game.Difficulty.valueOf(difficulty)
+                    difficulty
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat
