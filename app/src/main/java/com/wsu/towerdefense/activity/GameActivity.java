@@ -16,8 +16,10 @@ import android.view.Display;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -45,7 +47,24 @@ public class GameActivity extends AppCompatActivity {
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
     private TextView txt_towerName;
-    private TextView txt_towerInfo;
+    private Button btn_sellTower;
+
+    private ProgressBar progBar_1;
+    private TextView txt_upgradeName_1;
+    private TextView txt_UpgradeCost_1;
+    private Button btn_upgrade_1;
+
+    private ProgressBar progBar_2;
+    private TextView txt_upgradeName_2;
+    private TextView txt_UpgradeCost_2;
+    private Button btn_upgrade_2;
+
+    private ProgressBar progBar_3;
+    private TextView txt_upgradeName_3;
+    private TextView txt_UpgradeCost_3;
+    private Button btn_upgrade_3;
+
+
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -63,7 +82,23 @@ public class GameActivity extends AppCompatActivity {
         cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
 
         txt_towerName = findViewById(R.id.txt_towerName);
-        txt_towerInfo = findViewById(R.id.txt_towerInfo);
+
+        btn_sellTower = findViewById(R.id.btn_sell);
+
+        progBar_1 = findViewById(R.id.progBar_1);
+        txt_upgradeName_1 = findViewById(R.id.txt_upgradeName_1);
+        txt_UpgradeCost_1 = findViewById(R.id.txt_UpgradeCost_1);
+        btn_upgrade_1 = findViewById(R.id.btn_upgrade_1);
+
+        progBar_2 = findViewById(R.id.progBar_2);
+        txt_upgradeName_2 = findViewById(R.id.txt_upgradeName_2);
+        txt_UpgradeCost_2 = findViewById(R.id.txt_UpgradeCost_2);
+        btn_upgrade_2 = findViewById(R.id.btn_upgrade_2);
+
+        progBar_3 = findViewById(R.id.progBar_3);
+        txt_upgradeName_3 = findViewById(R.id.txt_upgradeName_3);
+        txt_UpgradeCost_3 = findViewById(R.id.txt_UpgradeCost_3);
+        btn_upgrade_3 = findViewById(R.id.btn_upgrade_3);
 
         towerList = Arrays.asList(
             findViewById(R.id.img_Tower1),
@@ -148,13 +183,8 @@ public class GameActivity extends AppCompatActivity {
                     if (distance < Game.towerRadius * SELECT_TOLERANCE) {
                         setSelectionMenuVisible(true);
 
-                        // temporary position text
-                        txt_towerInfo.setText(
-                                "Tower Type:\n"
-                                + tower.getType() +
-                                "\n\nx: " + tower.getLocation().x +
-                                "\ny: " + tower.getLocation().y +
-                                "\n\nSell for: " + tower.getCost() / 2);
+                        // setting sell button text
+                        btn_sellTower.setText("Sell for: $" + tower.getCost() / 2);
 
                         // Notify game of selected tower
                         game.selectTower(tower);
