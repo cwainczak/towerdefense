@@ -104,6 +104,7 @@ public class GameActivity extends AppCompatActivity {
             SaveState saveState = (SaveState) getIntent().getSerializableExtra("saveState");
 
             String map = getIntent().getStringExtra("map");
+            String difficulty = getIntent().getStringExtra("difficulty");
 
             try {
                 game = new Game(
@@ -111,7 +112,9 @@ public class GameActivity extends AppCompatActivity {
                     cl_gameLayout.getWidth(),
                     cl_gameLayout.getHeight(),
                     saveState,
-                    map
+                    map,
+                    difficulty == null ? Game.Difficulty.valueOf(saveState.difficulty)
+                            : Game.Difficulty.valueOf(difficulty)
                 );
             } catch (Exception e) {
                 // redirect game errors to logcat

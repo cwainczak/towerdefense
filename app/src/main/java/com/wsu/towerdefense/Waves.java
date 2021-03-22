@@ -23,10 +23,11 @@ import java.util.stream.Collectors;
  */
 public class Waves implements Serializable {
 
-    private int waves;
-    private int wave = 0;
-    private int set = 0;
-    private int spawned = 0;
+    private int maxWaves;
+    private int wavesToWin;
+    private int curWave = 0;
+    private int curSet = 0;
+    private int spawnedThisSet = 0;
     double timeSinceSpawn = 0.0;
 
     boolean running = false;
@@ -41,10 +42,11 @@ public class Waves implements Serializable {
      *
      * @param context   Used to access files
      */
-    public Waves(Context context){
+    public Waves(Context context, Game.Difficulty difficulty){
         amounts = new ArrayList<>();
         delays = new ArrayList<>();
         types = new ArrayList<>();
+        wavesToWin = difficulty.waves;
 
         try {
             parseWaves(context, "waves/standard.json");
@@ -52,6 +54,9 @@ public class Waves implements Serializable {
         catch (IOException | JSONException e) {
             Log.e(context.getString(R.string.logcatKey), "Error while initializing Waves", e);
         }
+
+        //SET WavesToWin for testing until more waves are added.
+        wavesToWin = maxWaves;
     }
 
     /**
@@ -60,16 +65,35 @@ public class Waves implements Serializable {
     public Waves(List<List<Integer>> amounts,
                  List<List<Double>> delays,
                  List<List<Enemy.Type>> types,
-                 int waves
+                 int wavesToWin
     ){
         this.amounts = amounts;
         this.delays = delays;
         this.types = types;
-        this.waves = waves;
+        this.wavesToWin = wavesToWin;
+    }
+
+    public void update(Game game, double delta){
+        if(isRunning()) {
+            updateTimeSinceSpawn(delta);
+
+            if (delayPassed()){
+                game.spawnEnemy(next());
+            }
+        }
     }
 
     /**
      * Parse JSON file to populate amounts, delays, types, and waves
+     *
+     * Waves format:
+     * Each array within <code>amounts</code>, <code>delays</code>, and <code>waves</code>
+     * represents a wave. each value within the arrays represents a set.
+     * <ul>
+     *     <li><code>amounts</code> : The amount of enemies that must be spawned before the set is incremented. </li>
+     *     <li><code>delays</code> : The amount of time which must pass between spawning each enemy for a given set.</li>
+     *     <li><code>types</code> : The type of enemy to spawn for a given set</li>
+     * </ul>
      *
      * @param context   Used to access files through context.getAssets
      * @param fileName  String name of the JSON file to be read into a buffer
@@ -88,7 +112,7 @@ public class Waves implements Serializable {
         JSONArray d = waveReader.getJSONArray("delays");
         JSONArray t = waveReader.getJSONArray("types");
 
-        waves = a.length();
+        maxWaves = a.length();
 
         // it is assumed that all arrays within amounts, delays, and types are of the same size
         for (int i = 0; i < a.length(); i++) {
@@ -108,28 +132,27 @@ public class Waves implements Serializable {
      * helper function of {@link #next()} which increments spawned, set and wave accordingly
      */
     private void progressWave(){
-        spawned++;
+        spawnedThisSet++;
 
         // if all enemies have been spawned in the set
-        if(spawned - amounts.get(wave - 1).get(set) >= 0){
-            spawned = 0;
-            set++;
+        if(spawnedThisSet - amounts.get(curWave - 1).get(curSet) >= 0){
+            spawnedThisSet = 0;
+            curSet++;
         }
         // if all sets in a wave have passed and there are more waves
-        if(set - amounts.get(wave - 1).size() >= 0 &&
-                wave < waves){
-            Log.i("TowerDefense", "incrementing wave" +  wave + " -> " + (wave + 1));
-            set = 0;
+        if(curSet - amounts.get(curWave - 1).size() >= 0 &&
+                curWave < wavesToWin){
+            Log.i("TowerDefense", "incrementing wave" + curWave + " -> " + (curWave + 1));
+            curSet = 0;
             running = false;
         }
         // if user has won. all sets in last wave have passed
-        else if(set - amounts.get(wave - 1).size() >= 0 &&
-                wave >= waves){
-            System.out.println("game has ended-----------------------------------------");
+        else if(curSet - amounts.get(curWave - 1).size() >= 0 &&
+                curWave >= wavesToWin){
             // TODO: end game and redirect to win screen. Currently resets wave back to 0
 //            wavesEnded = true;
-            set = 0;
-            wave = 0;
+            curSet = 0;
+            curWave = 0;
             running = false;
         }
     }
@@ -138,7 +161,7 @@ public class Waves implements Serializable {
      * @return current enemyType and progresses Wave
      */
     public Enemy.Type next(){
-        Enemy.Type tempType = types.get(wave - 1).get(set);
+        Enemy.Type tempType = types.get(curWave - 1).get(curSet);
         progressWave();
         return tempType;
     }
@@ -148,7 +171,7 @@ public class Waves implements Serializable {
     }
 
     public boolean delayPassed(){
-        if(timeSinceSpawn >= delays.get(wave - 1).get(set)){
+        if(timeSinceSpawn >= delays.get(curWave - 1).get(curSet)){
             timeSinceSpawn = 0;
             return true;
         }
@@ -158,11 +181,11 @@ public class Waves implements Serializable {
     }
 
     public void nextWave(){
-        wave++;
+        curWave++;
     }
 
-    public int getWave() {
-        return wave;
+    public int getCurWave() {
+        return curWave;
     }
 
     public boolean isWavesEnded() {

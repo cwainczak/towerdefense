@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.map.MapReader;
@@ -22,6 +24,10 @@ public class MapSelectionActivity extends AppCompatActivity {
     private List<ImageView> mapList;
     private TextView txt_mapName;
     private Button btn_play;
+    private Button btn_easy;
+    private Button btn_medium;
+    private Button btn_hard;
+    private Button selected_difficulty;
 
     private AbstractMap selectedMap;
 
@@ -37,6 +43,13 @@ public class MapSelectionActivity extends AppCompatActivity {
 
         btn_play = findViewById(R.id.play_button);
         btn_play.setEnabled(false);
+
+        btn_easy = findViewById(R.id.easy_button);
+        selected_difficulty = btn_easy;
+        btn_medium = findViewById(R.id.medium_button);
+        btn_medium.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        btn_hard = findViewById(R.id.hard_button);
+        btn_hard.setTextColor(getResources().getColor(R.color.not_selected_text, null));
     }
 
     private void addImageViews() {
@@ -98,6 +111,7 @@ public class MapSelectionActivity extends AppCompatActivity {
             // open game
             Intent intent = new Intent(this, GameActivity.class);
             intent.putExtra("map", selectedMap.getName());
+            intent.putExtra("difficulty", getDifficulty());
             startActivity(intent);
         }
     }
@@ -111,6 +125,24 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void btnBackClicked(View view) {
         Intent intent = new Intent(this, GameSelectionActivity.class);
         startActivity(intent);
+    }
+
+    public void btnEasyClicked(View view){
+        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty = btn_easy;
+        selected_difficulty.setTextColor(getColor(android.R.color.white));
+    }
+
+    public void btnMediumClicked(View view){
+        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty = btn_medium;
+        selected_difficulty.setTextColor(getColor(android.R.color.white));
+    }
+
+    public void btnHardClicked(View view){
+        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty = btn_hard;
+        selected_difficulty.setTextColor(getColor(android.R.color.white));
     }
 
     /**
@@ -130,6 +162,18 @@ public class MapSelectionActivity extends AppCompatActivity {
                 showText(selectedMap.getDisplayName());
                 return;
             }
+        }
+    }
+
+    public String getDifficulty(){
+        if(selected_difficulty.getId() == btn_easy.getId()){
+            return Game.Difficulty.EASY.toString();
+        }
+        else if(selected_difficulty.getId() == btn_medium.getId()){
+            return Game.Difficulty.MEDIUM.toString();
+        }
+        else{
+            return Game.Difficulty.HARD.toString();
         }
     }
 

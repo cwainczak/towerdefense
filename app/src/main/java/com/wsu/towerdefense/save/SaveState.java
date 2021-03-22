@@ -19,6 +19,7 @@ public class SaveState implements Serializable {
     public final int lives;
     public final int money;
     public final Waves waves;
+    public final String difficulty;
 
     public SaveState(String saveFile, Game game) {
         this.saveFile = saveFile;
@@ -28,6 +29,7 @@ public class SaveState implements Serializable {
         this.lives = game.getLives();
         this.money = game.getMoney();
         this.waves = game.getWaves();
+        this.difficulty = game.getDifficulty().toString();
     }
 
     @Override
@@ -37,7 +39,8 @@ public class SaveState implements Serializable {
             ", mapName='" + mapName + '\'' +
             ", lives='" + lives + '\'' +
             ", money='" + money + '\'' +
-            ", wave='" + waves.getWave() + '\'' +
+            ", wave='" + waves.getCurWave() + '\'' +
+            ", difficulty='" + difficulty + '\'' +
             ", towers=" + (towers.stream().map(Object::toString)
             .collect(Collectors.joining(", "))) +
             '}';

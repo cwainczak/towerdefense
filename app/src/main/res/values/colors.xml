@@ -3,4 +3,5 @@
     <color name="pause_background">#A0000000</color>
     <color name="valid_range">#FF505050</color>
     <color name="invalid_range">#FFB40000</color>
+    <color name="not_selected_text">#81BFC7</color>
 </resources>
