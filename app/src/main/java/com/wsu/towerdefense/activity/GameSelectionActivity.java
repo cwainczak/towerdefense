@@ -33,7 +33,7 @@ public class GameSelectionActivity extends AppCompatActivity {
         btn_delete = findViewById(R.id.deleteGame);
 
         // load save game if it exists
-        boolean hasSave = Serializer.exists(Application.context, Serializer.SAVEFILE);
+        boolean hasSave = Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE);
 
         // disable buttons when no save exists
         btn_resume.setEnabled(hasSave);
@@ -72,8 +72,8 @@ public class GameSelectionActivity extends AppCompatActivity {
     }
 
     public void btnDeleteGameClicked(View view) {
-        if (Serializer.exists(Application.context, Serializer.SAVEFILE)) {
-            Serializer.delete(Application.context, Serializer.SAVEFILE);
+        if (Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE)) {
+            Serializer.delete(GameSelectionActivity.this, Serializer.SAVEFILE);
 
             btn_resume.setEnabled(false);
             btn_delete.setEnabled(false);

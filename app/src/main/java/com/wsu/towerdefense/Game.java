@@ -13,10 +13,10 @@ import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
+import com.wsu.towerdefense.tower.Tower;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class Game extends AbstractGame {
 
         Log.i(context.getString(R.string.logcatKey),
             "Started game with map '" + map.getName() + "'" +
-                " and difficulty '" + difficulty.toString() + "'"
+                " and difficulty '" + this.difficulty.toString() + "'"
         );
     }
 
@@ -161,9 +161,9 @@ public class Game extends AbstractGame {
 
         for (Tower t : towers) {
             // Draw all tower ranges if in debug mode
-            if (Application.DEBUG) {
-                t.drawLine(canvas, paint);
-            }
+//            if (Application.DEBUG) {
+//                t.drawLine(canvas, paint);
+//            }
             if (selectedTower == t) {
                 drawRange(canvas, paint, t.getLocation(), t.getStats().getRange(), true);
             }
@@ -199,10 +199,10 @@ public class Game extends AbstractGame {
 
         // check against path
         for (RectF rect : map.getBounds()) {
-            if (rect.left - Tower.BASE_SIZE/2 <= location.x &&
-                location.x - Tower.BASE_SIZE/2 <= rect.right &&
-                rect.top - Tower.BASE_SIZE/2 <= location.y &&
-                location.y - Tower.BASE_SIZE/2 <= rect.bottom) {
+            if (rect.left - Tower.BASE_SIZE / 2 <= location.x &&
+                location.x - Tower.BASE_SIZE / 2 <= rect.right &&
+                rect.top - Tower.BASE_SIZE / 2 <= location.y &&
+                location.y - Tower.BASE_SIZE / 2 <= rect.bottom) {
                 return false;
             }
         }
@@ -294,7 +294,7 @@ public class Game extends AbstractGame {
     // PlaceTower event
     public boolean placeTower(PointF location, Tower.Type type) {
         if (isValidPlacement(new PointF(location.x, location.y)) && type.cost <= money) {
-            Tower tower = new Tower(new PointF(location.x, location.y), type);
+            Tower tower = new Tower(getContext(), new PointF(location.x, location.y), type);
             mapEvents.add(new MapEvent.PlaceTower(tower));
 
             // purchase tower
@@ -315,7 +315,7 @@ public class Game extends AbstractGame {
 
     // SpawnEnemy event
     protected void spawnEnemy(Type type) {
-        mapEvents.add(new MapEvent.SpawnEnemy(new Enemy(type, map.getPath())));
+        mapEvents.add(new MapEvent.SpawnEnemy(new Enemy(getContext(), type, map.getPath())));
     }
 
     // DIFFICULTY ENUM
@@ -396,5 +396,7 @@ public class Game extends AbstractGame {
         return selectedTower;
     }
 
-    public void setDragType(Tower.Type dragType) { this.dragType = dragType; }
+    public void setDragType(Tower.Type dragType) {
+        this.dragType = dragType;
+    }
 }

@@ -1,5 +1,6 @@
 package com.wsu.towerdefense;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,12 +25,12 @@ public abstract class AbstractMapObject implements Serializable {
      */
     protected transient Bitmap bitmap;
 
-    protected int resourceID;
+    private final int resourceID;
 
-    public AbstractMapObject(PointF location, int resourceID) {
+    public AbstractMapObject(Context context, PointF location, int resourceID) {
         this.location = location;
         this.resourceID = resourceID;
-        this.bitmap = BitmapFactory.decodeResource(Application.context.getResources(), resourceID);
+        this.bitmap = Util.getBitmapByID(context, resourceID);
     }
 
     /**
@@ -52,12 +53,6 @@ public abstract class AbstractMapObject implements Serializable {
 
     public Bitmap getBitmap() {
         return this.bitmap;
-    }
-
-    // TODO
-    public void setBitmap(int resourceID, Bitmap bitmap) {
-        this.resourceID = resourceID;
-        this.bitmap = bitmap;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

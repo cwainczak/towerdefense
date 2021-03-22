@@ -1,9 +1,7 @@
-package com.wsu.towerdefense.upgrade;
-
-import java.util.Arrays;
+package com.wsu.towerdefense.tower;
 
 /**
- * Combined upgraded paths that a {@link com.wsu.towerdefense.Tower.Type Tower.Type} can take
+ * Combined upgraded paths that a {@link Tower.Type Tower.Type} can take
  */
 public class TowerUpgradeData {
 
@@ -15,6 +13,8 @@ public class TowerUpgradeData {
      * When an upgrade path reaches this number, other paths cannot be upgraded further
      */
     public static final int LOCK_THRESHOLD = 3;
+
+    public static final int NUM_PATHS = 3;
 
     public final Upgrade[][] paths;
 

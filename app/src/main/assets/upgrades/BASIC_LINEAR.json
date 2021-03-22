@@ -1,138 +1,98 @@
 {
   "path1": [
     {
-      "displayName": "1",
-      "description": "shoots farther",
+      "displayName": "Damage 1",
+      "description": "",
       "cost": "50",
-      "image": "yellow_tower",
+      "image": "tower_1_1_turret",
       "effect": {
-        "type": "RANGE",
-        "value": 1.0
+        "type": "PROJECTILE_DAMAGE",
+        "value": 0.1
       }
     },
     {
-      "displayName": "2",
-      "description": "shoots faster",
+      "displayName": "Damage 2",
+      "description": "",
       "cost": "100",
-      "image": "blue_tower",
+      "image": "tower_1_2_turret",
       "effect": {
-        "type": "FIRE_RATE",
-        "value": -0.5
+        "type": "PROJECTILE_DAMAGE",
+        "value": 0.2
       }
     },
     {
-      "displayName": "3",
-      "description": "shoots faster",
-      "cost": "100",
-      "image": "blue_tower",
+      "displayName": "Speed",
+      "description": "",
+      "cost": "200",
+      "image": "tower_1_3_turret",
       "effect": {
-        "type": "FIRE_RATE",
-        "value": -0.5
+        "type": "PROJECTILE_SPEED",
+        "value": 0.5
       }
     }
   ],
   "path2": [
     {
-      "displayName": "4",
-      "description": "shoots faster projectiles",
+      "displayName": "Fire rate 1",
+        "description": "",
       "cost": "50",
-      "image": "green_tower",
+      "image": "tower_1_1_turret",
       "effect": {
-        "type": "PROJECTILE_SPEED",
-        "value": 0.8
+        "type": "FIRE_RATE",
+        "value": -0.1
       }
     },
     {
-      "displayName": "5",
-      "description": "shoots homing projectiles faster",
+      "displayName": "Fire rate 2",
+      "description": "",
       "cost": "100",
-      "image": "red_tower",
-      "effects": [
-        {
-          "type": "PROJECTILE",
-          "value": "HOMING"
-        },
-        {
-          "type": "FIRE_RATE",
-          "value": -0.4
-        },
-        {
-          "type": "PROJECTILE_DAMAGE",
-          "value": -0.8
-        }
-      ]
+      "image": "tower_1_2_turret",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.1
+      }
     },
     {
-      "displayName": "6",
-      "description": "shoots homing projectiles faster",
-      "cost": "100",
-      "image": "red_tower",
-      "effects": [
-        {
-          "type": "PROJECTILE",
-          "value": "HOMING"
-        },
-        {
-          "type": "FIRE_RATE",
-          "value": -0.4
-        },
-        {
-          "type": "PROJECTILE_DAMAGE",
-          "value": -0.8
-        }
-      ]
+      "displayName": "Fire rate 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_1_3_turret",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.2
+      }
     }
   ],
   "path3": [
     {
-      "displayName": "7",
-      "description": "shoots faster projectiles",
+      "displayName": "Range 1",
+        "description": "",
       "cost": "50",
-      "image": "green_tower",
+      "image": "tower_1_1_turret",
       "effect": {
-        "type": "PROJECTILE_SPEED",
-        "value": 0.8
+        "type": "RANGE",
+        "value": 0.1
       }
     },
     {
-      "displayName": "8",
-      "description": "shoots homing projectiles faster",
+      "displayName": "Range 2",
+      "description": "",
       "cost": "100",
-      "image": "red_tower",
-      "effects": [
-        {
-          "type": "PROJECTILE",
-          "value": "HOMING"
-        },
-        {
-          "type": "FIRE_RATE",
-          "value": -0.4
-        },
-        {
-          "type": "PROJECTILE_DAMAGE",
-          "value": -0.8
-        }
-      ]
+      "image": "tower_1_2_turret",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.1
+      }
     },
     {
-      "displayName": "9",
-      "description": "shoots homing projectiles faster",
-      "cost": "100",
-      "image": "red_tower",
-      "effects": [
-        {
-          "type": "PROJECTILE",
-          "value": "HOMING"
-        },
-        {
-          "type": "FIRE_RATE",
-          "value": -0.4
-        },
-        {
-          "type": "PROJECTILE_DAMAGE",
-          "value": -0.8
-        }
-      ]
+      "displayName": "Range 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_1_3_turret",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.2
+      }
     }
   ]
 }

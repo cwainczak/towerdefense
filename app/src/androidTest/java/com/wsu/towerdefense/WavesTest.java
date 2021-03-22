@@ -1,16 +1,11 @@
 package com.wsu.towerdefense;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import junit.framework.TestCase;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class WavesTest extends TestCase {

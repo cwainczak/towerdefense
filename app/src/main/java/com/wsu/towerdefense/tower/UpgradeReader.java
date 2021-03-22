@@ -1,17 +1,15 @@
-package com.wsu.towerdefense.upgrade;
+package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.util.Log;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.upgrade.Upgrade.Effect;
-import com.wsu.towerdefense.upgrade.Upgrade.StatType;
+import com.wsu.towerdefense.tower.Upgrade.Effect;
+import com.wsu.towerdefense.tower.Upgrade.StatType;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.json.JSONArray;
@@ -92,10 +90,6 @@ public class UpgradeReader {
         }
     }
 
-    public static Collection<TowerUpgradeData> getUpgrades() {
-        return upgrades.values();
-    }
-
     /**
      * Parse JSON string into {@link TowerUpgradeData} object
      *
@@ -112,7 +106,6 @@ public class UpgradeReader {
         List<Upgrade> path1 = parsePath(context, json, "path1");
         List<Upgrade> path2 = parsePath(context, json, "path2");
         List<Upgrade> path3 = parsePath(context, json, "path3");
-
 
         return new TowerUpgradeData(
             path1.toArray(new Upgrade[0]),
@@ -142,7 +135,7 @@ public class UpgradeReader {
         String image = upgrade.getString("image");
         int imageID = Util.getResourceByName(context, image);
         if (imageID == 0) {
-            throw new FileNotFoundException("Upgrade image not found");
+            throw new FileNotFoundException("Upgrade image '" + image + "' not found");
         }
         List<Effect<?>> effects = parseEffects(upgrade);
 

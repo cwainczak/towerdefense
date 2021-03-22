@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/volume"
+        android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +61,7 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="@string/music"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <TextView
@@ -68,6 +70,7 @@
             android:layout_height="wrap_content"
             android:paddingVertical="10dp"
             android:text="@string/sound_fx"
+            android:textColor="#000000"
             android:textSize="24sp"
             app:layout_column="0"
             app:layout_row="1" />
@@ -94,6 +97,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:text="@string/version"
+        android:textColor="#000000"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -104,6 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/credits"
+        android:textColor="#000000"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,6 +132,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/amir_elrahep"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -136,6 +142,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/christopher_mee"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -145,6 +152,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/cooper_wainczak"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -154,6 +162,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/davin_procopio"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -163,6 +172,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/edward_klimoshenko"
+            android:textColor="#000000"
             android:textSize="18sp" />
 
         <TextView
@@ -172,6 +182,7 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/tyler_lafleur"
+            android:textColor="#000000"
             android:textSize="18sp" />
     </androidx.gridlayout.widget.GridLayout>
 
