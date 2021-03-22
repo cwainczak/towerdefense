@@ -29,7 +29,6 @@ import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
-import com.wsu.towerdefense.upgrade.Upgrade;
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,9 +84,9 @@ public class GameActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
-        cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
+        cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
 
-        //sv_tower = findViewById(R.id.sv_tower);
+        sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
         isTowerMenuScrollable = true;
 
@@ -435,13 +434,12 @@ public class GameActivity extends AppCompatActivity {
      */
     @SuppressLint("ClickableViewAccessibility")
     private void scrollViewInit(){
-        // this is Coopers stuff for moving the menu over to the right
-//        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event){
-//                return !GameActivity.this.isTowerMenuScrollable;
-//            }
-//        });
+        this.sv_tower.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                return !GameActivity.this.isTowerMenuScrollable;
+            }
+        });
     }
 
     /**
