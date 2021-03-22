@@ -9,7 +9,7 @@ import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
-    public enum Type {
+    protected enum Type {
         //Standard enemy types
         S1(200, 10, 25, R.mipmap.enemy),
         S2(250, 20, 35, R.mipmap.enemy),

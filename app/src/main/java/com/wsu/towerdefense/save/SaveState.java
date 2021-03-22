@@ -1,6 +1,7 @@
 package com.wsu.towerdefense.save;
 
 import com.wsu.towerdefense.Game;
+import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.Waves;
 
@@ -19,6 +20,7 @@ public class SaveState implements Serializable {
     public final int lives;
     public final int money;
     public final Waves waves;
+    public final Difficulty difficulty;
 
     public SaveState(String saveFile, Game game) {
         this.saveFile = saveFile;
@@ -28,6 +30,7 @@ public class SaveState implements Serializable {
         this.lives = game.getLives();
         this.money = game.getMoney();
         this.waves = game.getWaves();
+        this.difficulty = game.getDifficulty();
     }
 
     @Override
@@ -37,7 +40,8 @@ public class SaveState implements Serializable {
             ", mapName='" + mapName + '\'' +
             ", lives='" + lives + '\'' +
             ", money='" + money + '\'' +
-            ", wave='" + waves.getWave() + '\'' +
+            ", wave='" + waves.getCurWave() + '\'' +
+            ", difficulty='" + difficulty + '\'' +
             ", towers=" + (towers.stream().map(Object::toString)
             .collect(Collectors.joining(", "))) +
             '}';

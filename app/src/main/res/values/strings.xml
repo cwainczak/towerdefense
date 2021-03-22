@@ -35,6 +35,9 @@
     <string name="buy">Buy</string>
     <string name="option_2">option_2</string>
     <string name="upgrades">Upgrades</string>
+    <string name="easy">easy</string>
+    <string name="medium">medium</string>
+    <string name="hard">hard</string>
     <string name="sell">sell</string>
     <string name="upgrade_name">Upgrade Name</string>
     <string name="upgrade_cost">Upgrade Cost</string>
