@@ -17,8 +17,10 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Tower;
 import com.wsu.towerdefense.save.SaveState;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,7 +52,24 @@ public class GameActivity extends AppCompatActivity {
     private ScrollView sv_tower;
     private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
-    private TextView txt_towerInfo;
+    private Button btn_sellTower;
+
+    private ProgressBar progBar_1;
+    private TextView txt_upgradeName_1;
+    private TextView txt_UpgradeCost_1;
+    private Button btn_upgrade_1;
+
+    private ProgressBar progBar_2;
+    private TextView txt_upgradeName_2;
+    private TextView txt_UpgradeCost_2;
+    private Button btn_upgrade_2;
+
+    private ProgressBar progBar_3;
+    private TextView txt_upgradeName_3;
+    private TextView txt_UpgradeCost_3;
+    private Button btn_upgrade_3;
+
+
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -64,14 +84,30 @@ public class GameActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
-        cl_towerInfoLayout = findViewById(R.id.cl_towerInfoLayout);
+        cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
         isTowerMenuScrollable = true;
 
         txt_towerName = findViewById(R.id.txt_towerName);
-        txt_towerInfo = findViewById(R.id.txt_towerInfo);
+
+        btn_sellTower = findViewById(R.id.btn_sell);
+
+        progBar_1 = findViewById(R.id.progBar_1);
+        txt_upgradeName_1 = findViewById(R.id.txt_upgradeName_1);
+        txt_UpgradeCost_1 = findViewById(R.id.txt_UpgradeCost_1);
+        btn_upgrade_1 = findViewById(R.id.btn_upgrade_1);
+
+        progBar_2 = findViewById(R.id.progBar_2);
+        txt_upgradeName_2 = findViewById(R.id.txt_upgradeName_2);
+        txt_UpgradeCost_2 = findViewById(R.id.txt_UpgradeCost_2);
+        btn_upgrade_2 = findViewById(R.id.btn_upgrade_2);
+
+        progBar_3 = findViewById(R.id.progBar_3);
+        txt_upgradeName_3 = findViewById(R.id.txt_upgradeName_3);
+        txt_UpgradeCost_3 = findViewById(R.id.txt_UpgradeCost_3);
+        btn_upgrade_3 = findViewById(R.id.btn_upgrade_3);
 
         towerList = Arrays.asList(
             findViewById(R.id.img_Tower1),
@@ -158,14 +194,47 @@ public class GameActivity extends AppCompatActivity {
                         enableOrDisableImageViews(towerList, false);
                         setSelectionMenuVisible(true);
 
-                        // temporary position text
-                        txt_towerInfo.setText(
-                            "Tower Type:\n"
-                                + tower.getType() +
-                                "\n\nx: " + tower.getLocation().x +
-                                "\ny: " + tower.getLocation().y +
-                                "\n\nSell for: " + tower.getCost() / 2 +
-                                "\n\nUpgrades: " + tower.getUpgradeProgress(0) + ", " + tower.getUpgradeProgress(1));
+                        // setting sell button text
+                        btn_sellTower.setText("Sell for: $" + tower.getCost() / 2);
+
+
+                        // setting the upgrade names and costs
+                        if (tower.getStats().isMaxUpgraded(0)) {
+                            txt_upgradeName_1.setText("Max");
+                            txt_UpgradeCost_1.setText("");
+                            btn_upgrade_1.setEnabled(false);
+                        } else{
+                            txt_upgradeName_1.setText(tower.getStats().getUpgrade(0, true).displayName);
+                            txt_UpgradeCost_1.setText("" + tower.getStats().getUpgrade(0, true).cost);
+                            btn_upgrade_1.setEnabled(true);
+                        }
+
+                        if (tower.getStats().isMaxUpgraded(1)) {
+                            txt_upgradeName_2.setText("Max");
+                            txt_UpgradeCost_2.setText("");
+                            btn_upgrade_2.setEnabled(false);
+                        } else{
+                            txt_upgradeName_2.setText(tower.getStats().getUpgrade(1, true).displayName);
+                            txt_UpgradeCost_2.setText("" + tower.getStats().getUpgrade(1, true).cost);
+                            btn_upgrade_2.setEnabled(true);
+                        }
+
+                        if (tower.getStats().isMaxUpgraded(2)) {
+                            txt_upgradeName_3.setText("Max");
+                            txt_UpgradeCost_3.setText("");
+                            btn_upgrade_3.setEnabled(false);
+                        } else{
+                            txt_upgradeName_3.setText(tower.getStats().getUpgrade(2, true).displayName);
+                            txt_UpgradeCost_3.setText("" + tower.getStats().getUpgrade(2, true).cost);
+                            btn_upgrade_3.setEnabled(true);
+                        }
+
+
+                        // setting the upgrade progress bars to 0, this should be changed to
+                        // show the current towers current upgrade progress
+                        progBar_1.setProgress(tower.getStats().getUpgradeProgress(0) * 33);
+                        progBar_2.setProgress(tower.getStats().getUpgradeProgress(1) * 33);
+                        progBar_3.setProgress(tower.getStats().getUpgradeProgress(2) * 33);
 
                         // Notify game of selected tower
                         game.selectTower(tower);
@@ -383,4 +452,32 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
+    // upgrade button actions
+    public void btn_upgrade_1_Clicked(View view) {
+        progBar_1.setProgress(progBar_1.getProgress() + 33);
+        game.getSelectedTower().upgrade(0);
+
+        if (game.getSelectedTower().getStats().isMaxUpgraded(0)) {
+            btn_upgrade_1.setEnabled(false);
+        }
+    }
+
+    public void btn_upgrade_2_Clicked(View view) {
+        progBar_2.setProgress(progBar_2.getProgress() + 33);
+        game.getSelectedTower().upgrade(1);
+
+        if (game.getSelectedTower().getStats().isMaxUpgraded(1)) {
+            btn_upgrade_2.setEnabled(false);
+        }
+    }
+
+    public void btn_upgrade_3_Clicked(View view) {
+        progBar_3.setProgress(progBar_3.getProgress() + 33);
+        game.getSelectedTower().upgrade(2);
+
+        if (game.getSelectedTower().getStats().isMaxUpgraded(2)) {
+            btn_upgrade_3.setEnabled(false);
+        }
+    }
 }
