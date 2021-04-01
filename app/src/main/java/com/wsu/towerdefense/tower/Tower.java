@@ -25,24 +25,26 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public enum Type {
 
-        BASIC_HOMING(R.mipmap.tower_2_turret, 384, 2, 1, 1, Projectile.Type.HOMING, 150),
-        BASIC_LINEAR(R.mipmap.tower_1_turret, 384, 1, 1, 1, Projectile.Type.LINEAR, 100);
+        BASIC_HOMING(R.mipmap.tower_2_turret, 384, 2, 1, 1, false, Projectile.Type.HOMING, 150),
+        BASIC_LINEAR(R.mipmap.tower_1_turret, 384, 1, 1, 1, false, Projectile.Type.LINEAR, 100);
 
         final int towerResID;
         public final int range;
         public final float fireRate;
-        public final float projectiveSpeed;
+        public final float projectileSpeed;
         public final float projectileDamage;
+        public final boolean canSeeInvisible;
         public final Projectile.Type projectileType;
         public final int cost;
 
-        Type(int towerResID, int range, float fireRate, float projectiveSpeed, int projectileDamage,
-            Projectile.Type projectileType, int cost) {
+        Type(int towerResID, int range, float fireRate, float projectileSpeed, int projectileDamage,
+             boolean canSeeInvisible, Projectile.Type projectileType, int cost) {
             this.towerResID = towerResID;
             this.range = range;
             this.fireRate = fireRate;
-            this.projectiveSpeed = projectiveSpeed;
+            this.projectileSpeed = projectileSpeed;
             this.projectileDamage = projectileDamage;
+            this.canSeeInvisible = canSeeInvisible;
             this.projectileType = projectileType;
             this.cost = cost;
         }
@@ -57,7 +59,6 @@ public class Tower extends AbstractMapObject implements Serializable {
     private final TowerStats stats;
 
     private transient float angle = 0;
-
     private int sellPrice;
 
     /**
@@ -94,10 +95,13 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (target == null) {
             List<Enemy> enemies = game.getEnemies();
             for (int i = 0; i < enemies.size(); i++) {
-                if (distanceToEnemy(enemies.get(i)) < stats.getRange()) {
-                    target = enemies.get(i);
+                Enemy e = enemies.get(i);
+                if (distanceToEnemy(e) < stats.getRange()) {
+                    if (!e.isInvisible() || (e.isInvisible() && stats.canSeeInvisible())) {
+                        target = e;
 
-                    break; // Stop looking for a target
+                        break; // Stop looking for a target
+                    }
                 }
             }
         }

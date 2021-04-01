@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ public class TowerStats implements Serializable {
     private float fireRate;
     private float projectileSpeed;
     private float projectileDamage;
+    private boolean canSeeInvisible;
     private Projectile.Type projectileType;
     private int turretImageID;
     private transient Bitmap turretImage;
@@ -51,8 +53,9 @@ public class TowerStats implements Serializable {
 
         this.range = type.range;
         this.fireRate = type.fireRate;
-        this.projectileSpeed = type.projectiveSpeed;
+        this.projectileSpeed = type.projectileSpeed;
         this.projectileDamage = type.projectileDamage;
+        this.canSeeInvisible = type.canSeeInvisible;
         this.projectileType = type.projectileType;
         this.turretImageID = type.towerResID;
         this.turretImage = Util.getBitmapByID(context, type.towerResID);
@@ -113,7 +116,7 @@ public class TowerStats implements Serializable {
                     break;
                 }
                 case PROJECTILE_SPEED: {
-                    this.projectileSpeed = type.projectiveSpeed * getModifier(activeEffects);
+                    this.projectileSpeed = type.projectileSpeed * getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE_DAMAGE: {
@@ -123,6 +126,9 @@ public class TowerStats implements Serializable {
                 case PROJECTILE: {
                     this.projectileType = (Projectile.Type) effect.value;
                     break;
+                }
+                case SEE_INVISIBLE: {
+                    this.canSeeInvisible = (Boolean) effect.value;
                 }
             }
         }
@@ -167,10 +173,7 @@ public class TowerStats implements Serializable {
         List<Upgrade> upgrades = new ArrayList<>();
 
         for (int pathIndex = 0; pathIndex < upgradeData.paths.length; pathIndex++) {
-            for (int i = 0; i < upgradeProgress[pathIndex]; i++) {
-                Upgrade upgrade = upgradeData.paths[pathIndex][i];
-                upgrades.add(upgrade);
-            }
+            upgrades.addAll(Arrays.asList(upgradeData.paths[pathIndex]).subList(0, upgradeProgress[pathIndex]));
         }
 
         return upgrades;
@@ -211,6 +214,10 @@ public class TowerStats implements Serializable {
 
     public float getProjectileDamage() {
         return projectileDamage;
+    }
+
+    public boolean canSeeInvisible() {
+        return canSeeInvisible;
     }
 
     public Projectile.Type getProjectileType() {

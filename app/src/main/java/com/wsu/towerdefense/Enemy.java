@@ -12,19 +12,21 @@ public class Enemy extends AbstractMapObject {
 
     protected enum Type {
         //Standard enemy types
-        S1(200, 10, 25, R.mipmap.red_slime),
-        S2(250, 20, 35, R.mipmap.green_slime),
-        S3(400, 30 , 45, R.mipmap.blue_slime);
+        S1(200, 10, 25, false, R.mipmap.red_slime),
+        S2(250, 15, 35, true, R.mipmap.translucent_slime),
+        S3(400, 30 , 45, false, R.mipmap.green_slime);
 
         final float speed;
         final int hp;
         final int price;
+        final boolean invisible;
         final int resource;
 
-        Type(float speed, int hp, int price, int resource) {
+        Type(float speed, int hp, int price, boolean invisible, int resource) {
             this.speed = speed;
             this.hp = hp;
             this.price = price;
+            this.invisible = invisible;
             this.resource = resource;
         }
     }
@@ -33,6 +35,7 @@ public class Enemy extends AbstractMapObject {
 
     private int hp;
     private boolean isAlive;
+    private boolean isInvisible;
 
     private float velX;
     private float velY;
@@ -59,6 +62,7 @@ public class Enemy extends AbstractMapObject {
 
         this.target = this.path.next();
         this.isAlive = true;
+        this.isInvisible = type.invisible;
         this.isAtPathEnd = false;
         this.velX = 0;
         this.velY = 0;
@@ -184,5 +188,7 @@ public class Enemy extends AbstractMapObject {
     public Type getType() {
         return type;
     }
+
+    public boolean isInvisible() { return isInvisible; }
 
 }
