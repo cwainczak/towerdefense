@@ -1,33 +1,50 @@
 package com.wsu.towerdefense;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import java.util.List;
 import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
     protected enum Type {
-        //Standard enemy types
-        S1(200, 10, 25, false, R.mipmap.red_slime),
-        S2(250, 15, 35, true, R.mipmap.translucent_slime),
-        S3(400, 30 , 45, false, R.mipmap.green_slime);
+        // Standard enemy types
+        S1(200, 10, 10, 1, false, R.mipmap.standard_slime_1, -1),
+        S2(250, 15, 20, 2, false, R.mipmap.standard_slime_2, -1),
+        S3(350, 25 , 30, 3, false, R.mipmap.standard_slime_3, -1),
 
+        // Armored enemy types
+        A1(200, 10, 20, 1, false, R.mipmap.armored_slime_1, R.mipmap.armor_1),
+        A2(200, 20, 30, 2, false, R.mipmap.armored_slime_2, R.mipmap.armor_2),
+        A3(200, 40, 35, 3, false, R.mipmap.armored_slime_3, R.mipmap.armor_3),
+
+        // Invisible enemy types
+        I1(200, 10, 25, 1, true, R.mipmap.invisible_slime_1, -1),
+        I2(300, 10, 35, 2, true, R.mipmap.invisible_slime_2, -1),
+        I3(200, 50, 40, 3, true, R.mipmap.invisible_slime_3, -1),
+        ;
+        
         final float speed;
         final int hp;
         final int price;
+        final int damage;
         final boolean invisible;
         final int resource;
+        final int armorResource;
 
-        Type(float speed, int hp, int price, boolean invisible, int resource) {
+        Type(float speed, int hp, int price, int damage, boolean invisible, int resource, int armorResource) {
             this.speed = speed;
             this.hp = hp;
             this.price = price;
+            this.damage = damage;
             this.invisible = invisible;
             this.resource = resource;
+            this.armorResource = armorResource;
         }
     }
 
@@ -43,6 +60,8 @@ public class Enemy extends AbstractMapObject {
     private final ListIterator<PointF> path;
     private boolean isAtPathEnd;
     private PointF target;
+
+    private Bitmap armor;
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
@@ -66,6 +85,8 @@ public class Enemy extends AbstractMapObject {
         this.isAtPathEnd = false;
         this.velX = 0;
         this.velY = 0;
+
+        this.armor = (type.armorResource == -1) ? null : Util.getBitmapByID(context, type.armorResource);
     }
 
     /**
@@ -122,6 +143,12 @@ public class Enemy extends AbstractMapObject {
             canvas.drawBitmap(bitmap, x - bitmap.getWidth() / 2f,
                 y - bitmap.getHeight() / 2f, null);
 
+            // Draw Enemy armor, if present
+            if (armor != null) {
+                canvas.drawBitmap(armor,x - bitmap.getWidth() / 2f,
+                        y - bitmap.getHeight() / 2f, null);
+            }
+
             // Draw the Enemy hp above the bitmap
             int offset = 10;
 
@@ -130,18 +157,6 @@ public class Enemy extends AbstractMapObject {
             paint.setTextAlign(Paint.Align.CENTER);
             paint.setTextSize(50);
             canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
-        }
-    }
-
-    /**
-     * A method to remove hp from the Enemy
-     *
-     * @param damage The amount of hp to remove
-     */
-    public void takeDamage(int damage) {
-        this.hp -= damage;
-        if (this.hp <= 0) {
-            this.isAlive = false;
         }
     }
 
@@ -159,6 +174,18 @@ public class Enemy extends AbstractMapObject {
             x + width / 2 >= this.location.x - bitmap.getWidth() / 2f &&
             y - height / 2 <= this.location.y + bitmap.getHeight() / 2f &&
             y + height / 2 >= this.location.y - bitmap.getHeight() / 2f;
+    }
+
+    public void hitByProjectile(Projectile projectile) {
+        if (armor == null) {
+            hp -= (int) projectile.getEffectiveDamage();
+            if (hp <= 0) {
+                isAlive = false;
+            }
+        }
+        else if (projectile.type.armorPiercing) {
+            armor = null;
+        }
     }
 
     public boolean isAlive() {
