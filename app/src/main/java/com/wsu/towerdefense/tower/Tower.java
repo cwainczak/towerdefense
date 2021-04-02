@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Enemy;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Util;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -74,7 +76,6 @@ public class Tower extends AbstractMapObject implements Serializable {
         this.type = tt;
         this.projectiles = new ArrayList<>();
         this.stats = new TowerStats(context, tt);
-        this.sellPrice = tt.cost / 2;
     }
 
     /**
@@ -220,14 +221,6 @@ public class Tower extends AbstractMapObject implements Serializable {
 
     public float getRange() {
         return this.type.range;
-    }
-
-    public int getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(int sellPrice) {
-        this.sellPrice = sellPrice;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

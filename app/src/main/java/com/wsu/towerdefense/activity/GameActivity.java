@@ -21,14 +21,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.tower.Tower;
 import com.wsu.towerdefense.tower.TowerUpgradeData;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -169,7 +172,7 @@ public class GameActivity extends AppCompatActivity {
                             setSelectionMenuVisible(true);
 
                             // setting sell button text
-                            btn_sellTower.setText("Sell for: $" + tower.getSellPrice());
+                            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
 
                             // Notify game of selected tower
                             game.selectTower(tower);
@@ -193,12 +196,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onMoneyChanged() {
                     updateTowerSelection();
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateUpgradeUI();
-                        }
-                    });
+                    runOnUiThread(() -> updateUpgradeUI());
                 }
             });
 
@@ -404,7 +402,6 @@ public class GameActivity extends AppCompatActivity {
         tower.getStats().upgrade(pathNumber);
 
         int upgradeCost = tower.getStats().getUpgrade(pathNumber, false).cost;
-        tower.setSellPrice(tower.getSellPrice() + upgradeCost / 2);
         game.removeMoney(upgradeCost);
 
         updateUpgradeUI();
@@ -445,7 +442,7 @@ public class GameActivity extends AppCompatActivity {
                 progBar[path].setProgress(tower.getStats().getUpgradeProgress(path) * 33);
             }
 
-            btn_sellTower.setText("Sell for: $" + tower.getSellPrice());
+            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
         }
     }
 }

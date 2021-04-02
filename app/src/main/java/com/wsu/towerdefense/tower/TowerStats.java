@@ -2,11 +2,13 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.tower.Upgrade.Effect;
 import com.wsu.towerdefense.tower.Upgrade.StatType;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,6 +30,8 @@ import java.util.List;
  */
 public class TowerStats implements Serializable {
 
+    private static float REFUND_PERCENT = 0.5f;
+
     private final Tower.Type type;
 
     private transient TowerUpgradeData upgradeData;
@@ -41,6 +45,7 @@ public class TowerStats implements Serializable {
     private float projectileSpeed;
     private float projectileDamage;
     private boolean canSeeInvisible;
+    private int sellPrice;
     private Projectile.Type projectileType;
     private int turretImageID;
     private transient Bitmap turretImage;
@@ -55,6 +60,7 @@ public class TowerStats implements Serializable {
         this.fireRate = type.fireRate;
         this.projectileSpeed = type.projectileSpeed;
         this.projectileDamage = type.projectileDamage;
+        this.sellPrice = (int) (type.cost * REFUND_PERCENT);
         this.canSeeInvisible = type.canSeeInvisible;
         this.projectileType = type.projectileType;
         this.turretImageID = type.towerResID;
@@ -90,6 +96,8 @@ public class TowerStats implements Serializable {
 
                 turretImageID = upgrade.imageID;
                 turretImage = upgrade.image;
+
+                sellPrice += (int) (upgrade.cost * REFUND_PERCENT);
 
                 return upgrade;
             }
@@ -219,6 +227,8 @@ public class TowerStats implements Serializable {
     public boolean canSeeInvisible() {
         return canSeeInvisible;
     }
+
+    public int getSellPrice() { return sellPrice; }
 
     public Projectile.Type getProjectileType() {
         return projectileType;

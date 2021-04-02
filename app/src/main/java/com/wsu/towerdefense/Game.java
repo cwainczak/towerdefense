@@ -313,7 +313,7 @@ public class Game extends AbstractGame {
         mapEvents.add(new MapEvent.RemoveTower());
 
         // refund tower cost
-        addMoney(selectedTower.getSellPrice());
+        addMoney(selectedTower.getStats().getSellPrice());
     }
 
     // SpawnEnemy event
