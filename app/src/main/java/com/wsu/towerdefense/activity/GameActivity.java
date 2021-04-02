@@ -169,7 +169,7 @@ public class GameActivity extends AppCompatActivity {
                             setSelectionMenuVisible(true);
 
                             // setting sell button text
-                            btn_sellTower.setText("Sell for: $" + tower.getSellPrice());
+                            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
 
                             // Notify game of selected tower
                             game.selectTower(tower);
@@ -193,12 +193,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onMoneyChanged() {
                     updateTowerSelection();
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateUpgradeUI();
-                        }
-                    });
+                    runOnUiThread(() -> updateUpgradeUI());
                 }
             });
 
@@ -404,7 +399,6 @@ public class GameActivity extends AppCompatActivity {
         tower.getStats().upgrade(pathNumber);
 
         int upgradeCost = tower.getStats().getUpgrade(pathNumber, false).cost;
-        tower.setSellPrice(tower.getSellPrice() + upgradeCost / 2);
         game.removeMoney(upgradeCost);
 
         updateUpgradeUI();
@@ -445,7 +439,7 @@ public class GameActivity extends AppCompatActivity {
                 progBar[path].setProgress(tower.getStats().getUpgradeProgress(path) * 33);
             }
 
-            btn_sellTower.setText("Sell for: $" + tower.getSellPrice());
+            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
         }
     }
 }
