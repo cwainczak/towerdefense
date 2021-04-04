@@ -1,19 +1,32 @@
 package com.wsu.towerdefense.Highscores;
 
+import android.os.AsyncTask;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBTools {
+public class DBTools extends AsyncTask {
 
     Connection DBCon;
     Statement stmt;
     ResultSet rs;
 
-    public DBTools() throws SQLException, ClassNotFoundException {
-        Connection conn = DBConnection.getDBCon();
+    public DBTools(){
+    }
+
+    @Override
+    protected Object doInBackground(Object[] objects) {
+        try {
+            DBCon = DBConnection.getDBCon();
+            getResultSet("CUSTOMER");
+            return null;
+        } catch (SQLException | ClassNotFoundException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
     }
 
     public ResultSet getResultSet(String tableName) throws SQLException, ClassNotFoundException {
