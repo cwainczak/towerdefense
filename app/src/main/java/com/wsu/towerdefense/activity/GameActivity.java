@@ -180,7 +180,7 @@ public class GameActivity extends AppCompatActivity {
                             setSelectionMenuVisible(true);
 
                             // setting sell button text
-                            btn_sellTower.setText("Sell for: $" + tower.getCost() / 2);
+                            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
 
                             // Notify game of selected tower
                             game.selectTower(tower);
@@ -203,6 +203,8 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onMoneyChanged() {
                     updateTowerSelection();
+
+                    runOnUiThread(() -> updateUpgradeUI());
                 }
 
                 @Override
@@ -411,7 +413,12 @@ public class GameActivity extends AppCompatActivity {
         int pathNumber = Integer.parseInt(view.getTag().toString()) - 1;
 
         progBar[pathNumber].setProgress(progBar[pathNumber].getProgress() + 33);
-        game.getSelectedTower().getStats().upgrade(pathNumber);
+
+        Tower tower = game.getSelectedTower();
+        tower.getStats().upgrade(pathNumber);
+
+        int upgradeCost = tower.getStats().getUpgrade(pathNumber, false).cost;
+        game.removeMoney(upgradeCost);
 
         updateUpgradeUI();
     }
@@ -419,26 +426,39 @@ public class GameActivity extends AppCompatActivity {
     private void updateUpgradeUI() {
         Tower tower = game.getSelectedTower();
 
-        for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
-            TextView text = txt_upgradeName[path];
-            Button button = btn_upgrade[path];
+        if (tower != null) {
+            for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
+                TextView text = txt_upgradeName[path];
+                Button button = btn_upgrade[path];
 
-            // setting the upgrade names and costs
-            if (!tower.getStats().isMaxUpgraded(path)) {
-                text.setText(tower.getStats().getUpgrade(path, true).displayName);
-                button.setVisibility(View.VISIBLE);
-                button.setEnabled(true);
-                button.setText("$" + tower.getStats().getUpgrade(path, true).cost);
-            } else {
-                text.setText(R.string.max);
-                button.setVisibility(View.INVISIBLE);
-                button.setEnabled(false);
-                button.setText("");
+                // setting the upgrade names and costs
+                if (!tower.getStats().isMaxUpgraded(path)) {
+                    int upgradeCost = tower.getStats().getUpgrade(path, true).cost;
+
+                    text.setText(tower.getStats().getUpgrade(path, true).displayName);
+                    button.setText("$" + upgradeCost);
+
+                    if (upgradeCost <= game.getMoney()) {
+                        button.setVisibility(View.VISIBLE);
+                        button.setAlpha(1f);
+                        button.setEnabled(true);
+                    } else {
+                        button.setAlpha(0.5f);
+                        button.setEnabled(false);
+                    }
+                } else {
+                    text.setText(R.string.max);
+                    button.setVisibility(View.INVISIBLE);
+                    button.setEnabled(false);
+                    button.setText("");
+                }
+
+                // setting the upgrade progress bars to 0, this should be changed to
+                // show the current towers current upgrade progress
+                progBar[path].setProgress(tower.getStats().getUpgradeProgress(path) * 33);
             }
 
-            // setting the upgrade progress bars to 0, this should be changed to
-            // show the current towers current upgrade progress
-            progBar[path].setProgress(tower.getStats().getUpgradeProgress(path) * 33);
+            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
         }
     }
 }

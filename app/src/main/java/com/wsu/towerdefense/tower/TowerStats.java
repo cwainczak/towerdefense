@@ -2,6 +2,8 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.se.omapi.SEService;
+
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.Util;
@@ -27,6 +29,8 @@ import java.util.List;
  */
 public class TowerStats implements Serializable {
 
+    private static float REFUND_PERCENT = 0.5f;
+
     private final Tower.Type type;
 
     private transient TowerUpgradeData upgradeData;
@@ -39,6 +43,7 @@ public class TowerStats implements Serializable {
     private float fireRate;
     private float projectileSpeed;
     private float projectileDamage;
+    private int sellPrice;
     private Projectile.Type projectileType;
     private int turretImageID;
     private transient Bitmap turretImage;
@@ -53,6 +58,7 @@ public class TowerStats implements Serializable {
         this.fireRate = type.fireRate;
         this.projectileSpeed = type.projectiveSpeed;
         this.projectileDamage = type.projectileDamage;
+        this.sellPrice = (int) (type.cost * REFUND_PERCENT);
         this.projectileType = type.projectileType;
         this.turretImageID = type.towerResID;
         this.turretImage = Util.getBitmapByID(context, type.towerResID);
@@ -87,6 +93,8 @@ public class TowerStats implements Serializable {
 
                 turretImageID = upgrade.imageID;
                 turretImage = upgrade.image;
+
+                sellPrice += (int) (upgrade.cost * REFUND_PERCENT);
 
                 return upgrade;
             }
@@ -212,6 +220,8 @@ public class TowerStats implements Serializable {
     public float getProjectileDamage() {
         return projectileDamage;
     }
+
+    public int getSellPrice() { return sellPrice; }
 
     public Projectile.Type getProjectileType() {
         return projectileType;
