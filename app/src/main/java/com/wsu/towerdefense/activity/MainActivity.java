@@ -4,7 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.wsu.towerdefense.Highscores.DBTools;
 import com.wsu.towerdefense.R;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view view
      */
-    public void btnScoresClicked(View view) {
+    public void btnScoresClicked(View view) throws SQLException, ClassNotFoundException {
+        ResultSet rs = new DBTools().getResultSet("");
+
         Intent intent = new Intent(this, ScoresActivity.class);
         startActivity(intent);
     }
