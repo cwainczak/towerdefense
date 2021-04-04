@@ -57,6 +57,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
 
+    ImageButton btn_play;
+    ImageButton btn_fast_fwd;
+
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -139,10 +142,10 @@ public class GameActivity extends AppCompatActivity {
             cl_gameLayout.addView(game);
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
-            ImageButton btn_play = findViewById(R.id.btn_play);
-            ImageButton btn_fast_forward = findViewById(R.id.btn_fast_forward);
-            btn_fast_forward.setVisibility(View.GONE);
-            btn_fast_forward.setEnabled(false);
+            btn_play = findViewById(R.id.btn_play);
+            btn_fast_fwd = findViewById(R.id.btn_fast_forward);
+            btn_fast_fwd.setVisibility(View.GONE);
+            btn_fast_fwd.setEnabled(false);
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
@@ -154,15 +157,15 @@ public class GameActivity extends AppCompatActivity {
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
                     btn_play.setVisibility(View.GONE);
                     btn_play.setEnabled(false);
-                    btn_fast_forward.setVisibility(View.VISIBLE);
-                    btn_fast_forward.setEnabled(true);
+                    btn_fast_fwd.setVisibility(View.VISIBLE);
+                    btn_fast_fwd.setEnabled(true);
                     game.save();
                     game.getWaves().nextWave();
                     game.setWaveRunning(true);
                 }
             });
 
-            btn_fast_forward.setOnClickListener(view -> {
+            btn_fast_fwd.setOnClickListener(view -> {
 
             });
 
@@ -209,10 +212,7 @@ public class GameActivity extends AppCompatActivity {
 
                 @Override
                 public void onWaveEnd() {
-                    btn_fast_forward.setVisibility(View.GONE);
-                    btn_fast_forward.setEnabled(false);
-                    btn_play.setVisibility(View.VISIBLE);
-                    btn_play.setEnabled(true);
+                    runOnUiThread(() -> updatePlayBtn());
                 }
             });
 
@@ -304,6 +304,14 @@ public class GameActivity extends AppCompatActivity {
                 txt_towerName.setText(imageName);
             }
         }
+    }
+
+
+    private void updatePlayBtn(){
+        btn_fast_fwd.setVisibility(View.GONE);
+        btn_fast_fwd.setEnabled(false);
+        btn_play.setVisibility(View.VISIBLE);
+        btn_play.setEnabled(true);
     }
 
     private void updateTowerSelection() {
