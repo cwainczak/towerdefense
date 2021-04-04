@@ -12,10 +12,10 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cl_towerLayout"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="1.0">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -104,6 +104,20 @@
             android:layout_height="56dp"
             android:layout_marginBottom="10dp"
             android:background="@mipmap/play"
+            android:backgroundTint="#009688"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageButton
+            android:id="@+id/btn_fast_forward"
+            android:layout_width="64dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="10dp"
+            android:background="@mipmap/fast_forward"
             android:backgroundTint="#009688"
             android:contentDescription="@string/todo"
             app:layout_constraintBottom_toBottomOf="parent"

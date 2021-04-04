@@ -140,6 +140,9 @@ public class GameActivity extends AppCompatActivity {
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
             ImageButton btn_play = findViewById(R.id.btn_play);
+            ImageButton btn_fast_forward = findViewById(R.id.btn_fast_forward);
+            btn_fast_forward.setVisibility(View.GONE);
+            btn_fast_forward.setEnabled(false);
 
             btn_pause.setOnClickListener(view -> {
                 game.setPaused(true);
@@ -149,10 +152,18 @@ public class GameActivity extends AppCompatActivity {
 
             btn_play.setOnClickListener(view -> {
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
+                    btn_play.setVisibility(View.GONE);
+                    btn_play.setEnabled(false);
+                    btn_fast_forward.setVisibility(View.VISIBLE);
+                    btn_fast_forward.setEnabled(true);
                     game.save();
                     game.getWaves().nextWave();
-                    game.getWaves().setRunning(true);
+                    game.setWaveRunning(true);
                 }
+            });
+
+            btn_fast_forward.setOnClickListener(view -> {
+
             });
 
             List<Tower> towers = game.getTowers();
@@ -192,6 +203,14 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onMoneyChanged() {
                     updateTowerSelection();
+                }
+
+                @Override
+                public void onWaveEnd() {
+                    btn_fast_forward.setVisibility(View.GONE);
+                    btn_fast_forward.setEnabled(false);
+                    btn_play.setVisibility(View.VISIBLE);
+                    btn_play.setEnabled(true);
                 }
             });
 

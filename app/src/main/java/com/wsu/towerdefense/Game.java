@@ -40,6 +40,8 @@ public class Game extends AbstractGame {
     private int lives;
     private int money;
 
+    private boolean waveRunning = false;
+
     /**
      * A custom listener used to send data to the GameActivity whenever certain actions occur
      */
@@ -143,6 +145,10 @@ public class Game extends AbstractGame {
 
         // Update Waves
         waves.update(this, delta);
+        if(!waves.isRunning() && enemies.isEmpty() && waveRunning){
+            waveRunning = false;
+            listener.onWaveEnd();
+        }
 
         handleEvents();
 
@@ -267,6 +273,8 @@ public class Game extends AbstractGame {
          * This method is called whenever the game's money increases or decreases
          */
         void onMoneyChanged();
+
+        void onWaveEnd();
     }
 
     public void setGameListener(GameListener listener) {
@@ -398,5 +406,10 @@ public class Game extends AbstractGame {
 
     public void setDragType(Tower.Type dragType) {
         this.dragType = dragType;
+    }
+
+    public void setWaveRunning(boolean waveRunning){
+        this.waveRunning = waveRunning;
+        waves.setRunning(waveRunning);
     }
 }
