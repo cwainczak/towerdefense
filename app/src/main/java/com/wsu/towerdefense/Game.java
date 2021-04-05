@@ -41,6 +41,7 @@ public class Game extends AbstractGame {
     private int money;
 
     private boolean waveRunning = false;
+    private boolean isFastMode = false;
 
     /**
      * A custom listener used to send data to the GameActivity whenever certain actions occur
@@ -411,5 +412,13 @@ public class Game extends AbstractGame {
     public void setWaveRunning(boolean waveRunning){
         this.waveRunning = waveRunning;
         waves.setRunning(waveRunning);
+    }
+
+    public void setFastMode(boolean isFastMode){
+        this.isFastMode = isFastMode;
+    }
+
+    public boolean isFastMode(){
+        return isFastMode;
     }
 }

@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
@@ -166,7 +167,18 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btn_fast_fwd.setOnClickListener(view -> {
-
+                if(game.isFastMode()){
+                    //set game to 1x speed
+                    game.setFastMode(false);
+                    int color = getResources().getColor(R.color.ff_off, getTheme());
+                    btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
+                }
+                else{
+                    game.setFastMode(true);
+                    //set game to 2x speed
+                    int color = getResources().getColor(R.color.ff_on, getTheme());
+                    btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
+                }
             });
 
             List<Tower> towers = game.getTowers();

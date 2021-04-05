@@ -4,4 +4,6 @@
     <color name="valid_range">#FF505050</color>
     <color name="invalid_range">#FFB40000</color>
     <color name="not_selected_text">#81BFC7</color>
+    <color name="ff_off">#009688</color>
+    <color name="ff_on">#10776D</color>
 </resources>
