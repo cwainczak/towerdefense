@@ -37,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param view view
      */
-    public void btnScoresClicked(View view) throws SQLException, ClassNotFoundException {
-        new DBTools().execute();
-
+    public void btnScoresClicked(View view){
         Intent intent = new Intent(this, ScoresActivity.class);
         startActivity(intent);
     }

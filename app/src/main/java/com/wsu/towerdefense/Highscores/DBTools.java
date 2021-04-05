@@ -1,6 +1,11 @@
 package com.wsu.towerdefense.Highscores;
 
 import android.os.AsyncTask;
+import android.widget.TextView;
+
+import com.wsu.towerdefense.activity.ScoresActivity;
+
+import org.w3c.dom.Text;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,28 +13,34 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBTools extends AsyncTask {
+public class DBTools extends AsyncTask<String, Integer, ResultSet> {
 
     Connection DBCon;
     Statement stmt;
     ResultSet rs;
+    public ScoresActivity.OnTaskEnded listener;
 
-    public DBTools(){
+    public DBTools(ScoresActivity.OnTaskEnded onTaskEnded) {
+        listener = onTaskEnded;
     }
 
     @Override
-    protected Object doInBackground(Object[] objects) {
+    protected ResultSet doInBackground(String... strings) {
         try {
             DBCon = DBConnection.getDBCon();
-            getResultSet("CUSTOMER");
-            return null;
-        } catch (SQLException | ClassNotFoundException throwables) {
+            return getResultSet("HIGHSCORES");
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
             return null;
         }
     }
 
-    public ResultSet getResultSet(String tableName) throws SQLException, ClassNotFoundException {
+    @Override
+    protected void onPostExecute(ResultSet rs) {
+        listener.onTaskEnd(rs);
+    }
+
+    public ResultSet getResultSet(String tableName) throws SQLException{
         if (DBCon == null) {
             DBCon = DBConnection.getDBCon();
         }
@@ -37,12 +48,10 @@ public class DBTools extends AsyncTask {
         stmt = DBCon.createStatement();
         String query = "SELECT * FROM " + tableName + ";";
         rs = stmt.executeQuery(query);
-
-        printResultSet(rs);
         return rs;
     }
 
-    private void printResultSet(ResultSet rs) {
+    public void printResultSet(ResultSet rs) {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
@@ -52,7 +61,7 @@ public class DBTools extends AsyncTask {
                     String columnValue = rs.getString(i);
                     System.out.print(columnValue + " " + rsmd.getColumnName(i));
                 }
-                System.out.println("");
+                System.out.println();
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
