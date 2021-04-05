@@ -1,33 +1,33 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
-import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import java.io.IOException;
 
 public class GameSelectionActivity extends AppCompatActivity {
 
+    private AdvancedSoundPlayer audioButtonPress;
+
     private SaveState saveState = null;
 
     private Button btn_resume;
     private Button btn_delete;
-    private ImageButton imgBtn_back;
-    private ImageButton imgBtn_settings;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_selection);
         onWindowFocusChanged(true);
+
+        audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         btn_resume = findViewById(R.id.resumeGame);
         btn_delete = findViewById(R.id.deleteGame);
@@ -55,6 +55,8 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnNewGameClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         Intent intent = new Intent(this, MapSelectionActivity.class);
         startActivity(intent);
     }
@@ -66,18 +68,37 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnResumeGameClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("saveState", saveState);
         startActivity(intent);
     }
 
     public void btnDeleteGameClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         if (Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE)) {
             Serializer.delete(GameSelectionActivity.this, Serializer.SAVEFILE);
 
             btn_resume.setEnabled(false);
             btn_delete.setEnabled(false);
         }
+    }
+
+    // testing
+    public void btnBackClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
+        finish();
+    }
+
+
+    public void btnSettingsClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -88,15 +109,9 @@ public class GameSelectionActivity extends AppCompatActivity {
         }
     }
 
-    // testing
-    public void btnBackClicked(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
-
-    public void btnSettingsClicked(View view) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioButtonPress.release();
     }
 }

@@ -75,10 +75,10 @@ public class Util {
         return (result < 0) ? (360d + result) : result;
     }
 
-    public static int getResourceByName(Context context, String name) {
+    public static int getResourceByName(Context context, String type, String name) {
         return context.getResources().getIdentifier(
             name,
-            "mipmap",
+            type,
             context.getPackageName()
         );
     }

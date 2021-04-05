@@ -2,7 +2,6 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import com.wsu.towerdefense.Util;
 
 /**

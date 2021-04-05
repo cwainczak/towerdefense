@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,8 +6,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private AdvancedSoundPlayer audioButtonPress;
 
     TextView tv_versionNumber;
     SeekBar sb_music;
@@ -18,6 +21,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         onWindowFocusChanged(true);
+
+        audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         tv_versionNumber = findViewById(R.id.tv_versionNumber);
 
@@ -35,7 +40,15 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioButtonPress.release();
     }
 
     @Override

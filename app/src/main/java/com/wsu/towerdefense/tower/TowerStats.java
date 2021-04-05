@@ -2,8 +2,6 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.se.omapi.SEService;
-
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.Util;
@@ -29,7 +27,7 @@ import java.util.List;
  */
 public class TowerStats implements Serializable {
 
-    private static float REFUND_PERCENT = 0.5f;
+    private static final float REFUND_PERCENT = 0.5f;
 
     private final Tower.Type type;
 

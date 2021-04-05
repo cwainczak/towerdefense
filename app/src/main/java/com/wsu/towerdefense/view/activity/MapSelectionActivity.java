@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.Serializer;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MapSelectionActivity extends AppCompatActivity {
+
+    private AdvancedSoundPlayer audioButtonPress;
 
     private List<ImageView> mapList;
     private TextView txt_mapName;
@@ -36,6 +40,8 @@ public class MapSelectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_selection);
         onWindowFocusChanged(true);
+
+        audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         txt_mapName = findViewById(R.id.txt_mapName);
         showText(null);
@@ -104,6 +110,8 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnPlayClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         if (selectedMap != null) {
             // delete save file when new game is started
             Serializer.delete(this, Serializer.SAVEFILE);
@@ -123,23 +131,30 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
-        Intent intent = new Intent(this, GameSelectionActivity.class);
-        startActivity(intent);
+        audioButtonPress.play(view.getContext());
+
+        finish();
     }
 
-    public void btnEasyClicked(View view){
+    public void btnEasyClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_easy;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
     }
 
-    public void btnMediumClicked(View view){
+    public void btnMediumClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_medium;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
     }
 
-    public void btnHardClicked(View view){
+    public void btnHardClicked(View view) {
+        audioButtonPress.play(view.getContext());
+
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_hard;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
@@ -152,8 +167,11 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void mapSelected(View view) {
+        audioButtonPress.play(view.getContext());
+
         ImageView imageView = (ImageView) view;
         for (int i = 0; i < mapList.size(); i++) {
+
             if (mapList.get(i).isPressed()) {
                 // select map
                 selectedMap = MapReader.get((String) imageView.getTag());
@@ -165,16 +183,20 @@ public class MapSelectionActivity extends AppCompatActivity {
         }
     }
 
-    public Difficulty getDifficulty(){
-        if(selected_difficulty.getId() == btn_easy.getId()){
+    public Difficulty getDifficulty() {
+        if (selected_difficulty.getId() == btn_easy.getId()) {
             return Game.Difficulty.EASY;
-        }
-        else if(selected_difficulty.getId() == btn_medium.getId()){
+        } else if (selected_difficulty.getId() == btn_medium.getId()) {
             return Game.Difficulty.MEDIUM;
-        }
-        else{
+        } else {
             return Game.Difficulty.HARD;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioButtonPress.release();
     }
 
     @Override

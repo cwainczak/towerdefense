@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:onClick="btnBackClicked"
-    tools:context=".activity.MapSelectionActivity">
+    tools:context=".view.activity.MapSelectionActivity">
 
     <ImageView
         android:id="@+id/imageView2"
