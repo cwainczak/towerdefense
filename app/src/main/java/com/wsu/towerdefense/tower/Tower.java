@@ -11,6 +11,7 @@ import com.wsu.towerdefense.Enemy;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
@@ -151,7 +152,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             timeSinceShot = 0;
 
             if (this.audioShoot != null) {
-                this.audioShoot.play(game.getContext());
+                this.audioShoot.play(game.getContext(), Settings.getSFXVolume(game.getContext()));
             }
         }
 
@@ -275,7 +276,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
         this.projectiles = new ArrayList<>();
         this.audioShoot = type.shootSoundID >= 0
-            ? new AdvancedSoundPlayer(type.shootSoundID)
+            ? new AdvancedSoundPlayer(this.type.shootSoundID)
             : null;
     }
 }

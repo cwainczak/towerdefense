@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 
 public class ScoresActivity extends AppCompatActivity {
@@ -26,7 +27,7 @@ public class ScoresActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         finish();
     }

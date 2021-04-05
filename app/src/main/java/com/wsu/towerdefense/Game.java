@@ -282,7 +282,7 @@ public class Game extends AbstractGame implements SoundSource {
 
             if (e instanceof MapEvent.PlaceTower) {
                 towers.add(((MapEvent.PlaceTower) e).tower);
-                audioPlaceTower.play(getContext());
+                audioPlaceTower.play(getContext(), Settings.getSFXVolume(getContext()));
             } else if (e instanceof MapEvent.RemoveTower) {
                 selectedTower.release();
                 towers.remove(selectedTower);

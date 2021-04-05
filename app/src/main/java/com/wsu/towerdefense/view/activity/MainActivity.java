@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnStartClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, GameSelectionActivity.class);
         startActivity(intent);
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnScoresClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, ScoresActivity.class);
         startActivity(intent);
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnSettingsClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);

@@ -77,6 +77,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         float speedModifier,
         float damageModifier) {
         super(context, location, pt.imageID);
+
         this.type = pt;
         this.target = target;
         this.speedModifier = speedModifier;
@@ -98,7 +99,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             : null;
 
         if (this.audioTravel != null) {
-            this.audioTravel.play(context);
+            this.audioTravel.play(context, Settings.getSFXVolume(context));
         }
     }
 
@@ -201,7 +202,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private void remove(Context context) {
         remove = true;
         if (this.audioImpact != null) {
-            this.audioImpact.play(context);
+            this.audioImpact.play(context, Settings.getSFXVolume(context));
         }
         this.release();
     }

@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.tower.Tower;
@@ -148,16 +149,16 @@ public class GameActivity extends AppCompatActivity {
             ImageButton btn_pause = findViewById(R.id.btn_pause);
             ImageButton btn_play = findViewById(R.id.btn_play);
 
-            btn_pause.setOnClickListener(v -> {
-                audioButtonPress.play(v.getContext());
+            btn_pause.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                 game.setPaused(true);
                 startActivity(new Intent(GameActivity.this, PauseActivity.class),
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             });
 
-            btn_play.setOnClickListener(v -> {
-                audioButtonPress.play(v.getContext());
+            btn_play.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
                     game.save();
@@ -176,7 +177,7 @@ public class GameActivity extends AppCompatActivity {
 
                             // check if distance from click to tower is within radius
                             if (distance < Tower.BASE_SIZE / 2 * SELECT_TOLERANCE) {
-                                audioButtonPress.play(view.getContext());
+                                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                                 isTowerMenuScrollable = false;
                                 enableImageViews(towerList, false);
@@ -242,7 +243,7 @@ public class GameActivity extends AppCompatActivity {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                     game.setDragType(selectedTowerType);
-                    audioButtonPress.play(view.getContext());
+                    audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
                     return true;
                 }
                 // remove range circle when dragging over side bar
@@ -299,11 +300,9 @@ public class GameActivity extends AppCompatActivity {
     public void towerSelected(View view) {
         for (int i = 0; i < towerList.size(); i++) {
             if (towerList.get(i).isPressed()) {
-                audioButtonPress.play(towerList.get(i).getContext());
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-                ImageView imageView = findViewById(towerList.get(i).getId());
-                String imageName = String.valueOf(imageView.getTag());
-
+                String imageName = String.valueOf(view.getTag());
                 txt_towerName.setText(imageName);
 
                 break;
@@ -357,7 +356,7 @@ public class GameActivity extends AppCompatActivity {
      * Called when remove button is clicked
      */
     public void removeSelectedTower(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
@@ -400,8 +399,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     // upgrade button actions
-    public void btn_upgrade_Clicked(View v) {
-        int pathNumber = Integer.parseInt(v.getTag().toString()) - 1;
+    public void btn_upgrade_Clicked(View view) {
+        int pathNumber = Integer.parseInt(view.getTag().toString()) - 1;
 
         progBar[pathNumber].setProgress(progBar[pathNumber].getProgress() + 33);
 
@@ -411,7 +410,7 @@ public class GameActivity extends AppCompatActivity {
 
         updateUpgradeUI();
 
-        audioButtonPress.play(v.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
     }
 
     private void updateUpgradeUI() {

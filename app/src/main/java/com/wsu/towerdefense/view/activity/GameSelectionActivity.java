@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
@@ -55,7 +56,7 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnNewGameClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, MapSelectionActivity.class);
         startActivity(intent);
@@ -68,7 +69,7 @@ public class GameSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnResumeGameClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("saveState", saveState);
@@ -76,7 +77,7 @@ public class GameSelectionActivity extends AppCompatActivity {
     }
 
     public void btnDeleteGameClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         if (Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE)) {
             Serializer.delete(GameSelectionActivity.this, Serializer.SAVEFILE);
@@ -88,14 +89,14 @@ public class GameSelectionActivity extends AppCompatActivity {
 
     // testing
     public void btnBackClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         finish();
     }
 
 
     public void btnSettingsClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.map.AbstractMap;
 import com.wsu.towerdefense.map.MapReader;
@@ -110,7 +111,7 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnPlayClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         if (selectedMap != null) {
             // delete save file when new game is started
@@ -131,13 +132,13 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         finish();
     }
 
     public void btnEasyClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_easy;
@@ -145,7 +146,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     }
 
     public void btnMediumClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_medium;
@@ -153,7 +154,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     }
 
     public void btnHardClicked(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
         selected_difficulty = btn_hard;
@@ -167,7 +168,7 @@ public class MapSelectionActivity extends AppCompatActivity {
      * @param view view
      */
     public void mapSelected(View view) {
-        audioButtonPress.play(view.getContext());
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
         ImageView imageView = (ImageView) view;
         for (int i = 0; i < mapList.size(); i++) {

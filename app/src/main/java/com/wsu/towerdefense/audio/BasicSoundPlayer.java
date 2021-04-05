@@ -2,6 +2,7 @@ package com.wsu.towerdefense.audio;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 import java.io.IOException;
 
 /**
@@ -26,8 +27,11 @@ public class BasicSoundPlayer extends AbstractSoundPlayer {
     }
 
     @Override
-    public void play(Context context) {
+    public void play(Context context, float volume) {
         if (this.player != null) {
+            float v = adjustVolume(volume);
+            this.player.setVolume(v, v);
+
             this.player.stop();
             try {
                 this.player.prepare();
