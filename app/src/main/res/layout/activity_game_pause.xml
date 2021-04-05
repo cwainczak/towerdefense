@@ -32,7 +32,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
     <Button
-      android:id="@+id/btn_exit"
+      android:id="@+id/btn_okay"
       android:layout_width="170dp"
       android:layout_height="wrap_content"
       android:backgroundTint="#009688"

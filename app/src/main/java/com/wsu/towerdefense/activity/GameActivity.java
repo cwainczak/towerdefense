@@ -195,6 +195,11 @@ public class GameActivity extends AppCompatActivity {
 
                     runOnUiThread(() -> updateUpgradeUI());
                 }
+
+                @Override
+                public void onGameOver(){
+                    updateScoresAndClose();
+                }
             });
 
             updateTowerSelection();
@@ -316,6 +321,20 @@ public class GameActivity extends AppCompatActivity {
                 image.setOnLongClickListener(null);
             }
         }
+    }
+
+    /**
+     * This method goes to the UpdateScoresActivity
+     */
+    public void updateScoresAndClose(){
+        Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        gameOver();
     }
 
     /**

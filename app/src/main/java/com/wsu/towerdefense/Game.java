@@ -97,7 +97,7 @@ public class Game extends AbstractGame {
         Serializer.delete(getContext(), Serializer.SAVEFILE);
 
         // return to menu
-        ((GameActivity) getContext()).gameOver();
+        listener.onGameOver();
     }
 
     /**
@@ -267,6 +267,11 @@ public class Game extends AbstractGame {
          * This method is called whenever the game's money increases or decreases
          */
         void onMoneyChanged();
+
+        /**
+         * Take a wild guess at when this is called :)
+         */
+        void onGameOver();
     }
 
     public void setGameListener(GameListener listener) {

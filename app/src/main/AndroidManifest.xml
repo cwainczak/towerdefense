@@ -16,6 +16,9 @@
       android:name=".activity.ScoresActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
+        android:name=".activity.UpdateScoresActivity"
+        android:screenOrientation="sensorLandscape" />
+    <activity
       android:name=".activity.PauseActivity"
       android:screenOrientation="sensorLandscape"
       android:theme="@style/Theme.CustomTheme" />

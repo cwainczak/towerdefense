@@ -12,9 +12,9 @@ public class Enemy extends AbstractMapObject {
 
     protected enum Type {
         //Standard enemy types
-        S1(200, 10, 25, R.mipmap.red_slime),
-        S2(250, 20, 35, R.mipmap.green_slime),
-        S3(400, 30 , 45, R.mipmap.blue_slime);
+        S1(2000, 10, 25, R.mipmap.red_slime),
+        S2(2500, 20, 35, R.mipmap.green_slime),
+        S3(4000, 30 , 45, R.mipmap.blue_slime);
 
         final float speed;
         final int hp;

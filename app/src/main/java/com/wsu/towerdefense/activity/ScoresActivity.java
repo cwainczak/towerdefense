@@ -35,14 +35,14 @@ public class ScoresActivity extends AppCompatActivity{
                     ResultSetMetaData rsmd = rs.getMetaData();
                     int columnsNumber = rsmd.getColumnCount();
                     while (rs.next()) {
-                        test.setText(rs.getString(1));
-                        break;
-//                        for (int i = 1; i <= columnsNumber; i++) {
-//                            if (i > 1) System.out.print(",  ");
-//                            String columnValue = rs.getString(i);
-//                            System.out.print(columnValue + " " + rsmd.getColumnName(i));
-//                        }
-//                        System.out.println("");
+                        //test.setText(rs.getString(1));
+                        //break;
+                        for (int i = 1; i <= columnsNumber; i++) {
+                           if (i > 1) System.out.print(",  ");
+                         String columnValue = rs.getString(i);
+                            System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                        }
+                        System.out.println("");
                     }
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();

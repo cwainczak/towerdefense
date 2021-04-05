@@ -9,10 +9,10 @@ public class DBConnection {
     public static Connection getDBCon() throws SQLException{
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            String userName = "tlafleurWSU";
+            String userName = "GroupLogin";
             String port = "3306";
-            String password = "";
-            String dbName = "Highscores";
+            String password = "Towerdefense321";
+            String dbName = "highscores";
             String hostname = "databaseclassdb.cznsvkc1cyzq.us-east-1.rds.amazonaws.com";
 
             String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;

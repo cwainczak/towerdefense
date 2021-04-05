@@ -45,4 +45,7 @@
     <string name="upgrade_name_3">Upgrade Name</string>
     <string name="upgrade">upgrade</string>
     <string name="max">Max</string>
+    <string name="okay">okay</string>
+    <string name="your_score">Your Score:</string>
+    <string name="username">Username</string>
 </resources>
