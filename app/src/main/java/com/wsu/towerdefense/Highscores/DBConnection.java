@@ -12,8 +12,8 @@ public class DBConnection {
             String userName = "tlafleurWSU";
             String port = "3306";
             String password = "";
-            String dbName = "qacs_ch02";
-            String hostname = "test.cznsvkc1cyzq.us-east-1.rds.amazonaws.com";
+            String dbName = "Highscores";
+            String hostname = "databaseclassdb.cznsvkc1cyzq.us-east-1.rds.amazonaws.com";
 
             String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
 
