@@ -30,9 +30,11 @@ public class Waves implements Serializable {
 
     boolean running = false;
     boolean wavesEnded = false;
+    boolean setStarted = false;
 
     List<List<Integer>> amounts;
     List<List<Double>> delays;
+    List<List<Double>> setDelays;
     List<List<Enemy.Type>> types;
 
     /**
@@ -43,6 +45,7 @@ public class Waves implements Serializable {
     public Waves(Context context, Game.Difficulty difficulty){
         amounts = new ArrayList<>();
         delays = new ArrayList<>();
+        setDelays = new ArrayList<>();
         types = new ArrayList<>();
         wavesToWin = difficulty.waves;
 
@@ -75,8 +78,10 @@ public class Waves implements Serializable {
         if(isRunning()) {
             updateTimeSinceSpawn(delta);
 
-            if (delayPassed()){
-                game.spawnEnemy(next());
+            if (setStarted || setDelayPassed()) {
+                if (delayPassed()){
+                    game.spawnEnemy(next());
+                }
             }
         }
     }
@@ -108,6 +113,7 @@ public class Waves implements Serializable {
 
         JSONArray a = waveReader.getJSONArray("amounts");
         JSONArray d = waveReader.getJSONArray("delays");
+        JSONArray sd = waveReader.getJSONArray("set_delays");
         JSONArray t = waveReader.getJSONArray("types");
 
         maxWaves = a.length();
@@ -116,11 +122,13 @@ public class Waves implements Serializable {
         for (int i = 0; i < a.length(); i++) {
             amounts.add(new ArrayList<>());
             delays.add(new ArrayList<>());
+            setDelays.add(new ArrayList<>());
             types.add(new ArrayList<>());
 
             for (int j = 0; j < a.getJSONArray(i).length(); j++) {
                 amounts.get(i).add(a.getJSONArray(i).getInt(j));
                 delays.get(i).add(d.getJSONArray(i).getDouble(j));
+                setDelays.get(i).add(sd.getJSONArray(i).getDouble(j));
                 types.get(i).add(Enemy.Type.valueOf(t.getJSONArray(i).getString(j)));
             }
         }
@@ -136,6 +144,7 @@ public class Waves implements Serializable {
         if(spawnedThisSet - amounts.get(curWave - 1).get(curSet) >= 0){
             spawnedThisSet = 0;
             curSet++;
+            setStarted = false;
         }
         // if all sets in a wave have passed and there are more waves
         if(curSet - amounts.get(curWave - 1).size() >= 0 &&
@@ -173,9 +182,17 @@ public class Waves implements Serializable {
             timeSinceSpawn = 0;
             return true;
         }
-        else{
-            return false;
+        return false;
+    }
+
+    public boolean setDelayPassed(){
+        double setDelay = setDelays.get(curWave - 1).get(curSet);
+        if(timeSinceSpawn >= setDelay){
+            timeSinceSpawn -= setDelay;
+            setStarted = true;
+            return true;
         }
+        return false;
     }
 
     public void nextWave(){

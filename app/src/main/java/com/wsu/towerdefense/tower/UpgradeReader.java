@@ -181,6 +181,10 @@ public class UpgradeReader {
                 float value = (float) effect.getDouble("value");
                 return new Effect<>(type, value);
             }
+            case SEE_INVISIBLE: {
+                boolean value = Boolean.parseBoolean(effect.getString("value"));
+                return new Effect<>(type, value);
+            }
             case PROJECTILE: {
                 Projectile.Type value = Projectile.Type.valueOf(effect.getString("value"));
                 return new Effect<>(type, value);

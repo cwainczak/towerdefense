@@ -1,13 +1,14 @@
 package com.wsu.towerdefense;
 
-import static com.google.android.material.math.MathUtils.lerp;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import java.util.List;
+
+import static com.google.android.material.math.MathUtils.lerp;
 
 public class Projectile extends AbstractMapObject {
 
@@ -19,26 +20,29 @@ public class Projectile extends AbstractMapObject {
 
     public enum Type {
 
-        LINEAR(1000f, 10, R.mipmap.projectile_1),
-        HOMING(750f, 15, R.mipmap.projectile_2);
+        LINEAR(1000f, 10, false, R.mipmap.projectile_1),
+        HOMING(750f, 15, true, R.mipmap.projectile_2);
 
         final float speed;
         final int damage;
+        final boolean armorPiercing;
         final int resourceID;
 
         /**
          * @param someSpeed      The speed of the projectile
          * @param damage         Damage done to an Enemy hit by this projectile
+         * @param armorPiercing  Whether or not this {@link Projectile.Type } can pierce {@link Enemy } armor
          * @param someResourceID The Resource ID of the image of the projectile
          */
-        Type(float someSpeed, int damage, int someResourceID) {
+        Type(float someSpeed, int damage, boolean armorPiercing, int someResourceID) {
             this.speed = someSpeed;
             this.damage = damage;
+            this.armorPiercing = armorPiercing;
             this.resourceID = someResourceID;
         }
     }
 
-    private final Type type;
+    public final Type type;
     private final Enemy target;
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
@@ -114,8 +118,7 @@ public class Projectile extends AbstractMapObject {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)) {
-
-                e.takeDamage((int) getEffectiveDamage());
+                e.hitByProjectile(this);
                 remove = true;
                 break;
             }
@@ -157,7 +160,7 @@ public class Projectile extends AbstractMapObject {
         return this.type.speed * this.speedModifier;
     }
 
-    private float getEffectiveDamage() {
+    public float getEffectiveDamage() {
         return this.type.damage * this.damageModifier;
     }
 }
