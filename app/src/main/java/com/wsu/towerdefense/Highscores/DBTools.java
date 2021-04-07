@@ -40,17 +40,27 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
         listener.onTaskEnd(rs);
     }
 
-    public ResultSet getResultSet(String tableName) throws SQLException{
+    public ResultSet getResultSet(String tableName) throws SQLException {
         if (DBCon == null) {
             DBCon = DBConnection.getDBCon();
         }
 
         stmt = DBCon.createStatement();
-        String query = "SELECT * FROM " + tableName + ";";
+        // SQL query to get all data from DB sorted by score in descending order
+        // and limiting the result to 5
+        String query = "SELECT * FROM " + tableName + " ORDER BY Score DESC LIMIT 5;";
         rs = stmt.executeQuery(query);
         return rs;
     }
 
+
+    /**
+     * Used for testing. Takes a ResultSet as a parameter and prints the data in
+     * that ResultSet.
+     * Note: once a ResultSet is printed it is empty - data will not appear in the program elsewhere
+     *
+     * @param rs ResultSet to print data from
+     */
     public void printResultSet(ResultSet rs) {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -67,4 +77,5 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
             throwables.printStackTrace();
         }
     }
+
 }
