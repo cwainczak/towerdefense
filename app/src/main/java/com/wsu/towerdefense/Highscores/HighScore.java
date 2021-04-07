@@ -10,7 +10,6 @@ public class HighScore {
         this.setScore(score);
     }
 
-    // getters and setters
 
     public String getName() {
         return name;

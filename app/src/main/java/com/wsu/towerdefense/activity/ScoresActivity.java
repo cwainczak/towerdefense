@@ -51,18 +51,15 @@ public class ScoresActivity extends AppCompatActivity {
         txt_score5 = findViewById(R.id.txt_score5);
 
         List<TextView> txt_names = Arrays.asList(txt_name1, txt_name2, txt_name3, txt_name4, txt_name5);
-
         List<TextView> txt_scores = Arrays.asList(txt_score1, txt_score2, txt_score3, txt_score4, txt_score5);
 
 
-        final ResultSet results = null;
         DBTools dbt = new DBTools(new OnTaskEnded() {
 
             @Override
             public void onTaskEnd(ResultSet rs) {
                 try {
                     ResultSetMetaData rsmd = rs.getMetaData();
-                    int columnsNumber = rsmd.getColumnCount();
                     ArrayList<HighScore> highScores = new ArrayList<>();
                     while (rs.next()) {
                         String name = rs.getString(1);
