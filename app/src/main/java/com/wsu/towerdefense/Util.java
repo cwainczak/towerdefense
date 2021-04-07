@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class Util {
     public static double getAngleBetweenPoints(PointF start, PointF end) {
         double deltaY = (end.y - start.y);
         double deltaX = (end.x - start.x);
-        double result = Math.toDegrees(Math.atan2(deltaY, deltaX));
+        double result = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
         return (result < 0) ? (360d + result) : result;
     }
 

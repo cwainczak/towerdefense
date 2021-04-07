@@ -95,6 +95,28 @@
                     android:tag="Tower 2"
                     app:srcCompat="@mipmap/tower_2" />
 
+                <ImageView
+                    android:id="@+id/img_Tower3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/todo"
+                    android:onClick="towerSelected"
+                    android:tag="Tower 3"
+                    app:srcCompat="@mipmap/tower_3" />
+
+                <ImageView
+                    android:id="@+id/img_Tower4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/todo"
+                    android:onClick="towerSelected"
+                    android:tag="Tower 4"
+                    app:srcCompat="@mipmap/tower_4" />
+
             </LinearLayout>
         </ScrollView>
 

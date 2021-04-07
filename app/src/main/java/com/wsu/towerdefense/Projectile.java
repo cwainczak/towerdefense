@@ -21,7 +21,8 @@ public class Projectile extends AbstractMapObject {
     public enum Type {
 
         LINEAR(1000f, 10, false, R.mipmap.projectile_1),
-        HOMING(750f, 15, true, R.mipmap.projectile_2);
+        HOMING(750f, 15, true, R.mipmap.projectile_2),
+        BIG_HOMING(550f, 20, true, R.mipmap.projectile_3);
 
         final float speed;
         final int damage;
@@ -29,16 +30,16 @@ public class Projectile extends AbstractMapObject {
         final int resourceID;
 
         /**
-         * @param someSpeed      The speed of the projectile
+         * @param speed          The speed of the projectile
          * @param damage         Damage done to an Enemy hit by this projectile
          * @param armorPiercing  Whether or not this {@link Projectile.Type } can pierce {@link Enemy } armor
-         * @param someResourceID The Resource ID of the image of the projectile
+         * @param resourceID     The Resource ID of the image of the projectile
          */
-        Type(float someSpeed, int damage, boolean armorPiercing, int someResourceID) {
-            this.speed = someSpeed;
+        Type(float speed, int damage, boolean armorPiercing, int resourceID) {
+            this.speed = speed;
             this.damage = damage;
             this.armorPiercing = armorPiercing;
-            this.resourceID = someResourceID;
+            this.resourceID = resourceID;
         }
     }
 
@@ -66,16 +67,14 @@ public class Projectile extends AbstractMapObject {
         this.damageModifier = damageModifier;
 
         if (this.type == Type.LINEAR) {
-            PointF newVel = Util.getNewVelocity(
-                this.location, this.target.location, getEffectiveSpeed()
-            );
+            PointF newVel = Util.getNewVelocity(location, target.location, getEffectiveSpeed());
             this.velX = newVel.x;
             this.velY = newVel.y;
         }
     }
 
     public void update(Game game, double delta) {
-        if (this.type == Type.HOMING) {
+        if (type == Type.HOMING || type == Type.BIG_HOMING) {
             double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
                 Math.abs(location.y - target.location.y));
             double distanceMoved = getEffectiveSpeed() * delta;
@@ -87,7 +86,7 @@ public class Projectile extends AbstractMapObject {
                 // Otherwise move the projectile towards the target
                 location.set(calculateNewLocation(delta));
             }
-        } else if (this.type == Type.LINEAR) {
+        } else if (type == Type.LINEAR) {
             location.set(calculateNewLocation(delta));
         }
 
@@ -104,7 +103,7 @@ public class Projectile extends AbstractMapObject {
             PointF newLoc = calculateNewLocation(lerp);
 
             Matrix matrix = new Matrix();
-            matrix.postRotate((float) Util.getAngleBetweenPoints(newLoc, target.location) + 90,
+            matrix.postRotate((float) Util.getAngleBetweenPoints(newLoc, target.location),
                     bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
 
             matrix.postTranslate(newLoc.x - bitmap.getWidth() / 2f, newLoc.y - bitmap.getHeight() / 2f);
@@ -132,7 +131,7 @@ public class Projectile extends AbstractMapObject {
      * @return The new location this Projectile should move to
      */
     private PointF calculateNewLocation(double delta) {
-        if (this.type == Type.HOMING) {
+        if (type == Type.HOMING || type == Type.BIG_HOMING) {
             double distanceToTarget = Math.hypot(
                 Math.abs(location.x - target.location.x),
                 Math.abs(location.y - target.location.y)
@@ -145,7 +144,7 @@ public class Projectile extends AbstractMapObject {
                 lerp(location.x, target.location.x, amount),
                 lerp(location.y, target.location.y, amount)
             );
-        } else if (this.type == Type.LINEAR) {
+        } else if (type == Type.LINEAR) {
             return Util.getNewLoc(this.location, this.velX, this.velY, delta);
         }
         return null;
