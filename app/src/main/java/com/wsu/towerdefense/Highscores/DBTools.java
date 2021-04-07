@@ -18,20 +18,21 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     ResultSet rs;
     public ScoresActivity.OnTaskEnded listener;
 
+    private int currentScore;
+    private String currentUsername;
+
     public DBTools(ScoresActivity.OnTaskEnded onTaskEnded) {
         listener = onTaskEnded;
     }
 
-    public DBTools(){
-
-    }
+    public DBTools(){}
 
     @Override
     protected ResultSet doInBackground(String... strings) {
         try {
             DBCon = DBConnection.getDBCon();
             if (listener == null){
-                addScoreToDB("HIGHSCORES", "Davin", 1000000000);
+                addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
             }
             rs = getResultSet("HIGHSCORES");
             return rs;
@@ -69,6 +70,11 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
         query.setInt(2, score);
         query.execute();
         query.close();
+    }
+
+    public void initUsernameAndScore(String username, int score){
+        this.currentUsername = username;
+        this.currentScore = score;
     }
 
     public void printResultSet(ResultSet rs) {

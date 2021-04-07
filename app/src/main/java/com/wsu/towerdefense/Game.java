@@ -24,6 +24,7 @@ public class Game extends AbstractGame {
 
     private static final int START_LIVES = 5;
     private static final int START_MONEY = 600;
+    private static final int START_SCORE = 0;
     private static final int RANGE_OPACITY = 90;
 
     public final int validRangeColor;
@@ -39,6 +40,7 @@ public class Game extends AbstractGame {
 
     private int lives;
     private int money;
+    private int score;
 
     /**
      * A custom listener used to send data to the GameActivity whenever certain actions occur
@@ -77,6 +79,7 @@ public class Game extends AbstractGame {
         towers = hasSave ? saveState.towers : new ArrayList<>();
         lives = hasSave ? saveState.lives : START_LIVES;
         money = hasSave ? saveState.money : START_MONEY;
+        score = hasSave ? saveState.score : START_SCORE;
 
         enemies = new ArrayList<>();
 
@@ -84,6 +87,7 @@ public class Game extends AbstractGame {
             "Started game with map '" + map.getName() + "'" +
                 " and difficulty '" + this.difficulty.toString() + "'"
         );
+
     }
 
     /**
@@ -133,8 +137,9 @@ public class Game extends AbstractGame {
                 }
 
             } else {
-                // Add enemy's value to game balance
+                // Add enemy's value to game balance and score
                 addMoney((int) (e.getPrice() * difficulty.priceModifier));
+                addScore((int) (e.getPrice() * difficulty.priceModifier));
 
                 // Remove dead Enemies
                 enemyIt.remove();
@@ -218,7 +223,9 @@ public class Game extends AbstractGame {
     private void drawHUD(Canvas canvas, Paint paint) {
         int posX = 10;
         int posY = 75;
-        int yOffset = 80;
+        int yOffsetLives = 80;
+        int yOffsetWaves = 160;
+        int yOffsetScore = 1325;
 
         paint.reset();
         paint.setShadowLayer(0.1f, 5, 5, Color.BLACK);
@@ -229,14 +236,16 @@ public class Game extends AbstractGame {
         canvas.drawText("$" + money, posX, posY, paint);
 
         paint.setColor(Color.WHITE);
-        canvas.drawText("Lives: " + lives, posX, posY + yOffset, paint);
+        canvas.drawText("Lives: " + lives, posX, posY + yOffsetLives, paint);
 
         if (waves.getCurWave() == 0) {
-            canvas.drawText("Wave: 1", posX, posY + (yOffset * 2), paint);
+            canvas.drawText("Wave: 1", posX, posY + yOffsetWaves, paint);
         } else {
-            canvas.drawText("Wave: " + waves.getCurWave(), posX, posY + (yOffset * 2), paint);
+            canvas.drawText("Wave: " + waves.getCurWave(), posX, posY + yOffsetWaves, paint);
         }
 
+        paint.setColor(Color.WHITE);
+        canvas.drawText("Score: " + score, posX, posY + yOffsetScore, paint);
     }
 
     /**
@@ -254,6 +263,10 @@ public class Game extends AbstractGame {
         paint.setColor(valid ? validRangeColor : invalidRangeColor);
         paint.setAlpha(RANGE_OPACITY);
         canvas.drawCircle(location.x, location.y, radius, paint);
+    }
+
+    public int getScore() {
+        return score;
     }
 
     // UI
@@ -340,6 +353,15 @@ public class Game extends AbstractGame {
     }
 
     // GETTERS/SETTERS
+
+    /**
+     * Adds a specified amount to the game's score (same as the amount of money gained)
+     *
+     * @param amount The amount of score to add
+     */
+    private void addScore(int amount){
+        score += amount;
+    }
 
     /**
      * Adds a specified amount to the game's money and triggers the game's listener

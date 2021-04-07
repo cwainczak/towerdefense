@@ -198,7 +198,8 @@ public class GameActivity extends AppCompatActivity {
 
                 @Override
                 public void onGameOver(){
-                    updateScoresAndClose();
+                    gameOver();
+                    updateScoresAndClose(game);
                 }
             });
 
@@ -326,15 +327,10 @@ public class GameActivity extends AppCompatActivity {
     /**
      * This method goes to the UpdateScoresActivity
      */
-    public void updateScoresAndClose(){
+    public void updateScoresAndClose(Game game){
         Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        gameOver();
+        intent.putExtra("score", game.getScore());
+        startActivity(intent);
     }
 
     /**

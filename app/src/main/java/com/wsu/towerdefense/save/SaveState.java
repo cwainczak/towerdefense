@@ -18,6 +18,7 @@ public class SaveState implements Serializable {
     public final List<Tower> towers;
     public final int lives;
     public final int money;
+    public final int score;
     public final Waves waves;
     public final Difficulty difficulty;
 
@@ -28,6 +29,7 @@ public class SaveState implements Serializable {
         this.towers = new ArrayList<>(game.getTowers());
         this.lives = game.getLives();
         this.money = game.getMoney();
+        this.score = game.getScore();
         this.waves = game.getWaves();
         this.difficulty = game.getDifficulty();
     }
@@ -39,6 +41,7 @@ public class SaveState implements Serializable {
             ", mapName='" + mapName + '\'' +
             ", lives='" + lives + '\'' +
             ", money='" + money + '\'' +
+            ", score='" + score + '\'' +
             ", wave='" + waves.getCurWave() + '\'' +
             ", difficulty='" + difficulty + '\'' +
             ", towers=" + (towers.stream().map(Object::toString)

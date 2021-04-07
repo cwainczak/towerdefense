@@ -12,7 +12,7 @@ public class DBConnection {
             String userName = "GroupLogin";
             String port = "3306";
             String password = "Towerdefense321";
-            String dbName = "highscores";
+            String dbName = "Highscores";
             String hostname = "databaseclassdb.cznsvkc1cyzq.us-east-1.rds.amazonaws.com";
 
             String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
