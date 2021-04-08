@@ -22,6 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,8 +38,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             Projectile.Type.ROCKET,
             150,
             -1,
-            false
-        ),
+            false,
+                new ArrayList<>(Arrays.asList(new PointF(-20,-36),
+                                              new PointF(17, -36)))),
         BASIC_LINEAR(
             R.mipmap.tower_1_turret,
             384,
@@ -48,8 +50,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             Projectile.Type.BALL,
             100,
             R.raw.game_tower_shoot_1,
-            false
-        ),
+            false,
+                new ArrayList<>(Arrays.asList(new PointF(0,-80)))),
         DOUBLE_LINEAR(
                 R.mipmap. tower_3_turret,
                 384,
@@ -59,7 +61,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 Projectile.Type.BALL,
                 175,
                 R.raw.game_tower_shoot_1,
-                false),
+                false,
+                new ArrayList<>(Arrays.asList(new PointF(-16,-80),
+                                              new PointF(14, -80)))),
         BIG_HOMING(
                 R.mipmap.tower_4_turret,
                 384,
@@ -69,8 +73,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 Projectile.Type.BIG_ROCKET,
                 200,
                 -1,
-                false
-        ),
+                false,
+                new ArrayList<>(Arrays.asList(new PointF(0,-42)))),
         SNIPER(
                 R.mipmap.tower_5_turret,
                 3000,
@@ -80,8 +84,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 Projectile.Type.HITSCAN,
                 275,
                 R.raw.game_tower_shoot_1,
-                true
-        );
+                true,
+                new ArrayList<>(Arrays.asList(new PointF(0,0))));
 
         final int towerResID;
         public final int range;
@@ -93,17 +97,23 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         public final int shootSoundID;
         public final boolean canSeeInvisible;
 
+        /*
+         Each point in this list represents a projectile spawn point
+         relative to the center of the turret image
+         */
+        final List<PointF> projectileSpawnPointOffsets;
+
         Type(
-            int towerResID,
-            int range,
-            float fireRate,
-            float projectileSpeed,
-            float projectileDamage,
-            Projectile.Type projectileType,
-            int cost,
-            int shootSoundID,
-            boolean canSeeInvisible
-        ) {
+                int towerResID,
+                int range,
+                float fireRate,
+                float projectileSpeed,
+                float projectileDamage,
+                Projectile.Type projectileType,
+                int cost,
+                int shootSoundID,
+                boolean canSeeInvisible,
+                List<PointF> projectileSpawnPointOffsets) {
             this.towerResID = towerResID;
             this.range = range;
             this.fireRate = fireRate;
@@ -113,6 +123,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             this.cost = cost;
             this.shootSoundID = shootSoundID;
             this.canSeeInvisible = canSeeInvisible;
+
+            this.projectileSpawnPointOffsets = projectileSpawnPointOffsets;
         }
     }
 
@@ -154,7 +166,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         this.angle = START_ANGLE - IMAGE_ANGLE;
 
         this.projectileSpawnPoints = new ArrayList<>();
-        setProjectileSpawnPoints();
+        for (PointF offset : type.projectileSpawnPointOffsets) {
+            projectileSpawnPoints.add(new PointF(location.x + offset.x, location.y + offset.y));
+        }
 
         this.audioShoot = type.shootSoundID >= 0
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
@@ -385,30 +399,6 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                                     stats.getProjectileDamage()
                             ));
                 }
-            default:
-                break;
-        }
-    }
-
-    private void setProjectileSpawnPoints() {
-        switch (type) {
-            case BASIC_LINEAR:
-                projectileSpawnPoints.add(new PointF(location.x,location.y - 80));
-                break;
-            case BASIC_HOMING:
-                projectileSpawnPoints.add(new PointF(location.x - 20, location.y - 36));
-                projectileSpawnPoints.add(new PointF(location.x + 17, location.y - 36));
-                break;
-            case DOUBLE_LINEAR:
-                projectileSpawnPoints.add(new PointF(location.x - 16, location.y - 80));
-                projectileSpawnPoints.add(new PointF(location.x + 14,location.y - 80));
-                break;
-            case BIG_HOMING:
-                projectileSpawnPoints.add(new PointF(location.x,location.y - 42));
-                break;
-            case SNIPER:
-                projectileSpawnPoints.add(new PointF(location.x,location.y));
-                break;
             default:
                 break;
         }
