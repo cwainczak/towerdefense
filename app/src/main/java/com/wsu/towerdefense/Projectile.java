@@ -6,12 +6,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import com.google.android.material.math.MathUtils;
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
 import java.util.List;
-
-import static com.google.android.material.math.MathUtils.lerp;
 
 public class Projectile extends AbstractMapObject implements SoundSource {
 
@@ -21,23 +18,39 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     // What percent of the bitmap width will be used for the hitbox
     private static final float hitboxScaleX = 0.8f;
 
-    public enum Type {
+    public enum Behavior {
+        LINEAR,
+        HOMING,
+        HITSCAN
+    }
 
-        LINEAR(
+    public enum Type {
+        BALL(
             1000f,
             10,
             false,
             R.mipmap.projectile_1,
             -1,
-            -1
+            -1,
+            Behavior.LINEAR
         ),
-        HOMING(
+        ROCKET(
             750f,
             15,
             true,
             R.mipmap.projectile_2,
             R.raw.game_rocket_travel,
-            R.raw.game_rocket_explode
+            R.raw.game_rocket_explode,
+            Behavior.HOMING
+        ),
+        HITSCAN(
+            0f,
+            20,
+            true,
+            R.mipmap.projectile_1, // image has no effect
+            -1,
+            -1,
+            Behavior.HITSCAN
         );
 
         final float speed;
@@ -46,6 +59,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         final int travelSoundID;
         final int impactSoundID;
         final boolean armorPiercing;
+        final Behavior behavior;
 
         /**
          * @param speed         The speed of the projectile
@@ -57,57 +71,49 @@ public class Projectile extends AbstractMapObject implements SoundSource {
          *                      } armor
          */
         Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
-            int impactSoundID) {
+            int impactSoundID, Behavior behavior) {
             this.speed = speed;
             this.damage = damage;
             this.armorPiercing = armorPiercing;
             this.imageID = imageID;
             this.travelSoundID = travelSoundID;
             this.impactSoundID = impactSoundID;
+            this.behavior = behavior;
         }
     }
+
+    private static final int IMAGE_ANGLE = 90;
 
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
 
     public final Type type;
     private final Enemy target;
-    private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
-    private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
+    private float velX;
+    private float velY;
     public boolean remove;
 
     private final float speedModifier;
     private final float damageModifier;
 
-    /**
-     * A projectile shot by Towers at Enemies
-     *
-     * @param location A PointF representing the location of the bitmap's center
-     * @param target   The Enemy this projectile is targeting (if none, value is null)
-     */
-    public Projectile(Context context, PointF location, Type pt, Enemy target,
+    public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
         float speedModifier,
         float damageModifier) {
-        super(context, location, pt.imageID);
+        super(context, location, type.imageID);
 
-        this.type = pt;
+        this.type = type;
         this.target = target;
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
 
-        if (this.type == Type.LINEAR) {
-            PointF newVel = Util.getNewVelocity(
-                this.location, this.target.location, getEffectiveSpeed()
-            );
-            this.velX = newVel.x;
-            this.velY = newVel.y;
-        }
+        this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
+        this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
 
-        this.audioTravel = type.travelSoundID >= 0
-            ? new BasicSoundPlayer(context, type.travelSoundID, true)
+        this.audioTravel = this.type.travelSoundID >= 0
+            ? new BasicSoundPlayer(context, this.type.travelSoundID, true)
             : null;
-        this.audioImpact = type.impactSoundID >= 0
-            ? new BasicSoundPlayer(context, type.impactSoundID, true)
+        this.audioImpact = this.type.impactSoundID >= 0
+            ? new BasicSoundPlayer(context, this.type.impactSoundID, true)
             : null;
 
         if (this.audioTravel != null) {
@@ -116,20 +122,31 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     }
 
     public void update(Game game, double delta) {
-        if (this.type == Type.HOMING) {
-            double distanceToTarget = Math.hypot(Math.abs(location.x - target.location.x),
-                Math.abs(location.y - target.location.y));
-            double distanceMoved = getEffectiveSpeed() * delta;
+        switch (this.type.behavior) {
+            case HOMING: {
+                if (this.target.isAlive()) {
+                    double angle = Util.getAngleBetweenPoints(this.location, this.target.location);
 
-            // If the projectile moved far enough to reach the target set it at the target location
-            if (distanceMoved >= distanceToTarget) {
-                location.set(target.location);
-            } else {
-                // Otherwise move the projectile towards the target
-                location.set(calculateNewLocation(delta));
+                    this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
+                    this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
+                }
+                this.location.offset((float) (this.velX * delta), (float) (this.velY * delta));
+                break;
             }
-        } else if (this.type == Type.LINEAR) {
-            location.set(calculateNewLocation(delta));
+            case LINEAR: {
+                this.location.offset((float) (this.velX * delta), (float) (this.velY * delta));
+                break;
+            }
+            case HITSCAN: {
+                if (this.target.isAlive()) {
+                    this.target.hitByProjectile(this);
+                    remove(game.getContext());
+                }
+                break;
+            }
+            default: {
+                return;
+            }
         }
 
         checkCollision(game.getContext(), game.getEnemies());
@@ -142,14 +159,21 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     @Override
     public void render(double lerp, Canvas canvas, Paint paint) {
         if (!remove) {
-            PointF newLoc = calculateNewLocation(lerp);
-
             Matrix matrix = new Matrix();
-            matrix.postRotate((float) Util.getAngleBetweenPoints(newLoc, target.location) + 90,
-                bitmap.getWidth() / 2f, bitmap.getHeight() / 2f);
+            matrix.postRotate(
+                (float) (Math.toDegrees(Math.atan2(this.velY, this.velX)) + IMAGE_ANGLE),
+                bitmap.getWidth() / 2f,
+                bitmap.getHeight() / 2f
+            );
 
-            matrix.postTranslate(newLoc.x - bitmap.getWidth() / 2f,
-                newLoc.y - bitmap.getHeight() / 2f);
+            PointF interpolatedLocation = new PointF(
+                (float) (this.location.x + this.velX * lerp),
+                (float) (this.location.y + this.velY * lerp)
+            );
+            matrix.postTranslate(
+                interpolatedLocation.x - bitmap.getWidth() / 2f,
+                interpolatedLocation.y - bitmap.getHeight() / 2f
+            );
 
             canvas.drawBitmap(bitmap, matrix, null);
         }
@@ -165,36 +189,6 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 remove(context);
                 break;
             }
-        }
-    }
-
-    /**
-     * Calculates the Projectile's new position given a change in time
-     *
-     * @param delta The change in time since this Projectile's location has been updated
-     * @return The new location this Projectile should move to
-     */
-    private PointF calculateNewLocation(double delta) {
-        switch (this.type) {
-            case HOMING: {
-                double distanceToTarget = Math.hypot(
-                    Math.abs(location.x - target.location.x),
-                    Math.abs(location.y - target.location.y)
-                );
-                double distanceMoved = getEffectiveSpeed() * delta;
-
-                float amount = (float) (distanceMoved / distanceToTarget);
-
-                return new PointF(
-                    MathUtils.lerp(location.x, target.location.x, amount),
-                    MathUtils.lerp(location.y, target.location.y, amount)
-                );
-            }
-            case LINEAR: {
-                return Util.getNewLoc(this.location, this.velX, this.velY, delta);
-            }
-            default:
-                return null;
         }
     }
 

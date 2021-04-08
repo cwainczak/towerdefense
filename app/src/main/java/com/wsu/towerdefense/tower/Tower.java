@@ -34,7 +34,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             2,
             1,
             1,
-            Projectile.Type.HOMING,
+            Projectile.Type.ROCKET,
             150,
             -1,
             false
@@ -45,7 +45,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             1,
             1,
             1,
-            Projectile.Type.LINEAR,
+            Projectile.Type.BALL,
             100,
             R.raw.game_tower_shoot_1,
             false
@@ -84,6 +84,12 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         }
     }
 
+    private static final int IMAGE_ANGLE = 90;
+    /**
+     * Face north
+     */
+    private static final int START_ANGLE = 0;
+
     public static final float BASE_SIZE = 130 * 0.875f;
 
     private transient AdvancedSoundPlayer audioShoot;
@@ -95,7 +101,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     private final TowerStats stats;
 
-    private transient float angle = 0;
+    private transient float angle;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -110,6 +116,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         this.type = type;
         this.projectiles = new ArrayList<>();
         this.stats = new TowerStats(context, type);
+
+        this.angle = START_ANGLE - IMAGE_ANGLE;
 
         this.audioShoot = type.shootSoundID >= 0
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
@@ -148,6 +156,10 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         // Calculate change in time since last projectile was fired
         timeSinceShot += delta;
 
+        if (target != null) {
+            angle = (float) Util.getAngleBetweenPoints(location, target.getLocation());
+        }
+
         // Shoot another projectile if there is a target and enough time has passed
         if (target != null && timeSinceShot >= stats.getFireRate()) {
             projectiles.add(
@@ -155,6 +167,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                     new PointF(location.x, location.y),
                     stats.getProjectileType(),
                     target,
+                    this.angle,
                     stats.getProjectileSpeed(),
                     stats.getProjectileDamage()
                 )
@@ -180,10 +193,6 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         if (target != null && !target.isAlive()) {
             target = null;
         }
-
-        if (target != null) {
-            angle = (float) Util.getAngleBetweenPoints(location, target.getLocation()) + 90;
-        }
     }
 
     /**
@@ -206,7 +215,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         // Draw the tower turret image
         Matrix matrix = new Matrix();
         matrix.postRotate(
-            angle,
+            angle + IMAGE_ANGLE,
             stats.getTurretImage().getWidth() / 2f,
             stats.getTurretImage().getHeight() / 2f
         );
