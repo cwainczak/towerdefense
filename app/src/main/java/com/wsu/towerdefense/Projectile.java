@@ -5,10 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import com.google.android.material.math.MathUtils;
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
 import java.util.List;
+
+import static com.google.android.material.math.MathUtils.lerp;
 
 public class Projectile extends AbstractMapObject implements SoundSource {
 
@@ -23,6 +26,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         LINEAR(
             1000f,
             10,
+            false,
             R.mipmap.projectile_1,
             -1,
             -1
@@ -30,6 +34,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         HOMING(
             750f,
             15,
+            true,
             R.mipmap.projectile_2,
             R.raw.game_rocket_travel,
             R.raw.game_rocket_explode
@@ -40,15 +45,22 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         final int imageID;
         final int travelSoundID;
         final int impactSoundID;
+        final boolean armorPiercing;
 
         /**
-         * @param speed   The speed of the projectile
-         * @param damage  Damage done to an Enemy hit by this projectile
-         * @param imageID The Resource ID of the image of the projectile
+         * @param speed         The speed of the projectile
+         * @param damage        Damage done to an Enemy hit by this projectile
+         * @param imageID       The Resource ID of the image of the projectile
+         * @param speed         The speed of the projectile
+         * @param damage        Damage done to an Enemy hit by this projectile
+         * @param armorPiercing Whether or not this {@link Projectile.Type } can pierce {@link Enemy
+         *                      } armor
          */
-        Type(float speed, int damage, int imageID, int travelSoundID, int impactSoundID) {
+        Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
+            int impactSoundID) {
             this.speed = speed;
             this.damage = damage;
+            this.armorPiercing = armorPiercing;
             this.imageID = imageID;
             this.travelSoundID = travelSoundID;
             this.impactSoundID = impactSoundID;
@@ -58,7 +70,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
 
-    private final Type type;
+    public final Type type;
     private final Enemy target;
     private float velX;     // Velocity X of the LINEAR type projectiles, based on the target's initial position
     private float velY;     // Velocity Y of the LINEAR type projectiles, based on the target's initial position
@@ -149,7 +161,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)
             ) {
-                e.takeDamage((int) getEffectiveDamage());
+                e.hitByProjectile(this);
                 remove(context);
                 break;
             }
@@ -195,7 +207,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         return this.type.speed * this.speedModifier;
     }
 
-    private float getEffectiveDamage() {
+    public float getEffectiveDamage() {
         return this.type.damage * this.damageModifier;
     }
 

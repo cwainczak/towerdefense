@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
+
 import com.wsu.towerdefense.Enemy.Type;
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
@@ -15,6 +16,7 @@ import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import com.wsu.towerdefense.tower.Tower;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +25,8 @@ import java.util.List;
 
 public class Game extends AbstractGame implements SoundSource {
 
-    private static final int START_LIVES = 5;
-    private static final int START_MONEY = 600;
+    private static final int START_LIVES = 25;
+    private static final int START_MONEY = 400;
     private static final int RANGE_OPACITY = 90;
     public final int validRangeColor;
     public final int invalidRangeColor;
@@ -126,9 +128,10 @@ public class Game extends AbstractGame implements SoundSource {
                 e.update(this, delta);
 
                 if (e.isAtPathEnd()) {
-                    lives--;
+                    lives -= e.getType().damage;
                     enemyIt.remove();
                     if (lives <= 0) {
+                        lives = 0;
                         gameOver();
                         return;
                     }

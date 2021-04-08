@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Enemy;
 import com.wsu.towerdefense.Game;
@@ -15,6 +16,7 @@ import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -34,7 +36,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             1,
             Projectile.Type.HOMING,
             150,
-            -1
+            -1,
+            false
         ),
         BASIC_LINEAR(
             R.mipmap.tower_1_turret,
@@ -44,36 +47,40 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             1,
             Projectile.Type.LINEAR,
             100,
-            R.raw.game_tower_shoot_1
+            R.raw.game_tower_shoot_1,
+            false
         );
 
         final int towerResID;
         public final int range;
         public final float fireRate;
-        public final float projectiveSpeed;
+        public final float projectileSpeed;
         public final float projectileDamage;
         public final Projectile.Type projectileType;
         public final int cost;
         public final int shootSoundID;
+        public final boolean canSeeInvisible;
 
         Type(
             int towerResID,
             int range,
             float fireRate,
-            float projectiveSpeed,
+            float projectileSpeed,
             float projectileDamage,
             Projectile.Type projectileType,
             int cost,
-            int shootSoundID
+            int shootSoundID,
+            boolean canSeeInvisible
         ) {
             this.towerResID = towerResID;
             this.range = range;
             this.fireRate = fireRate;
-            this.projectiveSpeed = projectiveSpeed;
+            this.projectileSpeed = projectileSpeed;
             this.projectileDamage = projectileDamage;
             this.projectileType = projectileType;
             this.cost = cost;
             this.shootSoundID = shootSoundID;
+            this.canSeeInvisible = canSeeInvisible;
         }
     }
 
@@ -127,10 +134,13 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         if (target == null) {
             List<Enemy> enemies = game.getEnemies();
             for (int i = 0; i < enemies.size(); i++) {
-                if (distanceToEnemy(enemies.get(i)) < stats.getRange()) {
-                    target = enemies.get(i);
+                Enemy e = enemies.get(i);
+                if (distanceToEnemy(e) < stats.getRange()) {
+                    if (!e.isInvisible() || (e.isInvisible() && stats.canSeeInvisible())) {
+                        target = e;
 
-                    break; // Stop looking for a target
+                        break; // Stop looking for a target
+                    }
                 }
             }
         }

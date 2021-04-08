@@ -22,8 +22,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
@@ -33,6 +35,7 @@ import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.tower.Tower;
 import com.wsu.towerdefense.tower.TowerUpgradeData;
 import com.wsu.towerdefense.tower.Upgrade;
+
 import java.util.Arrays;
 import java.util.List;
 
