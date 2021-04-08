@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,15 +22,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Game.Difficulty;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.tower.Tower;
 import com.wsu.towerdefense.tower.TowerUpgradeData;
+import com.wsu.towerdefense.tower.Upgrade;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +52,8 @@ public class GameActivity extends AppCompatActivity {
         Color.argb(255, 180, 0, 0),
         Mode.MULTIPLY
     );
+
+    private AdvancedSoundPlayer audioButtonPress;
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
@@ -73,6 +81,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         onWindowFocusChanged(true);
+
+        audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
@@ -149,12 +159,16 @@ public class GameActivity extends AppCompatActivity {
             btn_fast_fwd.setEnabled(false);
 
             btn_pause.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+
                 game.setPaused(true);
                 startActivity(new Intent(GameActivity.this, PauseActivity.class),
                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
             });
 
             btn_play.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
                     btn_play.setVisibility(View.GONE);
                     btn_play.setEnabled(false);
@@ -182,33 +196,38 @@ public class GameActivity extends AppCompatActivity {
             });
 
             List<Tower> towers = game.getTowers();
-            game.setOnTouchListener((v, event) -> {
-                    for (Tower tower : towers) {
-                        float dx = event.getX() - tower.getLocation().x;
-                        float dy = event.getY() - tower.getLocation().y;
-                        double distance = Math.hypot(dx, dy);
+            game.setOnTouchListener((view, event) -> {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        for (Tower tower : towers) {
+                            float dx = event.getX() - tower.getLocation().x;
+                            float dy = event.getY() - tower.getLocation().y;
+                            double distance = Math.hypot(dx, dy);
 
-                        // check if distance from click to tower is within radius
-                        if (distance < Tower.BASE_SIZE / 2 * SELECT_TOLERANCE) {
-                            isTowerMenuScrollable = false;
-                            enableOrDisableImageViews(towerList, false);
-                            setSelectionMenuVisible(true);
+                            // check if distance from click to tower is within radius
+                            if (distance < Tower.BASE_SIZE / 2 * SELECT_TOLERANCE) {
+                                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-                            // setting sell button text
-                            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
+                                isTowerMenuScrollable = false;
+                                enableImageViews(towerList, false);
+                                setSelectionMenuVisible(true);
 
-                            // Notify game of selected tower
-                            game.selectTower(tower);
+                                // setting sell button text
+                                btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
 
-                            updateUpgradeUI();
+                                // Notify game of selected tower
+                                game.selectTower(tower);
 
-                            return true;
+                                updateUpgradeUI();
+
+                                return true;
+                            }
                         }
+                        isTowerMenuScrollable = true;
+                        enableImageViews(towerList, true);
+                        setSelectionMenuVisible(false);
+                        game.selectTower(null);
+                        return true;
                     }
-                    isTowerMenuScrollable = true;
-                    enableOrDisableImageViews(towerList, true);
-                    setSelectionMenuVisible(false);
-                    game.selectTower(null);
                     return false;
                 }
             );
@@ -218,8 +237,12 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onMoneyChanged() {
                     updateTowerSelection();
-
                     runOnUiThread(() -> updateUpgradeUI());
+                }
+
+                @Override
+                public void onGameOver() {
+                    gameOver();
                 }
 
                 @Override
@@ -233,7 +256,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addDragListeners() {
-
         // add drag listeners to towers
         for (int i = 0; i < towerList.size(); i++) {
             ImageView image = towerList.get(i);
@@ -250,10 +272,11 @@ public class GameActivity extends AppCompatActivity {
                 selectedTowerType = towerTypes.get(_i);
                 return true;
             });
-            image.setOnDragListener((v, event) -> {
+            image.setOnDragListener((view, event) -> {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                     game.setDragType(selectedTowerType);
+                    audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
                     return true;
                 }
                 // remove range circle when dragging over side bar
@@ -275,7 +298,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         // add drop listener to game
-        cl_gameLayout.setOnDragListener((v, event) -> {
+        cl_gameLayout.setOnDragListener((view, event) -> {
             if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                 return true;
             }
@@ -310,10 +333,12 @@ public class GameActivity extends AppCompatActivity {
     public void towerSelected(View view) {
         for (int i = 0; i < towerList.size(); i++) {
             if (towerList.get(i).isPressed()) {
-                ImageView imageView = findViewById(towerList.get(i).getId());
-                String imageName = String.valueOf(imageView.getTag());
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
+                String imageName = String.valueOf(view.getTag());
                 txt_towerName.setText(imageName);
+
+                break;
             }
         }
     }
@@ -337,12 +362,12 @@ public class GameActivity extends AppCompatActivity {
             if (money >= towerTypes.get(i).cost) {
                 image.setColorFilter(null);
                 final int _i = i;
-                image.setOnLongClickListener(v -> {
-                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                image.setOnLongClickListener(view -> {
+                    ClipData.Item item = new ClipData.Item((CharSequence) view.getTag());
                     String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                    ClipData data = new ClipData(v.getTag().toString(), mimeTypes, item);
-                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-                    v.startDragAndDrop(data, dragshadow, v, 0);
+                    ClipData data = new ClipData(view.getTag().toString(), mimeTypes, item);
+                    View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(view);
+                    view.startDragAndDrop(data, dragshadow, view, 0);
 
                     // Get the tower Type using the image
                     selectedTowerType = towerTypes.get(_i);
@@ -361,37 +386,23 @@ public class GameActivity extends AppCompatActivity {
      * This method goes to the GameSelectionActivity, then kills all tasks related to the current
      * activity, including the extra Game thread.
      */
-    public void gameOver() {
+    private void gameOver() {
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         startActivity(intent);
         finishAffinity();
         Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
-        }
-    }
-
     /**
      * Called when remove button is clicked
      */
     public void removeSelectedTower(View view) {
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
-        enableOrDisableImageViews(towerList, true);
+        enableImageViews(towerList, true);
         isTowerMenuScrollable = true;
-    }
-
-    /**
-     * Called when pause button is clicked
-     */
-    public void btnPauseOnClick(View view) {
-        game.setPaused(true);
-        startActivity(new Intent(GameActivity.this, PauseActivity.class));
     }
 
     /**
@@ -415,14 +426,14 @@ public class GameActivity extends AppCompatActivity {
      */
     @SuppressLint("ClickableViewAccessibility")
     private void scrollViewInit() {
-        this.sv_tower.setOnTouchListener((v, event) -> !GameActivity.this.isTowerMenuScrollable);
+        this.sv_tower.setOnTouchListener((view, event) -> !GameActivity.this.isTowerMenuScrollable);
     }
 
     /**
      * @param imageViews the image views to enable or disable
      * @param enable     if true, enable imageviews, otherwise disable them
      */
-    private void enableOrDisableImageViews(List<ImageView> imageViews, boolean enable) {
+    private void enableImageViews(List<ImageView> imageViews, boolean enable) {
         for (ImageView imageView : imageViews) {
             imageView.setEnabled(enable);
         }
@@ -435,12 +446,12 @@ public class GameActivity extends AppCompatActivity {
         progBar[pathNumber].setProgress(progBar[pathNumber].getProgress() + 33);
 
         Tower tower = game.getSelectedTower();
-        tower.getStats().upgrade(pathNumber);
-
-        int upgradeCost = tower.getStats().getUpgrade(pathNumber, false).cost;
-        game.removeMoney(upgradeCost);
+        Upgrade upgrade = tower.getStats().upgrade(pathNumber);
+        game.removeMoney(upgrade.cost);
 
         updateUpgradeUI();
+
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
     }
 
     private void updateUpgradeUI() {
@@ -479,6 +490,20 @@ public class GameActivity extends AppCompatActivity {
             }
 
             btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioButtonPress.release();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ActivityUtil.hideNavigator(getWindow());
         }
     }
 }

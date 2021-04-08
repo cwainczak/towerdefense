@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.GameActivity">
+    tools:context=".view.activity.GameActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_gameLayout"
@@ -27,7 +27,6 @@
         android:background="@mipmap/pause"
         android:backgroundTint="#009688"
         android:contentDescription="@string/todo"
-        android:onClick="btnPauseOnClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.86"

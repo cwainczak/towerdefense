@@ -133,7 +133,7 @@ public class UpgradeReader {
         String description = upgrade.getString("description");
         int cost = upgrade.getInt("cost");
         String image = upgrade.getString("image");
-        int imageID = Util.getResourceByName(context, image);
+        int imageID = Util.getResourceByName(context,"mipmap", image);
         if (imageID == 0) {
             throw new FileNotFoundException("Upgrade image '" + image + "' not found");
         }
@@ -179,6 +179,10 @@ public class UpgradeReader {
             case PROJECTILE_SPEED:
             case PROJECTILE_DAMAGE: {
                 float value = (float) effect.getDouble("value");
+                return new Effect<>(type, value);
+            }
+            case SEE_INVISIBLE: {
+                boolean value = Boolean.parseBoolean(effect.getString("value"));
                 return new Effect<>(type, value);
             }
             case PROJECTILE: {

@@ -3,16 +3,20 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Enemy;
 import com.wsu.towerdefense.Game;
 import com.wsu.towerdefense.Projectile;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.audio.SoundSource;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,34 +25,69 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Tower extends AbstractMapObject implements Serializable {
+public class Tower extends AbstractMapObject implements Serializable, SoundSource {
 
     public enum Type {
-
-        BASIC_HOMING(R.mipmap.tower_2_turret, 384, 2, 1, 1, Projectile.Type.HOMING, 150),
-        BASIC_LINEAR(R.mipmap.tower_1_turret, 384, 1, 1, 1, Projectile.Type.LINEAR, 100);
+        BASIC_HOMING(
+            R.mipmap.tower_2_turret,
+            384,
+            2,
+            1,
+            1,
+            Projectile.Type.HOMING,
+            150,
+            -1,
+            false
+        ),
+        BASIC_LINEAR(
+            R.mipmap.tower_1_turret,
+            384,
+            1,
+            1,
+            1,
+            Projectile.Type.LINEAR,
+            100,
+            R.raw.game_tower_shoot_1,
+            false
+        );
 
         final int towerResID;
         public final int range;
         public final float fireRate;
-        public final float projectiveSpeed;
+        public final float projectileSpeed;
         public final float projectileDamage;
         public final Projectile.Type projectileType;
         public final int cost;
+        public final int shootSoundID;
+        public final boolean canSeeInvisible;
 
-        Type(int towerResID, int range, float fireRate, float projectiveSpeed, int projectileDamage,
-            Projectile.Type projectileType, int cost) {
+        Type(
+            int towerResID,
+            int range,
+            float fireRate,
+            float projectileSpeed,
+            float projectileDamage,
+            Projectile.Type projectileType,
+            int cost,
+            int shootSoundID,
+            boolean canSeeInvisible
+        ) {
             this.towerResID = towerResID;
             this.range = range;
             this.fireRate = fireRate;
-            this.projectiveSpeed = projectiveSpeed;
+            this.projectileSpeed = projectileSpeed;
             this.projectileDamage = projectileDamage;
             this.projectileType = projectileType;
             this.cost = cost;
+            this.shootSoundID = shootSoundID;
+            this.canSeeInvisible = canSeeInvisible;
         }
     }
 
     public static final float BASE_SIZE = 130 * 0.875f;
+
+    private transient AdvancedSoundPlayer audioShoot;
+
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
@@ -66,11 +105,15 @@ public class Tower extends AbstractMapObject implements Serializable {
      *
      * @param location A PointF representing the location of the towerBitmap's center
      */
-    public Tower(Context context, PointF location, Type tt) {
+    public Tower(Context context, PointF location, Type type) {
         super(context, location, R.mipmap.tower_base);
-        this.type = tt;
+        this.type = type;
         this.projectiles = new ArrayList<>();
-        this.stats = new TowerStats(context, tt);
+        this.stats = new TowerStats(context, type);
+
+        this.audioShoot = type.shootSoundID >= 0
+            ? new AdvancedSoundPlayer(this.type.shootSoundID)
+            : null;
     }
 
     /**
@@ -91,10 +134,13 @@ public class Tower extends AbstractMapObject implements Serializable {
         if (target == null) {
             List<Enemy> enemies = game.getEnemies();
             for (int i = 0; i < enemies.size(); i++) {
-                if (distanceToEnemy(enemies.get(i)) < stats.getRange()) {
-                    target = enemies.get(i);
+                Enemy e = enemies.get(i);
+                if (distanceToEnemy(e) < stats.getRange()) {
+                    if (!e.isInvisible() || (e.isInvisible() && stats.canSeeInvisible())) {
+                        target = e;
 
-                    break; // Stop looking for a target
+                        break; // Stop looking for a target
+                    }
                 }
             }
         }
@@ -114,6 +160,10 @@ public class Tower extends AbstractMapObject implements Serializable {
                 )
             );
             timeSinceShot = 0;
+
+            if (this.audioShoot != null) {
+                this.audioShoot.play(game.getContext(), Settings.getSFXVolume(game.getContext()));
+            }
         }
 
         // Update each projectile
@@ -189,14 +239,19 @@ public class Tower extends AbstractMapObject implements Serializable {
         return Math.hypot(a, b);
     }
 
-    public void drawLine(Canvas canvas, Paint paint) {
-        if (target != null) {
-            paint.reset();
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(7);
-            canvas.drawLine(location.x, location.y, target.getLocation().x, target.getLocation().y,
-                paint);
-        }
+    /**
+     * A method to determine whether or not a given hitbox collides with the Tower's hitbox.
+     *
+     * @param loc    The center of the hitbox to check
+     * @param width  The width of the hitbox
+     * @param height The height of the hitbox
+     * @return true if the given hitbox overlaps the Tower's hitbox
+     */
+    public boolean collides(PointF loc, float width, float height) {
+        return loc.x - width / 2 <= this.location.x + BASE_SIZE / 2f &&
+            loc.x + width / 2 >= this.location.x - BASE_SIZE / 2f &&
+            loc.y - height / 2 <= this.location.y + BASE_SIZE / 2f &&
+            loc.y + height / 2 >= this.location.y - BASE_SIZE / 2f;
     }
 
     public TowerStats getStats() {
@@ -215,6 +270,13 @@ public class Tower extends AbstractMapObject implements Serializable {
         return this.type.range;
     }
 
+    @Override
+    public void release() {
+        if (this.audioShoot != null) {
+            this.audioShoot.release();
+        }
+    }
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
     }
@@ -223,21 +285,8 @@ public class Tower extends AbstractMapObject implements Serializable {
         in.defaultReadObject();
 
         this.projectiles = new ArrayList<>();
-    }
-
-    /**
-     * A method to determine whether or not a given hitbox collides with the Tower's hitbox.
-     *
-     * @param loc    The center of the hitbox to check
-     * @param width  The width of the hitbox
-     * @param height The height of the hitbox
-     * @return true if the given hitbox overlaps the Tower's hitbox
-     */
-    public boolean collides(PointF loc, float width, float height) {
-        int offset = 0;
-        return loc.x - width / 2 <= this.location.x + BASE_SIZE / 2f &&
-            loc.x + width / 2 >= this.location.x - BASE_SIZE / 2f &&
-            loc.y - height / 2 <= this.location.y + BASE_SIZE / 2f &&
-            loc.y + height / 2 >= this.location.y - BASE_SIZE / 2f;
+        this.audioShoot = type.shootSoundID >= 0
+            ? new AdvancedSoundPlayer(this.type.shootSoundID)
+            : null;
     }
 }

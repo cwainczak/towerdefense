@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.view.View;
 import android.view.Window;

@@ -2,7 +2,6 @@ package com.wsu.towerdefense.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import com.wsu.towerdefense.Util;
 
 /**
@@ -17,7 +16,8 @@ public class Upgrade {
         FIRE_RATE,
         PROJECTILE_SPEED,
         PROJECTILE_DAMAGE,
-        PROJECTILE
+        PROJECTILE,
+        SEE_INVISIBLE
     }
 
     public static class Effect<T> {

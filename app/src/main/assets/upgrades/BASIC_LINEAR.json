@@ -75,13 +75,13 @@
       }
     },
     {
-      "displayName": "Range 2",
+      "displayName": "See Invisible",
       "description": "",
       "cost": "100",
       "image": "tower_1_2_turret",
       "effect": {
-        "type": "RANGE",
-        "value": 0.1
+        "type": "SEE_INVISIBLE",
+        "value": "True"
       }
     },
     {

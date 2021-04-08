@@ -7,34 +7,36 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
+
 import com.wsu.towerdefense.Enemy.Type;
-import com.wsu.towerdefense.activity.GameActivity;
+import com.wsu.towerdefense.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.audio.SoundSource;
 import com.wsu.towerdefense.map.Map;
 import com.wsu.towerdefense.map.MapReader;
 import com.wsu.towerdefense.save.SaveState;
 import com.wsu.towerdefense.save.Serializer;
 import com.wsu.towerdefense.tower.Tower;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class Game extends AbstractGame {
+public class Game extends AbstractGame implements SoundSource {
 
-    private static final int START_LIVES = 5;
-    private static final int START_MONEY = 600;
+    private static final int START_LIVES = 25;
+    private static final int START_MONEY = 400;
     private static final int RANGE_OPACITY = 90;
-
     public final int validRangeColor;
     public final int invalidRangeColor;
 
+    private final BasicSoundPlayer audioPlaceTower;
+
     private final List<Tower> towers;
     private final List<Enemy> enemies;
-
     private final Waves waves;
     private final Difficulty difficulty;
-
     private final Map map;
 
     private int lives;
@@ -55,6 +57,8 @@ public class Game extends AbstractGame {
     public Game(Context context, int gameWidth, int gameHeight, SaveState saveState,
         String mapName, Difficulty difficulty) {
         super(context, gameWidth, gameHeight);
+
+        audioPlaceTower = new BasicSoundPlayer(context, R.raw.game_tower_place, false);
 
         mapEvents = new ArrayList<>();
 
@@ -93,14 +97,14 @@ public class Game extends AbstractGame {
      * Ends this game and returns to the the menu
      */
     private void gameOver() {
-        // stop game loop
         running = false;
 
-        // delete save file
+        this.release();
+
         Serializer.delete(getContext(), Serializer.SAVEFILE);
 
         // return to menu
-        ((GameActivity) getContext()).gameOver();
+        listener.onGameOver();
     }
 
     /**
@@ -127,9 +131,10 @@ public class Game extends AbstractGame {
                 e.update(this, delta);
 
                 if (e.isAtPathEnd()) {
-                    lives--;
+                    lives -= e.getType().damage;
                     enemyIt.remove();
                     if (lives <= 0) {
+                        lives = 0;
                         gameOver();
                         return;
                     }
@@ -266,16 +271,15 @@ public class Game extends AbstractGame {
     // UI
 
     /**
-     * A custom listener for Game objects
+     * Sends game events to UI
      */
     public interface GameListener {
 
-        /**
-         * This method is called whenever the game's money increases or decreases
-         */
         void onMoneyChanged();
 
         void onWaveEnd();
+
+        void onGameOver();
     }
 
     public void setGameListener(GameListener listener) {
@@ -290,7 +294,9 @@ public class Game extends AbstractGame {
 
             if (e instanceof MapEvent.PlaceTower) {
                 towers.add(((MapEvent.PlaceTower) e).tower);
+                audioPlaceTower.play(getContext(), Settings.getSFXVolume(getContext()));
             } else if (e instanceof MapEvent.RemoveTower) {
+                selectedTower.release();
                 towers.remove(selectedTower);
             } else if (e instanceof MapEvent.SpawnEnemy) {
                 enemies.add(((MapEvent.SpawnEnemy) e).enemy);
@@ -407,6 +413,11 @@ public class Game extends AbstractGame {
 
     public void setDragType(Tower.Type dragType) {
         this.dragType = dragType;
+    }
+
+    @Override
+    public void release() {
+        this.audioPlaceTower.release();
     }
 
     public void setWaveRunning(boolean waveRunning){
