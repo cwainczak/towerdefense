@@ -114,14 +114,16 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.img_Tower1),
             findViewById(R.id.img_Tower2),
             findViewById(R.id.img_Tower3),
-            findViewById(R.id.img_Tower4)
+            findViewById(R.id.img_Tower4),
+            findViewById(R.id.img_Tower5)
         );
 
         towerTypes = Arrays.asList(
             Tower.Type.BASIC_LINEAR,
             Tower.Type.BASIC_HOMING,
             Tower.Type.DOUBLE_LINEAR,
-            Tower.Type.BIG_HOMING
+            Tower.Type.BIG_HOMING,
+            Tower.Type.SNIPER
         );
 
         addDragListeners();

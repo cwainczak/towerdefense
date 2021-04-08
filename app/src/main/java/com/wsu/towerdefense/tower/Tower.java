@@ -70,6 +70,17 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 200,
                 -1,
                 false
+        ),
+        SNIPER(
+                R.mipmap.tower_5_turret,
+                3000,
+                2.5f,
+                1,
+                1,
+                Projectile.Type.HITSCAN,
+                275,
+                R.raw.game_tower_shoot_1,
+                true
         );
 
         final int towerResID;
@@ -338,6 +349,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         switch (type) {
             case BIG_HOMING:
             case BASIC_LINEAR:
+            case SNIPER:
                 projectiles.add(
                     new Projectile(context,
                             new PointF(projectileSpawnPoints.get(0).x, projectileSpawnPoints.get(0).y),
@@ -393,6 +405,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 break;
             case BIG_HOMING:
                 projectileSpawnPoints.add(new PointF(location.x,location.y - 42));
+                break;
+            case SNIPER:
+                projectileSpawnPoints.add(new PointF(location.x,location.y));
                 break;
             default:
                 break;

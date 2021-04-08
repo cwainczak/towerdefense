@@ -170,7 +170,9 @@ public class Game extends AbstractGame implements SoundSource {
 //                t.drawLine(canvas, paint);
 //            }
             if (selectedTower == t) {
-                drawRange(canvas, paint, t.getLocation(), t.getStats().getRange(), true);
+                drawRange(canvas, paint, t.getLocation(),
+                        t.getType() == Tower.Type.SNIPER ? Tower.BASE_SIZE : t.getStats().getRange(),
+                        true);
             }
 
             t.render(lerp, canvas, paint);
@@ -181,7 +183,9 @@ public class Game extends AbstractGame implements SoundSource {
         }
 
         if (dragLocation != null) {
-            drawRange(canvas, paint, dragLocation, dragType.range, isValidPlacement(dragLocation));
+            drawRange(canvas, paint, dragLocation,
+                    dragType == Tower.Type.SNIPER ? Tower.BASE_SIZE : dragType.range,
+                    isValidPlacement(dragLocation));
         }
 
         drawHUD(canvas, paint);

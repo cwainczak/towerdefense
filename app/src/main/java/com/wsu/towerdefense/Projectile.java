@@ -8,6 +8,7 @@ import android.graphics.PointF;
 
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
+
 import java.util.List;
 
 public class Projectile extends AbstractMapObject implements SoundSource {
@@ -74,8 +75,6 @@ public class Projectile extends AbstractMapObject implements SoundSource {
          * @param speed         The speed of the projectile
          * @param damage        Damage done to an Enemy hit by this projectile
          * @param imageID       The Resource ID of the image of the projectile
-         * @param speed         The speed of the projectile
-         * @param damage        Damage done to an Enemy hit by this projectile
          * @param armorPiercing Whether or not this {@link Projectile.Type } can pierce {@link Enemy
          *                      } armor
          */
@@ -149,8 +148,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             case HITSCAN: {
                 if (this.target.isAlive()) {
                     this.target.hitByProjectile(this);
-                    remove(game.getContext());
                 }
+                remove(game.getContext());
                 break;
             }
             default: {
