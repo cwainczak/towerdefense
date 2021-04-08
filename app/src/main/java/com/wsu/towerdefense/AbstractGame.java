@@ -8,7 +8,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import androidx.annotation.NonNull;
-import com.wsu.towerdefense.activity.PauseActivity;
+import com.wsu.towerdefense.view.activity.PauseActivity;
 
 /**
  * Base class for the game. Manages the {@link SurfaceView}, game loop {@link Thread}, and {@link
@@ -236,5 +236,4 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
-
 }

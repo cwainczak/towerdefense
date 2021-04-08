@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class TowerStats implements Serializable {
 
-    private static float REFUND_PERCENT = 0.5f;
+    private static final float REFUND_PERCENT = 0.5f;
 
     private final Tower.Type type;
 
@@ -181,7 +181,10 @@ public class TowerStats implements Serializable {
         List<Upgrade> upgrades = new ArrayList<>();
 
         for (int pathIndex = 0; pathIndex < upgradeData.paths.length; pathIndex++) {
-            upgrades.addAll(Arrays.asList(upgradeData.paths[pathIndex]).subList(0, upgradeProgress[pathIndex]));
+            for (int i = 0; i < upgradeProgress[pathIndex]; i++) {
+                Upgrade upgrade = upgradeData.paths[pathIndex][i];
+                upgrades.add(upgrade);
+            }
         }
 
         return upgrades;
