@@ -416,6 +416,7 @@ public class Game extends AbstractGame {
 
     public void setFastMode(boolean isFastMode){
         this.isFastMode = isFastMode;
+        this.setDoubleSpeed(isFastMode);
     }
 
     public boolean isFastMode(){
