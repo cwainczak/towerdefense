@@ -11,26 +11,26 @@
     android:supportsRtl="true"
     android:theme="@style/Theme.TowerDefense">
     <activity
-      android:name=".activity.ScoresActivity"
+      android:name=".view.activity.ScoresActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
-      android:name=".activity.PauseActivity"
+      android:name=".view.activity.PauseActivity"
       android:screenOrientation="sensorLandscape"
       android:theme="@style/Theme.CustomTheme" />
     <activity
-      android:name=".activity.SettingsActivity"
+      android:name=".view.activity.SettingsActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
-      android:name=".activity.GameSelectionActivity"
+      android:name=".view.activity.GameSelectionActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
-      android:name=".activity.MapSelectionActivity"
+      android:name=".view.activity.MapSelectionActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
-      android:name=".activity.GameActivity"
+      android:name=".view.activity.GameActivity"
       android:screenOrientation="sensorLandscape" />
     <activity
-      android:name=".activity.MainActivity"
+      android:name=".view.activity.MainActivity"
       android:screenOrientation="sensorLandscape">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

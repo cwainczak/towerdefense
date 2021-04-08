@@ -1,31 +1,23 @@
-package com.wsu.towerdefense.activity;
+package com.wsu.towerdefense.view.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 
-public class SettingsActivity extends AppCompatActivity {
+public class ScoresActivity extends AppCompatActivity {
 
-    TextView tv_versionNumber;
-    SeekBar sb_music;
-    SeekBar sb_soundFx;
+    private AdvancedSoundPlayer audioButtonPress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_scores);
         onWindowFocusChanged(true);
 
-        tv_versionNumber = findViewById(R.id.tv_versionNumber);
-
-        sb_music = findViewById(R.id.sb_music);
-        sb_soundFx = findViewById(R.id.sb_soundFx);
-
-        sb_music.setProgress(100);
-        sb_soundFx.setProgress(100);
+        audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
     }
 
     /**
@@ -35,7 +27,15 @@ public class SettingsActivity extends AppCompatActivity {
      * @param view view
      */
     public void btnBackClicked(View view) {
+        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioButtonPress.release();
     }
 
     @Override

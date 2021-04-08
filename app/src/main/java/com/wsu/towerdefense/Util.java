@@ -38,7 +38,7 @@ public class Util {
      * @param targetLoc Current location of the target (next coordinate on path)
      * @param speed     Speed of the object
      */
-    public static PointF getNewVelocity(PointF curLoc, PointF targetLoc, float speed) {
+    public static PointF velocityTowardsPoint(PointF curLoc, PointF targetLoc, float speed) {
         float dx = targetLoc.x - curLoc.x;
         float dy = targetLoc.y - curLoc.y;
         double distance = Math.hypot(dx, dy);
@@ -70,16 +70,17 @@ public class Util {
      * @return The angle between the line and the horizontal axis
      */
     public static double getAngleBetweenPoints(PointF start, PointF end) {
+        // TODO: keep in radians?
         double deltaY = (end.y - start.y);
         double deltaX = (end.x - start.x);
-        double result = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
+        double result = Math.toDegrees(Math.atan2(deltaY, deltaX));
         return (result < 0) ? (360d + result) : result;
     }
 
-    public static int getResourceByName(Context context, String name) {
+    public static int getResourceByName(Context context, String type, String name) {
         return context.getResources().getIdentifier(
             name,
-            "mipmap",
+            type,
             context.getPackageName()
         );
     }
