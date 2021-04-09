@@ -241,8 +241,9 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onGameOver() {
+                public void onGameOver(){
                     gameOver();
+                    updateScoresAndClose(game);
                 }
 
                 @Override
@@ -383,14 +384,21 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
+     * This method goes to the UpdateScoresActivity
+     */
+    public void updateScoresAndClose(Game game){
+        Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
+        intent.putExtra("score", game.getScore());
+        startActivity(intent);
+    }
+
+    /**
      * This method goes to the GameSelectionActivity, then kills all tasks related to the current
      * activity, including the extra Game thread.
      */
     private void gameOver() {
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         startActivity(intent);
-        finishAffinity();
-        Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
     }
 
     /**

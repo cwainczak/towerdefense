@@ -90,7 +90,6 @@ public class GameSelectionActivity extends AppCompatActivity {
     // testing
     public void btnBackClicked(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-
         finish();
     }
 
