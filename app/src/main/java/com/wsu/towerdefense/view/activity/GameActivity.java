@@ -361,8 +361,6 @@ public class GameActivity extends AppCompatActivity {
     private void gameOver() {
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         startActivity(intent);
-        finishAffinity();
-        Log.i(getString(R.string.logcatKey), "Game Over. Returning to Game Select Menu.");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.wsu.towerdefense.view.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -47,7 +48,9 @@ public class UpdateScoresActivity extends Activity {
         DBTools dbt = new DBTools();
         dbt.initUsernameAndScore(this.playerUsername, this.playerScore);
         dbt.execute();
-        finish();
+        finishAffinity();
+        Intent intent = new Intent(UpdateScoresActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void displayError(ERROR_TYPE error_type){
