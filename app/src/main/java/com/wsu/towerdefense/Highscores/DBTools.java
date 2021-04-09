@@ -1,13 +1,11 @@
 package com.wsu.towerdefense.Highscores;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
 
-import com.wsu.towerdefense.activity.ScoresActivity;
-
-import org.w3c.dom.Text;
+import com.wsu.towerdefense.view.activity.ScoresActivity;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -20,15 +18,24 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     ResultSet rs;
     public ScoresActivity.OnTaskEnded listener;
 
+    private int currentScore;
+    private String currentUsername;
+
     public DBTools(ScoresActivity.OnTaskEnded onTaskEnded) {
         listener = onTaskEnded;
     }
+
+    public DBTools(){}
 
     @Override
     protected ResultSet doInBackground(String... strings) {
         try {
             DBCon = DBConnection.getDBCon();
-            return getResultSet("HIGHSCORES");
+            if (listener == null){
+                addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
+            }
+            rs = getResultSet("HIGHSCORES");
+            return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return null;
@@ -37,7 +44,9 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
 
     @Override
     protected void onPostExecute(ResultSet rs) {
-        listener.onTaskEnd(rs);
+        if (listener != null){
+            listener.onTaskEnd(rs);
+        }
     }
 
     public ResultSet getResultSet(String tableName) throws SQLException {
@@ -53,14 +62,23 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
         return rs;
     }
 
+    public void addScoreToDB(String tableName, String username, int score) throws SQLException {
+        if (DBCon == null) {
+            DBCon = DBConnection.getDBCon();
+        }
 
-    /**
-     * Used for testing. Takes a ResultSet as a parameter and prints the data in
-     * that ResultSet.
-     * Note: once a ResultSet is printed it is empty - data will not appear in the program elsewhere
-     *
-     * @param rs ResultSet to print data from
-     */
+        PreparedStatement query = DBCon.prepareStatement("INSERT INTO " + tableName + " values(?, ?);");
+        query.setString(1, username);
+        query.setInt(2, score);
+        query.execute();
+        query.close();
+    }
+
+    public void initUsernameAndScore(String username, int score){
+        this.currentUsername = username;
+        this.currentScore = score;
+    }
+
     public void printResultSet(ResultSet rs) {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();

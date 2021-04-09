@@ -216,8 +216,9 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onGameOver() {
+                public void onGameOver(){
                     gameOver();
+                    updateScoresAndClose(game);
                 }
             });
 
@@ -342,6 +343,15 @@ public class GameActivity extends AppCompatActivity {
                 image.setOnLongClickListener(null);
             }
         }
+    }
+
+    /**
+     * This method goes to the UpdateScoresActivity
+     */
+    public void updateScoresAndClose(Game game){
+        Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
+        intent.putExtra("score", game.getScore());
+        startActivity(intent);
     }
 
     /**
