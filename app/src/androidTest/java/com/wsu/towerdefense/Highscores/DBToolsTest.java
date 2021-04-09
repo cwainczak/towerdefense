@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.wsu.towerdefense.view.activity.ScoresActivity;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +43,11 @@ public class DBToolsTest {
 
     public void DBToolsTest() throws SQLException {
         dbtRead.setDBCon(DBConnection.getDBCon("HighscoresTest"));
+        resetDB();
+    }
+
+    private void resetDB() {
+        highScores = new ArrayList<>();
         dbtRead.setTestStmt("DELETE FROM HIGHSCORES");
         dbtRead.execute();
         dbtRead.setTestStmt(null);
@@ -49,12 +55,21 @@ public class DBToolsTest {
 
     @Test
     public void testEmptyDB(){
-        highScores = new ArrayList<>();
+        resetDB();
 
     }
 
+    @Test
     public void testOneRow(){
+        HighScore expected = new HighScore("john", 500);
+        resetDB();
 
+        dbtWrite.initUsernameAndScore("john", 500);
+        dbtWrite.execute();
+
+        dbtRead.execute();
+        assertEquals(1, highScores.size());
+        assertEquals(expected, highScores.get(0));
     }
 
 }

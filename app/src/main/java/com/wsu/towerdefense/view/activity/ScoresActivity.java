@@ -88,7 +88,7 @@ public class ScoresActivity extends AppCompatActivity {
             }
         });
 
-        dbt.execute("");
+        dbt.execute();
     }
 
     public interface OnTaskEnded {
