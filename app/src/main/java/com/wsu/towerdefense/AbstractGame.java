@@ -35,6 +35,7 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      */
     protected boolean running;
     private boolean isPaused = false;
+    private boolean isDoubleSpeed = false;
     private int gameWidth;
     private int gameHeight;
 
@@ -85,7 +86,12 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
 
             // when time passed is >= minimum time between updates (TIMESTEP), game is updated
             while (acc >= TIMESTEP) {
-                if (!this.isPaused) {
+                if (!this.isPaused && this.isDoubleSpeed) {
+                    System.out.println("Updating with delta: " + TIMESTEP * 2 + "-------------------------");
+                    update(TIMESTEP * 2);
+                }
+                else if(!this.isPaused){
+                    System.out.println("Updating with delta: " + TIMESTEP * 2 + "-------------------------");
                     update(TIMESTEP);
                 }
                 acc -= TIMESTEP; // one interval was processed, so subtract it
@@ -235,5 +241,9 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
      */
     public void setPaused(boolean paused) {
         isPaused = paused;
+    }
+
+    public void setDoubleSpeed(boolean doubleSpeed){
+        this.isDoubleSpeed = doubleSpeed;
     }
 }

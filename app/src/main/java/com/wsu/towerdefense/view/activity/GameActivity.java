@@ -66,6 +66,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
 
+    ImageButton btn_play;
+    ImageButton btn_fast_fwd;
+
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -150,7 +153,10 @@ public class GameActivity extends AppCompatActivity {
             cl_gameLayout.addView(game);
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
-            ImageButton btn_play = findViewById(R.id.btn_play);
+            btn_play = findViewById(R.id.btn_play);
+            btn_fast_fwd = findViewById(R.id.btn_fast_forward);
+            btn_fast_fwd.setVisibility(View.GONE);
+            btn_fast_fwd.setEnabled(false);
 
             btn_pause.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
@@ -164,9 +170,28 @@ public class GameActivity extends AppCompatActivity {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                 if (!game.getWaves().isRunning() && game.getEnemies().size() == 0) {
+                    btn_play.setVisibility(View.GONE);
+                    btn_play.setEnabled(false);
+                    btn_fast_fwd.setVisibility(View.VISIBLE);
+                    btn_fast_fwd.setEnabled(true);
                     game.save();
                     game.getWaves().nextWave();
-                    game.getWaves().setRunning(true);
+                    game.setWaveRunning(true);
+                }
+            });
+
+            btn_fast_fwd.setOnClickListener(view -> {
+                if(game.isFastMode()){
+                    //set game to 1x speed
+                    game.setFastMode(false);
+                    int color = getResources().getColor(R.color.ff_off, getTheme());
+                    btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
+                }
+                else{
+                    game.setFastMode(true);
+                    //set game to 2x speed
+                    int color = getResources().getColor(R.color.ff_on, getTheme());
+                    btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
                 }
             });
 
@@ -219,6 +244,11 @@ public class GameActivity extends AppCompatActivity {
                 public void onGameOver(){
                     gameOver();
                     updateScoresAndClose(game);
+                }
+
+                @Override
+                public void onWaveEnd() {
+                    runOnUiThread(() -> updatePlayBtn());
                 }
             });
 
@@ -312,6 +342,14 @@ public class GameActivity extends AppCompatActivity {
                 break;
             }
         }
+    }
+
+
+    private void updatePlayBtn(){
+        btn_fast_fwd.setVisibility(View.GONE);
+        btn_fast_fwd.setEnabled(false);
+        btn_play.setVisibility(View.VISIBLE);
+        btn_play.setEnabled(true);
     }
 
     private void updateTowerSelection() {

@@ -25,8 +25,8 @@ import java.util.List;
 
 public class Game extends AbstractGame implements SoundSource {
 
-    private static final int START_LIVES = 5;
-    private static final int START_MONEY = 600;
+    private static final int START_LIVES = 25;
+    private static final int START_MONEY = 400;
     private static final int START_SCORE = 0;
 
     private static final int RANGE_OPACITY = 90;
@@ -44,6 +44,9 @@ public class Game extends AbstractGame implements SoundSource {
     private int lives;
     private int money;
     private int score;
+
+    private boolean waveRunning = false;
+    private boolean isFastMode = false;
 
     /**
      * A custom listener used to send data to the GameActivity whenever certain actions occur
@@ -92,7 +95,6 @@ public class Game extends AbstractGame implements SoundSource {
             "Started game with map '" + map.getName() + "'" +
                 " and difficulty '" + this.difficulty.toString() + "'"
         );
-
     }
 
     /**
@@ -154,6 +156,10 @@ public class Game extends AbstractGame implements SoundSource {
 
         // Update Waves
         waves.update(this, delta);
+        if(!waves.isRunning() && enemies.isEmpty() && waveRunning){
+            waveRunning = false;
+            listener.onWaveEnd();
+        }
 
         handleEvents();
 
@@ -284,10 +290,8 @@ public class Game extends AbstractGame implements SoundSource {
 
         void onMoneyChanged();
 
+        void onWaveEnd();
 
-        /**
-         * Take a wild guess at when this is called :)
-         */
         void onGameOver();
     }
 
@@ -436,5 +440,19 @@ public class Game extends AbstractGame implements SoundSource {
     @Override
     public void release() {
         this.audioPlaceTower.release();
+    }
+
+    public void setWaveRunning(boolean waveRunning){
+        this.waveRunning = waveRunning;
+        waves.setRunning(waveRunning);
+    }
+
+    public void setFastMode(boolean isFastMode){
+        this.isFastMode = isFastMode;
+        this.setDoubleSpeed(isFastMode);
+    }
+
+    public boolean isFastMode(){
+        return isFastMode;
     }
 }
