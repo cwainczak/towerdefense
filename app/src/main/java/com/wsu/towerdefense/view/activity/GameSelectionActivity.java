@@ -8,9 +8,9 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.save.SaveState;
-import com.wsu.towerdefense.save.Serializer;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.Model.save.Serializer;
 import java.io.IOException;
 
 public class GameSelectionActivity extends AppCompatActivity {

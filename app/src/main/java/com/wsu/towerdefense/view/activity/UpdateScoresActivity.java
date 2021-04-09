@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.mysql.jdbc.StringUtils;
-import com.wsu.towerdefense.Highscores.DBTools;
+import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
 
 public class UpdateScoresActivity extends Activity {

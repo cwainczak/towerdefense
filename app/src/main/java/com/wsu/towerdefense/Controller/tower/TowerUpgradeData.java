@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.tower;
+package com.wsu.towerdefense.Controller.tower;
 
 /**
  * Combined upgraded paths that a {@link Tower.Type Tower.Type} can take

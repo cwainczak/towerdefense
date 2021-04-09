@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.audio;
+package com.wsu.towerdefense.Controller.audio;
 
 public interface SoundSource {
 

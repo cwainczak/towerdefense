@@ -1,6 +1,10 @@
 package com.wsu.towerdefense;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.wsu.towerdefense.Controller.Enemy;
+import com.wsu.towerdefense.Controller.Waves;
+
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.TestCase;

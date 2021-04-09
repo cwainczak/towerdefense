@@ -1,9 +1,9 @@
-package com.wsu.towerdefense.save;
+package com.wsu.towerdefense.Model.save;
 
-import com.wsu.towerdefense.Game;
-import com.wsu.towerdefense.Game.Difficulty;
-import com.wsu.towerdefense.Waves;
-import com.wsu.towerdefense.tower.Tower;
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.Model.Game.Difficulty;
+import com.wsu.towerdefense.Controller.Waves;
+import com.wsu.towerdefense.Controller.tower.Tower;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

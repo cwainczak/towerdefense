@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.tower;
+package com.wsu.towerdefense.Controller.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
