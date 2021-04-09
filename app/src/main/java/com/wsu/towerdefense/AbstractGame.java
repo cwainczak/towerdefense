@@ -87,11 +87,9 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
             // when time passed is >= minimum time between updates (TIMESTEP), game is updated
             while (acc >= TIMESTEP) {
                 if (!this.isPaused && this.isDoubleSpeed) {
-                    System.out.println("Updating with delta: " + TIMESTEP * 2 + "-------------------------");
                     update(TIMESTEP * 2);
                 }
                 else if(!this.isPaused){
-                    System.out.println("Updating with delta: " + TIMESTEP * 2 + "-------------------------");
                     update(TIMESTEP);
                 }
                 acc -= TIMESTEP; // one interval was processed, so subtract it
