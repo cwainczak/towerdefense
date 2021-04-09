@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.Highscores;
+package com.wsu.towerdefense.Model.Highscores;
 
 public class HighScore {
 

@@ -1,8 +1,8 @@
-package com.wsu.towerdefense.save;
+package com.wsu.towerdefense.Model.save;
 
 import android.content.Context;
 import android.util.Log;
-import com.wsu.towerdefense.Game;
+import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import java.io.File;
 import java.io.FileInputStream;

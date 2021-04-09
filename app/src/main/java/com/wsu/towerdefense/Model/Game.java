@@ -1,4 +1,4 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.Model;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,14 +8,19 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.wsu.towerdefense.Enemy.Type;
-import com.wsu.towerdefense.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.audio.SoundSource;
-import com.wsu.towerdefense.map.Map;
-import com.wsu.towerdefense.map.MapReader;
-import com.wsu.towerdefense.save.SaveState;
-import com.wsu.towerdefense.save.Serializer;
-import com.wsu.towerdefense.tower.Tower;
+import com.wsu.towerdefense.AbstractGame;
+import com.wsu.towerdefense.Controller.Enemy;
+import com.wsu.towerdefense.Controller.Enemy.Type;
+import com.wsu.towerdefense.MapEvent;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Controller.Waves;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
+import com.wsu.towerdefense.Controller.map.Map;
+import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.Model.save.Serializer;
+import com.wsu.towerdefense.Controller.tower.Tower;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -135,7 +140,7 @@ public class Game extends AbstractGame implements SoundSource {
                 e.update(this, delta);
 
                 if (e.isAtPathEnd()) {
-                    lives -= e.getType().damage;
+                    lives -= e.getType().getDamage();
                     enemyIt.remove();
                     if (lives <= 0) {
                         lives = 0;
@@ -346,7 +351,7 @@ public class Game extends AbstractGame implements SoundSource {
     }
 
     // SpawnEnemy event
-    protected void spawnEnemy(Type type) {
+    public void spawnEnemy(Type type) {
         mapEvents.add(new MapEvent.SpawnEnemy(new Enemy(getContext(), type, map.getPath())));
     }
 
@@ -356,8 +361,8 @@ public class Game extends AbstractGame implements SoundSource {
         MEDIUM(60, 0.9f),
         HARD(80, 0.8f);
 
-        final int waves;
-        final float priceModifier;
+        public final int waves;
+        public final float priceModifier;
 
 
         Difficulty(int waves, float priceModifier) {

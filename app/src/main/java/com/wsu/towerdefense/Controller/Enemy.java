@@ -1,4 +1,4 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.Controller;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,12 +7,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
+import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Util;
+
 import java.util.List;
 import java.util.ListIterator;
 
 public class Enemy extends AbstractMapObject {
 
-    protected enum Type {
+    public enum Type {
         // Standard enemy types
         S1(200, 10, 10, 1, false, R.mipmap.standard_slime_1, -1),
         S2(250, 15, 20, 2, false, R.mipmap.standard_slime_2, -1),
@@ -45,6 +50,10 @@ public class Enemy extends AbstractMapObject {
             this.invisible = invisible;
             this.resource = resource;
             this.armorResource = armorResource;
+        }
+
+        public int getDamage(){
+            return this.damage;
         }
     }
 
@@ -97,7 +106,7 @@ public class Enemy extends AbstractMapObject {
      * @param delta amount of time that has passed between updates
      */
     @Override
-    protected void update(Game game, double delta) {
+    public void update(Game game, double delta) {
         // Moves this Enemy to its next location using velocity and delta. If enemy will be at or past
         // target, and there are more Points in path, set location to target instead and set target to
         // next Point in path.
@@ -134,7 +143,7 @@ public class Enemy extends AbstractMapObject {
      * @param paint  the paint object used to paint onto the canvas
      */
     @Override
-    protected void render(double lerp, Canvas canvas, Paint paint) {
+    public void render(double lerp, Canvas canvas, Paint paint) {
         if (hp > 0) {
             float x = (float) Math.round(location.x + velX * lerp);
             float y = (float) Math.round(location.y + velY * lerp);
@@ -183,7 +192,7 @@ public class Enemy extends AbstractMapObject {
                 isAlive = false;
             }
         }
-        else if (projectile.type.armorPiercing) {
+        else if (projectile.type.isArmorPiercing()) {
             armor = null;
         }
     }

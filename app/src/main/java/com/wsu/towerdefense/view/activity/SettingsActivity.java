@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 
 public class SettingsActivity extends AppCompatActivity {
 

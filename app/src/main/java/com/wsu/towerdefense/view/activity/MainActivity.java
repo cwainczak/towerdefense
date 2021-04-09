@@ -5,13 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.wsu.towerdefense.Highscores.DBTools;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 
 public class MainActivity extends AppCompatActivity {
 

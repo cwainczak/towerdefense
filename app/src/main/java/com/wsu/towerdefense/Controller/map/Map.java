@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.map;
+package com.wsu.towerdefense.Controller.map;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

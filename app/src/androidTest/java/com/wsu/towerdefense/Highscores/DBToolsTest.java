@@ -1,6 +1,9 @@
 package com.wsu.towerdefense.Highscores;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import com.wsu.towerdefense.Model.Highscores.DBConnection;
+import com.wsu.towerdefense.Model.Highscores.DBTools;
+import com.wsu.towerdefense.Model.Highscores.HighScore;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

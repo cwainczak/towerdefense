@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 
 public class PauseActivity extends Activity {
 

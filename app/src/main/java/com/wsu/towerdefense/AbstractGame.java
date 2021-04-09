@@ -171,11 +171,11 @@ public abstract class AbstractGame extends SurfaceView implements Callback {
         gameHeight = height;
     }
 
-    protected int getGameWidth() {
+    public int getGameWidth() {
         return gameWidth;
     }
 
-    int getGameHeight() {
+    public int getGameHeight() {
         return gameHeight;
     }
 

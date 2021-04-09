@@ -1,12 +1,12 @@
-package com.wsu.towerdefense.tower;
+package com.wsu.towerdefense.Controller.tower;
 
 import android.content.Context;
 import android.util.Log;
-import com.wsu.towerdefense.Projectile;
+import com.wsu.towerdefense.Controller.Projectile;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.tower.Upgrade.Effect;
-import com.wsu.towerdefense.tower.Upgrade.StatType;
+import com.wsu.towerdefense.Controller.tower.Upgrade.Effect;
+import com.wsu.towerdefense.Controller.tower.Upgrade.StatType;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;

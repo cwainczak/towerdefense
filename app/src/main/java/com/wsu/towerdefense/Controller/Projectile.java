@@ -1,4 +1,4 @@
-package com.wsu.towerdefense;
+package com.wsu.towerdefense.Controller;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,8 +6,13 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 
-import com.wsu.towerdefense.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.audio.SoundSource;
+import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
 
 import java.util.List;
 
@@ -79,7 +84,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
          *                      } armor
          */
         Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
-            int impactSoundID, Behavior behavior) {
+             int impactSoundID, Behavior behavior) {
             this.speed = speed;
             this.damage = damage;
             this.armorPiercing = armorPiercing;
@@ -87,6 +92,10 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             this.travelSoundID = travelSoundID;
             this.impactSoundID = impactSoundID;
             this.behavior = behavior;
+        }
+
+        public boolean isArmorPiercing(){
+            return armorPiercing;
         }
     }
 
@@ -133,7 +142,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         switch (this.type.behavior) {
             case HOMING: {
                 if (this.target.isAlive()) {
-                    double angle = Util.getAngleBetweenPoints(this.location, this.target.location);
+                    double angle = Util.getAngleBetweenPoints(this.location, this.target.getLocation());
 
                     this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
                     this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
