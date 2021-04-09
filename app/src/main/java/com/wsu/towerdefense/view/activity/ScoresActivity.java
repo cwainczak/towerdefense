@@ -1,12 +1,12 @@
 package com.wsu.towerdefense.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.wsu.towerdefense.Highscores.DBListener;
 import com.wsu.towerdefense.Highscores.DBTools;
 import com.wsu.towerdefense.Highscores.HighScore;
 import com.wsu.towerdefense.R;
@@ -60,7 +60,7 @@ public class ScoresActivity extends AppCompatActivity {
         List<TextView> txt_scores = Arrays.asList(txt_score1, txt_score2, txt_score3, txt_score4, txt_score5);
 
 
-        DBTools dbt = new DBTools(new OnTaskEnded() {
+        DBTools dbt = new DBTools(new DBListener.OnTaskEnded() {
 
             @Override
             public void onTaskEnd(ResultSet rs) {
@@ -89,14 +89,6 @@ public class ScoresActivity extends AppCompatActivity {
         });
 
         dbt.execute();
-    }
-
-    public interface OnTaskEnded {
-
-        /**
-         * This method is called once the AsyncTask has completed
-         */
-        void onTaskEnd(ResultSet rs);
     }
 
     /**

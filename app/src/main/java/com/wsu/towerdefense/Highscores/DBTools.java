@@ -2,8 +2,6 @@ package com.wsu.towerdefense.Highscores;
 
 import android.os.AsyncTask;
 
-import com.wsu.towerdefense.view.activity.ScoresActivity;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,24 +14,35 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     Connection DBCon;
     Statement stmt;
     ResultSet rs;
-    public ScoresActivity.OnTaskEnded listener;
+    public DBListener.OnTaskEnded listener;
+    private String testStmt;
 
+    private boolean testMode = false;
+    private boolean testWrite = false;
     private int currentScore;
     private String currentUsername;
 
-    public DBTools(ScoresActivity.OnTaskEnded onTaskEnded) {
+    //used for reading from DB
+    public DBTools(DBListener.OnTaskEnded onTaskEnded) {
         listener = onTaskEnded;
     }
 
+    //used for updating db values
     public DBTools(){}
 
     @Override
     protected ResultSet doInBackground(String... strings) {
         try {
             DBCon = DBConnection.getDBCon();
-            if (listener == null){
+            if (listener == null || (testMode && testWrite)){
                 addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
             }
+
+            if(testMode && testStmt != null) {
+
+                executeStatement(testStmt);
+            }
+
             rs = getResultSet("HIGHSCORES");
             return rs;
         } catch (SQLException throwables) {
@@ -94,6 +103,39 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    //only used during testing
+    public void setDBCon(Connection DBCon){
+        this.DBCon = DBCon;
+        testMode = true;
+    }
+
+    /**
+     * Used in testing to execute statements onto the test table
+     *
+     * @param statement - statement to be executed
+     */
+    public void executeStatement(String statement) throws SQLException {
+        if (DBCon == null) {
+            DBCon = DBConnection.getDBCon();
+        }
+
+        PreparedStatement query = DBCon.prepareStatement(statement);
+        query.execute();
+        query.close();
+    }
+
+    public void setTestStmt(String stmt){
+        this.testStmt = stmt;
+    }
+
+    public boolean isTestMode(){
+        return testMode;
+    }
+
+    public void setTestWrite(boolean write){
+        this.testWrite = write;
     }
 
 }
