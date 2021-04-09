@@ -19,7 +19,7 @@ public class UtilTest extends TestCase {
         PointF t = new PointF(2000, 0);
 
         PointF expected =new PointF(speed, 0);
-        PointF actual = Util.getNewVelocity(l, t, speed);
+        PointF actual = Util.velocityTowardsPoint(l, t, speed);
 
         assertEquals(expected, actual);
     }
@@ -31,7 +31,7 @@ public class UtilTest extends TestCase {
         PointF t = new PointF(0, 2000);
 
         PointF expected =new PointF(0, speed);
-        PointF actual = Util.getNewVelocity(l, t, speed);
+        PointF actual = Util.velocityTowardsPoint(l, t, speed);
 
         assertEquals(expected, actual);
     }
@@ -41,7 +41,7 @@ public class UtilTest extends TestCase {
         PointF l  = new PointF(0, 0);
         PointF t = new PointF(2000, 0);
         int speed = 500;
-        PointF vel = Util.getNewVelocity(l, t, speed);
+        PointF vel = Util.velocityTowardsPoint(l, t, speed);
 
         PointF expected = new PointF(500, 0);
         PointF actual = Util.getNewLoc(l, vel.x, vel.y, 1);
@@ -54,7 +54,7 @@ public class UtilTest extends TestCase {
         PointF l  = new PointF(0, 0);
         PointF t = new PointF(0, 2000);
         int speed = 500;
-        PointF vel = Util.getNewVelocity(l, t, speed);
+        PointF vel = Util.velocityTowardsPoint(l, t, speed);
 
         PointF expected = new PointF(0, 500);
         PointF actual = Util.getNewLoc(l, vel.x, vel.y, 1);

@@ -2,8 +2,6 @@ package com.wsu.towerdefense.Highscores;
 
 import android.os.AsyncTask;
 
-import com.wsu.towerdefense.view.activity.ScoresActivity;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,15 +14,16 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     Connection DBCon;
     Statement stmt;
     ResultSet rs;
-    public ScoresActivity.OnTaskEnded listener;
+    public DBListener.OnTaskEnded listener;
     private String testStmt;
 
     private boolean testMode = false;
+    private boolean testWrite = false;
     private int currentScore;
     private String currentUsername;
 
     //used for reading from DB
-    public DBTools(ScoresActivity.OnTaskEnded onTaskEnded) {
+    public DBTools(DBListener.OnTaskEnded onTaskEnded) {
         listener = onTaskEnded;
     }
 
@@ -35,14 +34,13 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     protected ResultSet doInBackground(String... strings) {
         try {
             DBCon = DBConnection.getDBCon();
-            if (listener == null){
+            if (listener == null || (testMode && testWrite)){
                 addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
             }
 
-            if(testMode) {
-                if(testStmt != null) {
-                    executeStatement(testStmt);
-                }
+            if(testMode && testStmt != null) {
+
+                executeStatement(testStmt);
             }
 
             rs = getResultSet("HIGHSCORES");
@@ -134,6 +132,10 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
 
     public boolean isTestMode(){
         return testMode;
+    }
+
+    public void setTestWrite(boolean write){
+        this.testWrite = write;
     }
 
 }
