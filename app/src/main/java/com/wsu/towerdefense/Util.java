@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,7 @@ public class Util {
      * @param targetLoc Current location of the target (next coordinate on path)
      * @param speed     Speed of the object
      */
-    public static PointF getNewVelocity(PointF curLoc, PointF targetLoc, float speed) {
+    public static PointF velocityTowardsPoint(PointF curLoc, PointF targetLoc, float speed) {
         float dx = targetLoc.x - curLoc.x;
         float dy = targetLoc.y - curLoc.y;
         double distance = Math.hypot(dx, dy);
@@ -69,6 +70,7 @@ public class Util {
      * @return The angle between the line and the horizontal axis
      */
     public static double getAngleBetweenPoints(PointF start, PointF end) {
+        // TODO: keep in radians?
         double deltaY = (end.y - start.y);
         double deltaX = (end.x - start.x);
         double result = Math.toDegrees(Math.atan2(deltaY, deltaX));

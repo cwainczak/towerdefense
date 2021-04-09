@@ -112,7 +112,7 @@ public class Enemy extends AbstractMapObject {
                 location = new PointF(target.x, target.y);
                 target = path.next();
 
-                PointF newVel = Util.getNewVelocity(this.location, this.target, this.type.speed);
+                PointF newVel = Util.velocityTowardsPoint(this.location, this.target, this.type.speed);
                 this.velX = newVel.x;
                 this.velY = newVel.y;
             } else {
