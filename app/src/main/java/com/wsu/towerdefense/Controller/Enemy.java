@@ -232,7 +232,7 @@ public class Enemy extends AbstractMapObject {
         return hasBeenKilled;
     }
 
-    public void setHasBeenKilled(boolean hasBeenKilled) {
+    public void setHasBeenKilled(boolean hasBeenKilled){
         this.hasBeenKilled = hasBeenKilled;
     }
 

@@ -236,10 +236,6 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
             // If the target died stop targeting it and if this tower killed it, increment tower kill count
             if (target != null && !target.isAlive()) {
-                if (!target.getHasBeenKilled()){
-                    target.setHasBeenKilled(true);
-                    this.killCount++;
-                }
                 target = null;
             }
 
@@ -353,7 +349,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                         target,
                         angle,
                         stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
+                        stats.getProjectileDamage(),
+                        this
                     ));
                 break;
             case BASIC_HOMING:
@@ -366,7 +363,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                         target,
                         angle,
                         stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
+                        stats.getProjectileDamage(),
+                        this
                     ));
                 fireRight = !fireRight;
                 break;
@@ -379,7 +377,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                             target,
                             angle,
                             stats.getProjectileSpeed(),
-                            stats.getProjectileDamage()
+                            stats.getProjectileDamage(),
+                            this
                         ));
                 }
             default:
@@ -436,6 +435,10 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     public int getKillCount() {
         return killCount;
+    }
+
+    public void incrementKillCount(){
+        this.killCount++;
     }
 
 }

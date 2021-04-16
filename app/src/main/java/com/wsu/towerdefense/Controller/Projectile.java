@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 
 import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
@@ -104,7 +105,9 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
 
+
     public final Type type;
+    final private Tower parentTower;
     private final Enemy target;
     private float velX;
     private float velY;
@@ -113,15 +116,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final float speedModifier;
     private final float damageModifier;
 
-    public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
-        float speedModifier,
-        float damageModifier) {
+    public Projectile(Context context, PointF location, Type type, Enemy target, float angle, float speedModifier, float damageModifier, Tower parentTower) {
         super(context, location, type.imageID);
 
         this.type = type;
         this.target = target;
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
+        this.parentTower = parentTower;
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -158,6 +160,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 if (this.target.isAlive()) {
                     this.target.hitByProjectile(this);
                 }
+                this.handleKillCount(target);
+
                 remove(game.getContext());
                 break;
             }
@@ -210,6 +214,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 bitmap.getHeight() * hitboxScaleY)
             ) {
                 e.hitByProjectile(this);
+                this.handleKillCount(e);
                 remove(context);
                 break;
             }
@@ -244,4 +249,12 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
         // don't release audioImpact field to allow sound to play after projectile is removed
     }
+
+    private void handleKillCount(Enemy enemy){
+        if (!enemy.isAlive() && !enemy.getHasBeenKilled()){
+            this.parentTower.incrementKillCount();
+            enemy.setHasBeenKilled(true);
+        }
+    }
+
 }
