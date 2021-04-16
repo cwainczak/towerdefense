@@ -62,6 +62,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView txt_towerName;
     private Button btn_sellTower;
 
+    private ImageButton btn_upgrade_info;
     private ProgressBar[] progBar;
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
@@ -94,6 +95,8 @@ public class GameActivity extends AppCompatActivity {
         txt_towerName = findViewById(R.id.txt_towerName);
 
         btn_sellTower = findViewById(R.id.btn_sell);
+
+        btn_upgrade_info = findViewById(R.id.btn_upgrade_info);
 
         progBar = new ProgressBar[]{
             findViewById(R.id.progBar_1),
@@ -163,6 +166,11 @@ public class GameActivity extends AppCompatActivity {
             btn_fast_fwd = findViewById(R.id.btn_fast_forward);
             btn_fast_fwd.setVisibility(View.GONE);
             btn_fast_fwd.setEnabled(false);
+
+            btn_upgrade_info.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                // open up pop out menus
+            });
 
             btn_pause.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
@@ -468,10 +476,19 @@ public class GameActivity extends AppCompatActivity {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
     }
 
+    /**
+     * @tower The tower that will provide the kill count value to the label
+     * Sets the kill count label respective to the selected tower
+     */
+    private void setTowerKillCountLabel(Tower tower){
+        ((TextView) findViewById(R.id.txv_kill_count)).setText(String.valueOf(tower.getKillCount()));
+    }
+
     private void updateUpgradeUI() {
         Tower tower = game.getSelectedTower();
 
         if (tower != null) {
+            this.setTowerKillCountLabel(tower);
             for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
                 TextView text = txt_upgradeName[path];
                 Button button = btn_upgrade[path];

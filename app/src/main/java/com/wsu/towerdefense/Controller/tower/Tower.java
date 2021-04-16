@@ -28,6 +28,10 @@ import java.util.List;
 
 public class Tower extends AbstractMapObject implements Serializable, SoundSource {
 
+    public int getKillCount() {
+        return killCount;
+    }
+
     public enum Type {
         BASIC_HOMING(
             R.mipmap.tower_2_turret,
@@ -137,6 +141,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     private transient AdvancedSoundPlayer audioShoot;
 
+    private int killCount = 0;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
@@ -234,10 +239,12 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         }
 
-        // If the target died stop targeting it
+        // If the target died stop targeting it and increment tower kill count
         if (target != null && !target.isAlive()) {
             target = null;
+            this.killCount++;
         }
+
     }
 
     /**
@@ -318,10 +325,6 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     public Type getType() {
         return type;
-    }
-
-    public float getRange() {
-        return this.type.range;
     }
 
     private PointF getCenterSpawnPoint() {
