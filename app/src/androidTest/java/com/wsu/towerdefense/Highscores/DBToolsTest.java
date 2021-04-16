@@ -41,7 +41,7 @@ public class DBToolsTest {
 
     private void resetDB() throws InterruptedException, SQLException {
         DBTools dbt = new DBTools(listener);
-        dbt.setDBCon(DBConnection.getDBCon("HighscoresTest"));
+        dbt.setDBCon(DBConnection.getDBCon(true));
 
         highScores = new ArrayList<>();
         dbt.setTestStmt("DELETE FROM HIGHSCORES");
@@ -56,7 +56,7 @@ public class DBToolsTest {
 
     private void addHighscore(String name, int score) throws SQLException, InterruptedException {
         DBTools dbt = new DBTools(listener);
-        dbt.setDBCon(DBConnection.getDBCon("HighscoresTest"));
+        dbt.setDBCon(DBConnection.getDBCon(true));
 
         highScores = new ArrayList<>();
         dbt.setTestWrite(true);
