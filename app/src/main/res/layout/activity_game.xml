@@ -61,7 +61,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="75dp"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,6 +115,7 @@
                     android:onClick="towerSelected"
                     android:tag="Tower 4"
                     app:srcCompat="@mipmap/tower_4" />
+
                 <ImageView
                     android:id="@+id/img_Tower5"
                     android:layout_width="match_parent"
@@ -177,13 +178,13 @@
         android:id="@+id/cl_upgradeLayout"
         android:layout_width="120dp"
         android:layout_height="match_parent"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView9"
+            android:id="@+id/imv_background"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:contentDescription="@string/todo"
@@ -197,17 +198,35 @@
 
         <TextView
             android:id="@+id/txt_upgrades"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_width="79dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:gravity="center_horizontal"
             android:text="@string/upgrades"
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imv_background"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_upgrade_info"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="5dp"
+            android:background="@null"
+            android:contentDescription="@null"
+            app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintStart_toEndOf="@+id/txt_upgrades"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.19999999"
+            app:srcCompat="@mipmap/info_symbol" />
 
         <Button
             android:id="@+id/btn_sell"
@@ -221,7 +240,7 @@
             android:text="@string/sell"
             android:textColor="#000000"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+            app:layout_constraintBottom_toBottomOf="@+id/imv_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
