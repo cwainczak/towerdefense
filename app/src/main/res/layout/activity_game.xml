@@ -38,6 +38,7 @@
         android:id="@+id/cl_towerLayout"
         android:layout_width="93dp"
         android:layout_height="match_parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -233,26 +234,26 @@
             app:srcCompat="@mipmap/tower_1" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/txv_kill_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/_1000"
             android:textColor="#000000"
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
-            app:layout_constraintEnd_toStartOf="@+id/imageView8"
+            app:layout_constraintEnd_toStartOf="@+id/imv_kill_count_symbol"
             app:layout_constraintStart_toEndOf="@+id/img_towerImage"
             app:layout_constraintTop_toBottomOf="@+id/txt_upgrades" />
 
         <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:id="@+id/imv_kill_count_symbol"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
             android:layout_marginEnd="5dp"
             android:contentDescription="@string/todo"
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_upgrades"
-            app:srcCompat="@mipmap/invisible_slime_3" />
+            app:srcCompat="@mipmap/kill_count_symbol" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/selectionBox_1"
