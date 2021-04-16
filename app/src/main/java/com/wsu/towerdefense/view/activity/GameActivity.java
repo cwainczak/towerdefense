@@ -57,6 +57,7 @@ public class GameActivity extends AppCompatActivity {
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
+    private ConstraintLayout cl_upgradeInfoLayout;
     private ScrollView sv_tower;
     private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
@@ -87,6 +88,7 @@ public class GameActivity extends AppCompatActivity {
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
+        cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
@@ -169,7 +171,7 @@ public class GameActivity extends AppCompatActivity {
 
             btn_upgrade_info.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-                // open up pop out menus
+                this.setSelectionInfoMenuVisible(this.cl_upgradeInfoLayout.getVisibility() == View.INVISIBLE);
             });
 
             btn_pause.setOnClickListener(view -> {
@@ -238,6 +240,7 @@ public class GameActivity extends AppCompatActivity {
                         }
                         isTowerMenuScrollable = true;
                         enableImageViews(towerList, true);
+                        setSelectionInfoMenuVisible(false);
                         setSelectionMenuVisible(false);
                         game.selectTower(null);
                         return true;
@@ -434,6 +437,13 @@ public class GameActivity extends AppCompatActivity {
         cl_towerInfoLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
+    /**
+     * Shows/hides selected tower info menu
+     */
+    private void setSelectionInfoMenuVisible(boolean visible) {
+        cl_upgradeInfoLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -477,8 +487,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * @tower The tower that will provide the kill count value to the label
      * Sets the kill count label respective to the selected tower
+     *
+     * @tower The tower that will provide the kill count value to the label
      */
     private void setTowerKillCountLabel(Tower tower){
         ((TextView) findViewById(R.id.txv_kill_count)).setText(String.valueOf(tower.getKillCount()));

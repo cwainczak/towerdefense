@@ -166,7 +166,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             }
         }
 
-        checkCollision(game.getContext(), game.getEnemies());
+        handleCollision(game.getContext(), game.getEnemies());
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -196,7 +196,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
     }
 
-    private void checkCollision(Context context, List<Enemy> enemies) {
+    /**
+     * Checks to see if there is collision with enemies
+     * If there is, handle the collision
+     *
+     * @param context the projectile instance
+     * @param enemies the enemies
+     */
+    private void handleCollision(Context context, List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
