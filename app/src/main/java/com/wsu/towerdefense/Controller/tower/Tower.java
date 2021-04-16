@@ -85,7 +85,18 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             275,
             R.raw.game_tower_shoot_1,
             true,
-            new ArrayList<>(Arrays.asList(new PointF(0, 0))));
+            new ArrayList<>(Arrays.asList(new PointF(0, 0)))),
+        NESTER(
+            R.mipmap.tower_6_turret,
+            450,
+            0.25f,
+            1,
+            1,
+            Projectile.Type.BEAK,
+            800,
+            R.raw.game_tower_shoot_1,
+            false,
+            new ArrayList<>(Arrays.asList(new PointF(0, -50))));
 
         public final int towerResID;
         public final int range;
@@ -343,6 +354,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             case BIG_HOMING:
             case BASIC_LINEAR:
             case SNIPER:
+            case NESTER:
                 projectiles.add(
                     new Projectile(context,
                         new PointF(projectileSpawnPoints.get(0).x, projectileSpawnPoints.get(0).y),
