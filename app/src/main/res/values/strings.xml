@@ -52,4 +52,7 @@
     <string name="username">Username</string>
     <string name="todo">TODO</string>
     <string name="_1000">1000</string>
+    <string name="add_upgrade_1_info_here">Add upgrade 1 info here!</string>
+    <string name="add_upgrade_2_info_here">Add upgrade 2 info here!</string>
+    <string name="add_upgrade_3_info_here">Add upgrade 3 info here!</string>
 </resources>
