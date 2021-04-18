@@ -434,7 +434,7 @@
         android:layout_height="245dp"
         android:layout_marginTop="125dp"
         android:background="#987032"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/cl_upgradeLayout"
         app:layout_constraintTop_toTopOf="@+id/cl_gameLayout">
 

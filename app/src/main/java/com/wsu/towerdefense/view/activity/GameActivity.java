@@ -171,7 +171,7 @@ public class GameActivity extends AppCompatActivity {
 
             btn_upgrade_info.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-                this.setSelectionInfoMenuVisible(this.cl_upgradeInfoLayout.getVisibility() == View.INVISIBLE);
+                this.setSelectionInfoMenuVisible(this.cl_upgradeInfoLayout.getVisibility() == View.GONE);
             });
 
             btn_pause.setOnClickListener(view -> {
@@ -441,7 +441,7 @@ public class GameActivity extends AppCompatActivity {
      * Shows/hides selected tower info menu
      */
     private void setSelectionInfoMenuVisible(boolean visible) {
-        cl_upgradeInfoLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        cl_upgradeInfoLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
