@@ -68,11 +68,12 @@ public class GameActivity extends AppCompatActivity {
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
 
-    ImageButton btn_play;
-    ImageButton btn_fast_fwd;
+    private ImageButton btn_play;
+    private ImageButton btn_fast_fwd;
 
-    private ImageView selectedTowerImg;
-    private ImageView towerBaseImg;
+    private ImageView img_selectedTowerBase;
+    private ImageView img_selectedTowerTurret;
+
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -92,8 +93,8 @@ public class GameActivity extends AppCompatActivity {
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
         cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
 
-        this.selectedTowerImg = findViewById(R.id.img_towerImage);
-        this.towerBaseImg = findViewById(R.id.img_towerImageBase);
+        this.img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
+        this.img_selectedTowerBase = findViewById(R.id.img_towerImageBase);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
@@ -124,11 +125,11 @@ public class GameActivity extends AppCompatActivity {
         };
 
         towerList = Arrays.asList(
-            findViewById(R.id.img_Tower1),
-            findViewById(R.id.img_Tower2),
-            findViewById(R.id.img_Tower3),
-            findViewById(R.id.img_Tower4),
-            findViewById(R.id.img_Tower5)
+            findViewById(R.id.img_tower_1),
+            findViewById(R.id.img_tower_2),
+            findViewById(R.id.img_tower_3),
+            findViewById(R.id.img_tower_4),
+            findViewById(R.id.img_tower_5)
         );
 
         towerTypes = Arrays.asList(
@@ -170,7 +171,7 @@ public class GameActivity extends AppCompatActivity {
 
             ImageButton btn_pause = findViewById(R.id.btn_pause);
             btn_play = findViewById(R.id.btn_play);
-            btn_fast_fwd = findViewById(R.id.btn_fast_forward);
+            btn_fast_fwd = findViewById(R.id.btn_fastForward);
             btn_fast_fwd.setVisibility(View.GONE);
             btn_fast_fwd.setEnabled(false);
 
@@ -541,8 +542,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateSelectedTowerImage(Tower tower){
-        this.towerBaseImg.setImageBitmap(tower.getBitmap());
-        this.selectedTowerImg.setImageBitmap(tower.getStats().getTurretImage());
+        this.img_selectedTowerBase.setImageBitmap(tower.getBitmap());
+        this.img_selectedTowerTurret.setImageBitmap(tower.getStats().getTurretImage());
     }
 
     @Override

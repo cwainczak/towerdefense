@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/img_towerLayoutBackground"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:contentDescription="@string/todo"
@@ -74,7 +74,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_Tower1"
+                    android:id="@+id/img_tower_1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -85,7 +85,7 @@
                     app:srcCompat="@mipmap/tower_1" />
 
                 <ImageView
-                    android:id="@+id/img_Tower2"
+                    android:id="@+id/img_tower_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -96,7 +96,7 @@
                     app:srcCompat="@mipmap/tower_2" />
 
                 <ImageView
-                    android:id="@+id/img_Tower3"
+                    android:id="@+id/img_tower_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -107,7 +107,7 @@
                     app:srcCompat="@mipmap/tower_3" />
 
                 <ImageView
-                    android:id="@+id/img_Tower4"
+                    android:id="@+id/img_tower_4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -118,7 +118,7 @@
                     app:srcCompat="@mipmap/tower_4" />
 
                 <ImageView
-                    android:id="@+id/img_Tower5"
+                    android:id="@+id/img_tower_5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -146,7 +146,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <ImageButton
-            android:id="@+id/btn_fast_forward"
+            android:id="@+id/btn_fastForward"
             android:layout_width="64dp"
             android:layout_height="56dp"
             android:layout_marginBottom="10dp"
@@ -185,7 +185,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imv_background"
+            android:id="@+id/img_upgradeLayoutBackground"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:contentDescription="@string/todo"
@@ -234,7 +234,7 @@
             app:srcCompat="@mipmap/tower_1" />
 
         <ImageView
-            android:id="@+id/img_towerImage"
+            android:id="@+id/img_towerImageTurret"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
@@ -252,12 +252,12 @@
             android:textAlignment="textEnd"
             android:textColor="#000000"
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
-            app:layout_constraintEnd_toStartOf="@+id/imv_kill_count_symbol"
-            app:layout_constraintStart_toEndOf="@+id/img_towerImage"
+            app:layout_constraintEnd_toStartOf="@+id/img_killCountSymbol"
+            app:layout_constraintStart_toEndOf="@+id/img_towerImageTurret"
             app:layout_constraintTop_toBottomOf="@+id/txt_upgrades" />
 
         <ImageView
-            android:id="@+id/imv_kill_count_symbol"
+            android:id="@+id/img_killCountSymbol"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginEnd="5dp"
@@ -432,7 +432,7 @@
             android:text="@string/sell"
             android:textColor="#000000"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imv_background"
+            app:layout_constraintBottom_toBottomOf="@+id/img_upgradeLayoutBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
