@@ -432,6 +432,7 @@ public class GameActivity extends AppCompatActivity {
 
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+        setSelectionInfoMenuVisible(false);
         enableImageViews(towerList, true);
         isTowerMenuScrollable = true;
     }
@@ -541,6 +542,11 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets the image in the cl_upgradeInfoLayout to the selected tower.
+     *
+     * @param tower represents the current selected tower
+     */
     private void updateSelectedTowerImage(Tower tower){
         this.img_selectedTowerBase.setImageBitmap(tower.getBitmap());
         this.img_selectedTowerTurret.setImageBitmap(tower.getStats().getTurretImage());
