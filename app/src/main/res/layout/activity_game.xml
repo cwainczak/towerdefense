@@ -224,6 +224,16 @@
             app:srcCompat="@mipmap/info_symbol" />
 
         <ImageView
+            android:id="@+id/img_towerImageBase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_upgrades"
+            app:srcCompat="@mipmap/tower_1" />
+
+        <ImageView
             android:id="@+id/img_towerImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

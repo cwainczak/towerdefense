@@ -71,6 +71,8 @@ public class GameActivity extends AppCompatActivity {
     ImageButton btn_play;
     ImageButton btn_fast_fwd;
 
+    private ImageView selectedTowerImg;
+    private ImageView towerBaseImg;
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
@@ -89,6 +91,9 @@ public class GameActivity extends AppCompatActivity {
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
         cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
+
+        this.selectedTowerImg = findViewById(R.id.img_towerImage);
+        this.towerBaseImg = findViewById(R.id.img_towerImageBase);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
@@ -497,8 +502,8 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateUpgradeUI() {
         Tower tower = game.getSelectedTower();
-
         if (tower != null) {
+            this.updateSelectedTowerImage(tower);
             this.setTowerKillCountLabel(tower);
             for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
                 TextView text = txt_upgradeName[path];
@@ -533,6 +538,11 @@ public class GameActivity extends AppCompatActivity {
 
             btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
         }
+    }
+
+    private void updateSelectedTowerImage(Tower tower){
+        this.towerBaseImg.setImageBitmap(tower.getBitmap());
+        this.selectedTowerImg.setImageBitmap(tower.getStats().getTurretImage());
     }
 
     @Override
