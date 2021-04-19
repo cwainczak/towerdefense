@@ -10,15 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import com.wsu.towerdefense.Model.Game;
-import com.wsu.towerdefense.Model.Game.Difficulty;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Controller.map.AbstractMap;
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.Model.Game.Difficulty;
 import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Model.save.Serializer;
-
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +60,10 @@ public class MapSelectionActivity extends AppCompatActivity {
     }
 
     private void addImageViews() {
-        final int imageWidth = dpToPixels(275);
-        final int imageHeight = dpToPixels(173);
-        final int marginStart = dpToPixels(10);
-        final int marginEnd = dpToPixels(20);
+        final int imageWidth = Util.dpToPixels(getResources(), 275);
+        final int imageHeight = Util.dpToPixels(getResources(), 173);
+        final int marginStart = Util.dpToPixels(getResources(), 10);
+        final int marginEnd = Util.dpToPixels(getResources(), 20);
 
         LinearLayout imageContainer = findViewById(R.id.imageContainer);
         mapList = new ArrayList<>();
@@ -83,15 +83,6 @@ public class MapSelectionActivity extends AppCompatActivity {
             imageContainer.addView(image);
         }
     }
-
-    private int dpToPixels(int dp) {
-        return (int) TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            getResources().getDisplayMetrics()
-        );
-    }
-
 
     private void showText(String str) {
         if (str != null) {

@@ -1,0 +1,98 @@
+{
+  "path1": [
+    {
+      "displayName": "Projectile range 1",
+      "description": "",
+      "cost": "50",
+      "image": "tower_6_1_turret",
+      "effect": {
+        "type": "PROJECTILE_RANGE",
+        "value": 0.2
+      }
+    },
+    {
+      "displayName": "Projectile range 2",
+      "description": "",
+      "cost": "100",
+      "image": "tower_6_2_turret",
+      "effect": {
+        "type": "PROJECTILE_RANGE",
+        "value": 0.2
+      }
+    },
+    {
+      "displayName": "Projectile range 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_6_3_turret",
+      "effect": {
+        "type": "PROJECTILE_RANGE",
+        "value": 0.3
+      }
+    }
+  ],
+  "path2": [
+    {
+      "displayName": "Fire rate 1",
+      "description": "",
+      "cost": "50",
+      "image": "tower_6_1_turret",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.1
+      }
+    },
+    {
+      "displayName": "Fire rate 2",
+      "description": "",
+      "cost": "100",
+      "image": "tower_6_2_turret",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.1
+      }
+    },
+    {
+      "displayName": "Fire rate 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_6_3_turret",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.2
+      }
+    }
+  ],
+  "path3": [
+    {
+      "displayName": "Range 1",
+      "description": "",
+      "cost": "50",
+      "image": "tower_6_1_turret",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.1
+      }
+    },
+    {
+      "displayName": "Range 2",
+      "description": "",
+      "cost": "100",
+      "image": "tower_6_2_turret",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.1
+      }
+    },
+    {
+      "displayName": "Range 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_6_3_turret",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.2
+      }
+    }
+  ]
+}

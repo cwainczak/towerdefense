@@ -5,15 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-
 import java.util.List;
 
 public class Projectile extends AbstractMapObject implements SoundSource {
@@ -34,6 +32,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         BALL(
             1000f,
             10,
+            -1,
             false,
             R.mipmap.projectile_1,
             -1,
@@ -43,6 +42,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         ROCKET(
             750f,
             15,
+            -1,
             true,
             R.mipmap.projectile_2,
             R.raw.game_rocket_travel,
@@ -50,22 +50,34 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             Behavior.HOMING
         ),
         BIG_ROCKET(
-                550f,
-                20,
-                true,
-                R.mipmap.projectile_3,
-                R.raw.game_rocket_travel,
-                R.raw.game_rocket_explode,
-                Behavior.HOMING
+            550f,
+            20,
+            -1,
+            true,
+            R.mipmap.projectile_3,
+            R.raw.game_rocket_travel,
+            R.raw.game_rocket_explode,
+            Behavior.HOMING
         ),
         HITSCAN(
-            0f,
+            -1,
             20,
+            -1,
             true,
             R.mipmap.projectile_1, // image has no effect
             -1,
             -1,
             Behavior.HITSCAN
+        ),
+        TACK(
+            500,
+            8,
+            120,
+            false,
+            R.mipmap.projectile_1,
+            -1,
+            -1,
+            Behavior.LINEAR
         );
 
         final float speed;
@@ -75,18 +87,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         final int impactSoundID;
         final boolean armorPiercing;
         final Behavior behavior;
+        final int range;
 
-        /**
-         * @param speed         The speed of the projectile
-         * @param damage        Damage done to an Enemy hit by this projectile
-         * @param imageID       The Resource ID of the image of the projectile
-         * @param armorPiercing Whether or not this {@link Projectile.Type } can pierce {@link Enemy
-         *                      } armor
-         */
-        Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
-             int impactSoundID, Behavior behavior) {
+        Type(float speed, int damage, int range, boolean armorPiercing, int imageID,
+            int travelSoundID,
+            int impactSoundID, Behavior behavior) {
             this.speed = speed;
             this.damage = damage;
+            this.range = range;
             this.armorPiercing = armorPiercing;
             this.imageID = imageID;
             this.travelSoundID = travelSoundID;
@@ -94,7 +102,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             this.behavior = behavior;
         }
 
-        public boolean isArmorPiercing(){
+        public boolean isArmorPiercing() {
             return armorPiercing;
         }
     }
@@ -109,22 +117,34 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private float velX;
     private float velY;
     public boolean remove;
+    private final PointF initialLocation;
 
     private final float speedModifier;
     private final float damageModifier;
+    private final float rangeModifier;
 
-    public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
+    public Projectile(
+        Context context,
+        PointF location,
+        Type type,
+        Enemy target,
+        float angle,
         float speedModifier,
-        float damageModifier) {
+        float damageModifier,
+        float rangeModifier) {
         super(context, location, type.imageID);
 
         this.type = type;
         this.target = target;
+        this.remove = false;
+
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
+        this.rangeModifier = rangeModifier;
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
+        this.initialLocation = new PointF(location.x, location.y);
 
         this.audioTravel = this.type.travelSoundID >= 0
             ? new BasicSoundPlayer(context, this.type.travelSoundID, true)
@@ -139,10 +159,18 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     }
 
     public void update(Game game, double delta) {
+        if (!isInRange()) {
+            this.remove(game.getContext());
+            return;
+        }
+
         switch (this.type.behavior) {
             case HOMING: {
                 if (this.target.isAlive()) {
-                    double angle = Util.getAngleBetweenPoints(this.location, this.target.getLocation());
+                    double angle = Util
+                        .getAngleBetweenPoints(this.location,
+                            this.target.getLocation()
+                        );
 
                     this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
                     this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -220,6 +248,19 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
     public float getEffectiveDamage() {
         return this.type.damage * this.damageModifier;
+    }
+
+    public float getEffectiveRange() {
+        return this.type.range == -1 ? -1 : this.type.range * this.rangeModifier;
+    }
+
+    private boolean isInRange() {
+        float range = this.getEffectiveRange();
+
+        return range == -1 || Math.hypot(
+            this.location.x - this.initialLocation.x,
+            this.location.y - this.initialLocation.y
+        ) <= range;
     }
 
     private void remove(Context context) {
