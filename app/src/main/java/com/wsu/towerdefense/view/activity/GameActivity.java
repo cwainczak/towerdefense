@@ -247,9 +247,9 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onGameOver(){
-                    gameOver();
-                    updateScoresAndClose(game);
+                public void onGameOver(boolean won){
+                    updateScoresAndClose(game, won);
+
                 }
 
                 @Override
@@ -392,7 +392,11 @@ public class GameActivity extends AppCompatActivity {
     /**
      * This method goes to the UpdateScoresActivity
      */
-    public void updateScoresAndClose(Game game){
+    public void updateScoresAndClose(Game game, boolean won){
+        /*  TODO Modify so a different activity is created depending on won.
+             Both Activities get a userName then returns to menu. Differences are
+             background image and message*/
+
         Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
         intent.putExtra("score", game.getScore());
         startActivity(intent);

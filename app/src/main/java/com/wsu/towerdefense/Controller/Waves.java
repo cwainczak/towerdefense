@@ -36,6 +36,7 @@ public class Waves implements Serializable {
     boolean running = false;
     boolean wavesEnded = false;
     boolean setStarted = false;
+    boolean gameEnded = false;
 
     List<List<Integer>> amounts;
     List<List<Double>> delays;
@@ -60,9 +61,6 @@ public class Waves implements Serializable {
         catch (IOException | JSONException e) {
             Log.e(context.getString(R.string.logcatKey), "Error while initializing Waves", e);
         }
-
-        //SET WavesToWin for testing until more waves are added.
-        wavesToWin = maxWaves;
     }
 
     /**
@@ -83,10 +81,8 @@ public class Waves implements Serializable {
         if(isRunning()) {
             updateTimeSinceSpawn(delta);
 
-            if (setStarted || setDelayPassed()) {
-                if (delayPassed()){
-                    game.spawnEnemy(next());
-                }
+            if ((setStarted || setDelayPassed()) && delayPassed()) {
+                    game.spawnEnemy(next(game));
             }
         }
     }
@@ -140,9 +136,9 @@ public class Waves implements Serializable {
     }
 
     /**
-     * helper function of {@link #next()} which increments spawned, set and wave accordingly
+     * helper function of {@link #next(Game game)} which increments spawned, set and wave accordingly
      */
-    private void progressWave(){
+    private void progressWave(Game game){
         spawnedThisSet++;
 
         // if all enemies have been spawned in the set
@@ -161,20 +157,17 @@ public class Waves implements Serializable {
         // if user has won. all sets in last wave have passed
         else if(curSet - amounts.get(curWave - 1).size() >= 0 &&
                 curWave >= wavesToWin){
-            // TODO: end game and redirect to win screen. Currently resets wave back to 0
-//            wavesEnded = true;
-            curSet = 0;
-            curWave = 0;
             running = false;
+            gameEnded = true;
         }
     }
 
     /**
      * @return current enemyType and progresses Wave
      */
-    public Enemy.Type next(){
+    public Enemy.Type next(Game game){
         Enemy.Type tempType = types.get(curWave - 1).get(curSet);
-        progressWave();
+        progressWave(game);
         return tempType;
     }
 
@@ -218,5 +211,9 @@ public class Waves implements Serializable {
 
     public void setRunning(boolean running){
         this.running = running;
+    }
+
+    public boolean isGameEnded() {
+        return gameEnded;
     }
 }

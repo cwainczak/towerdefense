@@ -105,7 +105,7 @@ public class Game extends AbstractGame implements SoundSource {
     /**
      * Ends this game and returns to the the menu
      */
-    private void gameOver() {
+    public void gameOver(boolean won) {
         running = false;
 
         this.release();
@@ -113,7 +113,7 @@ public class Game extends AbstractGame implements SoundSource {
         Serializer.delete(getContext(), Serializer.SAVEFILE);
 
         // return to menu
-        listener.onGameOver();
+        listener.onGameOver(won);
     }
 
     /**
@@ -144,11 +144,9 @@ public class Game extends AbstractGame implements SoundSource {
                     enemyIt.remove();
                     if (lives <= 0) {
                         lives = 0;
-                        gameOver();
-                        return;
+                        gameOver(false);
                     }
                 }
-
             } else {
                 // Add enemy's value to game balance and score
                 addMoney((int) (e.getPrice() * difficulty.priceModifier));
@@ -163,7 +161,12 @@ public class Game extends AbstractGame implements SoundSource {
         waves.update(this, delta);
         if(!waves.isRunning() && enemies.isEmpty() && waveRunning){
             waveRunning = false;
-            listener.onWaveEnd();
+            if(waves.isGameEnded()){
+                listener.onGameOver(true);
+            }
+            else{
+                listener.onWaveEnd();
+            }
         }
 
         handleEvents();
@@ -301,7 +304,7 @@ public class Game extends AbstractGame implements SoundSource {
 
         void onWaveEnd();
 
-        void onGameOver();
+        void onGameOver(boolean won);
     }
 
     public void setGameListener(GameListener listener) {
@@ -357,9 +360,9 @@ public class Game extends AbstractGame implements SoundSource {
 
     // DIFFICULTY ENUM
     public enum Difficulty {
-        EASY(40, 1),
-        MEDIUM(60, 0.9f),
-        HARD(80, 0.8f);
+        EASY(5, 1),
+        MEDIUM(7, 0.9f),
+        HARD(10, 0.8f);
 
         public final int waves;
         public final float priceModifier;
