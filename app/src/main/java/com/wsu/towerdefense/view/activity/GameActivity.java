@@ -67,6 +67,7 @@ public class GameActivity extends AppCompatActivity {
     private ProgressBar[] progBar;
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
+    private TextView[] txt_upgradeDescriptions;
 
     private ImageButton btn_play;
     private ImageButton btn_fast_fwd;
@@ -122,6 +123,12 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.btn_upgrade_1),
             findViewById(R.id.btn_upgrade_2),
             findViewById(R.id.btn_upgrade_3)
+        };
+
+        txt_upgradeDescriptions = new TextView[]{
+                findViewById(R.id.txt_upgrade_1_info),
+                findViewById(R.id.txt_upgrade_2_info),
+                findViewById(R.id.txt_upgrade_3_info)
         };
 
         towerList = Arrays.asList(
@@ -510,6 +517,7 @@ public class GameActivity extends AppCompatActivity {
             for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
                 TextView text = txt_upgradeName[path];
                 Button button = btn_upgrade[path];
+                TextView description = txt_upgradeDescriptions[path];
 
                 // setting the upgrade names and costs
                 if (!tower.getStats().isMaxUpgraded(path)) {
@@ -526,8 +534,13 @@ public class GameActivity extends AppCompatActivity {
                         button.setAlpha(0.5f);
                         button.setEnabled(false);
                     }
+
+                    // set upgrade description
+                    description.setText(tower.getStats().getUpgrade(path, true).description);
+
                 } else {
                     text.setText(R.string.max);
+                    description.setText("Tower is fully upgraded in this category!");
                     button.setVisibility(View.INVISIBLE);
                     button.setEnabled(false);
                     button.setText("");
