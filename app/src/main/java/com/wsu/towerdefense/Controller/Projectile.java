@@ -34,6 +34,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         BALL(
             1000f,
             10,
+            3,
             false,
             R.mipmap.projectile_1,
             -1,
@@ -43,6 +44,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         ROCKET(
             750f,
             15,
+            1,
             true,
             R.mipmap.projectile_2,
             R.raw.game_rocket_travel,
@@ -52,6 +54,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         BIG_ROCKET(
                 550f,
                 20,
+                1,
                 true,
                 R.mipmap.projectile_3,
                 R.raw.game_rocket_travel,
@@ -61,6 +64,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         HITSCAN(
             0f,
             20,
+            1,
             true,
             R.mipmap.projectile_1, // image has no effect
             -1,
@@ -70,6 +74,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
         final float speed;
         final int damage;
+        final int pierce;
         final int imageID;
         final int travelSoundID;
         final int impactSoundID;
@@ -83,10 +88,11 @@ public class Projectile extends AbstractMapObject implements SoundSource {
          * @param armorPiercing Whether or not this {@link Projectile.Type } can pierce {@link Enemy
          *                      } armor
          */
-        Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
+        Type(float speed, int damage, int pierce, boolean armorPiercing, int imageID, int travelSoundID,
              int impactSoundID, Behavior behavior) {
             this.speed = speed;
             this.damage = damage;
+            this.pierce = pierce;
             this.armorPiercing = armorPiercing;
             this.imageID = imageID;
             this.travelSoundID = travelSoundID;
@@ -100,6 +106,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     }
 
     private static final int IMAGE_ANGLE = 90;
+    private final double TIME_BETWEEN_HITS = 0.12;
 
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
@@ -108,7 +115,10 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final Enemy target;
     private float velX;
     private float velY;
+    private boolean isActive = true;
     public boolean remove;
+    private int hits = 0;
+    private double timeSinceHit = 0;
 
     private final float speedModifier;
     private final float damageModifier;
@@ -166,7 +176,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             }
         }
 
-        checkCollision(game.getContext(), game.getEnemies());
+        updateActive(delta);
+        runCollision(game.getContext(), checkCollision(game.getEnemies()));
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -196,16 +207,35 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
     }
 
-    private void checkCollision(Context context, List<Enemy> enemies) {
+    private Enemy checkCollision(List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)
             ) {
-                e.hitByProjectile(this);
-                remove(context);
-                break;
+                return(e);
             }
+        }
+        return null;
+    }
+
+    private void runCollision(Context context, Enemy e){
+        if(e != null && isActive){
+            e.hitByProjectile(this);
+            if(++hits >= type.pierce){
+                remove(context);
+            } else {
+                isActive = false;
+                timeSinceHit = 0;
+            }
+        }
+    }
+
+    private void updateActive(double delta) {
+        timeSinceHit += delta;
+
+        if(timeSinceHit > TIME_BETWEEN_HITS) {
+            isActive = true;
         }
     }
 

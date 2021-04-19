@@ -19,7 +19,7 @@ public class Enemy extends AbstractMapObject {
 
     public enum Type {
         // Standard enemy types
-        S1(200, 10, 10, 1, false, R.mipmap.standard_slime_1, -1),
+        S1(200, 100, 10, 1, false, R.mipmap.standard_slime_1, -1),
         S2(250, 15, 20, 2, false, R.mipmap.standard_slime_2, -1),
         S3(350, 25 , 30, 3, false, R.mipmap.standard_slime_3, -1),
 
