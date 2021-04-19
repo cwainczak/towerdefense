@@ -112,7 +112,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             true,
             true,
             Behavior.ALL,
-            null
+            new PointF[]{
+                new PointF(0, 0)
+            }
         ),
         TACK_SHOOTER(
             "tack shooter",
