@@ -128,7 +128,7 @@ public class GameActivity extends AppCompatActivity {
             Tower.Type.DOUBLE_LINEAR,
             Tower.Type.BIG_HOMING,
             Tower.Type.SNIPER,
-            Tower.Type.NESTER
+            Tower.Type.NESTOR
         );
 
         addDragListeners();
