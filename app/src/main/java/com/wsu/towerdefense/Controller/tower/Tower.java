@@ -234,11 +234,11 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 projectileIt.remove();
             }
 
-            // If the target died stop targeting it and if this tower killed it, increment tower kill count
-            if (target != null && !target.isAlive()) {
-                target = null;
-            }
+        }
 
+        // If the target died stop targeting it
+        if (target != null && !target.isAlive()) {
+            target = null;
         }
 
     }
