@@ -74,6 +74,7 @@ public class GameActivity extends AppCompatActivity {
 
     private ImageView img_selectedTowerBase;
     private ImageView img_selectedTowerTurret;
+    private TextView txt_selectedTowerKillCount;
 
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
@@ -94,8 +95,9 @@ public class GameActivity extends AppCompatActivity {
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
         cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
 
-        this.img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
         this.img_selectedTowerBase = findViewById(R.id.img_towerImageBase);
+        this.img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
+        this.txt_selectedTowerKillCount = findViewById(R.id.txt_kill_count);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
@@ -506,7 +508,7 @@ public class GameActivity extends AppCompatActivity {
      * @tower The tower that will provide the kill count value to the label
      */
     private void setTowerKillCountLabel(Tower tower){
-        ((TextView) findViewById(R.id.txv_kill_count)).setText(String.valueOf(tower.getKillCount()));
+        this.txt_selectedTowerKillCount.setText(String.valueOf(tower.getKillCount()));
     }
 
     private void updateUpgradeUI() {
