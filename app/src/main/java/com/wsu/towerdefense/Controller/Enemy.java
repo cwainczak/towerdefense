@@ -61,6 +61,7 @@ public class Enemy extends AbstractMapObject {
 
     private int hp;
     private boolean isAlive;
+    private boolean hasBeenKilled = false;
     private boolean isInvisible;
 
     private float velX;
@@ -226,5 +227,13 @@ public class Enemy extends AbstractMapObject {
     }
 
     public boolean isInvisible() { return isInvisible; }
+
+    public boolean getHasBeenKilled() {
+        return hasBeenKilled;
+    }
+
+    public void setHasBeenKilled(boolean hasBeenKilled){
+        this.hasBeenKilled = hasBeenKilled;
+    }
 
 }

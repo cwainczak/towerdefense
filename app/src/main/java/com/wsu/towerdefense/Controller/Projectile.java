@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 
 import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
@@ -104,7 +105,9 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
 
+
     public final Type type;
+    final private Tower parentTower;
     private final Enemy target;
     private float velX;
     private float velY;
@@ -113,15 +116,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final float speedModifier;
     private final float damageModifier;
 
-    public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
-        float speedModifier,
-        float damageModifier) {
+    public Projectile(Context context, PointF location, Type type, Enemy target, float angle, float speedModifier, float damageModifier, Tower parentTower) {
         super(context, location, type.imageID);
 
         this.type = type;
         this.target = target;
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
+        this.parentTower = parentTower;
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -158,6 +160,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 if (this.target.isAlive()) {
                     this.target.hitByProjectile(this);
                 }
+                this.handleKillCount(target);
+
                 remove(game.getContext());
                 break;
             }
@@ -166,7 +170,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             }
         }
 
-        checkCollision(game.getContext(), game.getEnemies());
+        handleCollision(game.getContext(), game.getEnemies());
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -196,13 +200,21 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
     }
 
-    private void checkCollision(Context context, List<Enemy> enemies) {
+    /**
+     * Checks to see if there is collision with enemies
+     * If there is, handle the collision
+     *
+     * @param context the projectile instance
+     * @param enemies the enemies
+     */
+    private void handleCollision(Context context, List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)
             ) {
                 e.hitByProjectile(this);
+                this.handleKillCount(e);
                 remove(context);
                 break;
             }
@@ -237,4 +249,12 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
         // don't release audioImpact field to allow sound to play after projectile is removed
     }
+
+    private void handleKillCount(Enemy enemy){
+        if (!enemy.isAlive() && !enemy.getHasBeenKilled()){
+            this.parentTower.incrementKillCount();
+            enemy.setHasBeenKilled(true);
+        }
+    }
+
 }

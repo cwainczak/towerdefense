@@ -137,6 +137,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     private transient AdvancedSoundPlayer audioShoot;
 
+    private int killCount = 0;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
@@ -232,12 +233,14 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             if (p.remove) {
                 projectileIt.remove();
             }
+
         }
 
         // If the target died stop targeting it
         if (target != null && !target.isAlive()) {
             target = null;
         }
+
     }
 
     /**
@@ -320,10 +323,6 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         return type;
     }
 
-    public float getRange() {
-        return this.type.range;
-    }
-
     private PointF getCenterSpawnPoint() {
         if (projectileSpawnPoints.size() > 0) {
             float x = 0, y = 0;
@@ -350,7 +349,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                         target,
                         angle,
                         stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
+                        stats.getProjectileDamage(),
+                        this
                     ));
                 break;
             case BASIC_HOMING:
@@ -363,7 +363,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                         target,
                         angle,
                         stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
+                        stats.getProjectileDamage(),
+                        this
                     ));
                 fireRight = !fireRight;
                 break;
@@ -376,7 +377,8 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                             target,
                             angle,
                             stats.getProjectileSpeed(),
-                            stats.getProjectileDamage()
+                            stats.getProjectileDamage(),
+                            this
                         ));
                 }
             default:
@@ -430,4 +432,13 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
             : null;
     }
+
+    public int getKillCount() {
+        return killCount;
+    }
+
+    public void incrementKillCount(){
+        this.killCount++;
+    }
+
 }
