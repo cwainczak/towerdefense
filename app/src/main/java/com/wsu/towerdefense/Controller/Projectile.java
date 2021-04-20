@@ -66,7 +66,16 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             -1,
             -1,
             Behavior.HITSCAN
-        );
+        ),
+        BEAK(
+            750f,
+                    2,
+                    true,
+            R.mipmap.projectile_4,
+            -1,
+                    -1,
+            Behavior.LINEAR
+            );
 
         final float speed;
         final int damage;
