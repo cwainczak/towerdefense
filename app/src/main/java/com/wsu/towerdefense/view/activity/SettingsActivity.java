@@ -8,9 +8,9 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -29,7 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         tv_versionNumber = findViewById(R.id.tv_versionNumber);
-
         sb_music = findViewById(R.id.sb_music);
         sb_soundFx = findViewById(R.id.sb_soundFx);
 

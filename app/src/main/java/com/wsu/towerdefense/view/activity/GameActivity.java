@@ -22,20 +22,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.wsu.towerdefense.Model.Game;
-import com.wsu.towerdefense.Model.Game.Difficulty;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
 import com.wsu.towerdefense.Controller.tower.Upgrade;
-
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.Model.Game.Difficulty;
+import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,8 +63,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
 
-    ImageButton btn_play;
-    ImageButton btn_fast_fwd;
+    private ImageButton btn_pause;
+    private ImageButton btn_play;
+    private ImageButton btn_fast_fwd;
 
     private List<ImageView> towerList;
     private List<Tower.Type> towerTypes;
@@ -86,33 +84,24 @@ public class GameActivity extends AppCompatActivity {
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
-
         sv_tower = findViewById(R.id.sv_tower);
-        scrollViewInit();
-        isTowerMenuScrollable = true;
-
         txt_towerName = findViewById(R.id.txt_towerName);
-
         btn_sellTower = findViewById(R.id.btn_sell);
-
         progBar = new ProgressBar[]{
             findViewById(R.id.progBar_1),
             findViewById(R.id.progBar_2),
             findViewById(R.id.progBar_3)
         };
-
         txt_upgradeName = new TextView[]{
             findViewById(R.id.txt_upgradeName_1),
             findViewById(R.id.txt_upgradeName_2),
             findViewById(R.id.txt_upgradeName_3)
         };
-
         btn_upgrade = new Button[]{
             findViewById(R.id.btn_upgrade_1),
             findViewById(R.id.btn_upgrade_2),
             findViewById(R.id.btn_upgrade_3)
         };
-
         towerList = Arrays.asList(
             findViewById(R.id.img_Tower1),
             findViewById(R.id.img_Tower2),
@@ -121,6 +110,9 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.img_Tower5),
             findViewById(R.id.img_Tower6)
         );
+        btn_pause = findViewById(R.id.btn_pause);
+        btn_play = findViewById(R.id.btn_play);
+        btn_fast_fwd = findViewById(R.id.btn_fast_forward);
 
         towerTypes = Arrays.asList(
             Tower.Type.BASIC_LINEAR,
@@ -130,6 +122,11 @@ public class GameActivity extends AppCompatActivity {
             Tower.Type.SNIPER,
             Tower.Type.NESTOR
         );
+        scrollViewInit();
+        isTowerMenuScrollable = true;
+
+        btn_fast_fwd.setVisibility(View.GONE);
+        btn_fast_fwd.setEnabled(false);
 
         addDragListeners();
 
@@ -160,12 +157,6 @@ public class GameActivity extends AppCompatActivity {
 
             cl_gameLayout.addView(game);
 
-            ImageButton btn_pause = findViewById(R.id.btn_pause);
-            btn_play = findViewById(R.id.btn_play);
-            btn_fast_fwd = findViewById(R.id.btn_fast_forward);
-            btn_fast_fwd.setVisibility(View.GONE);
-            btn_fast_fwd.setEnabled(false);
-
             btn_pause.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
@@ -189,16 +180,15 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btn_fast_fwd.setOnClickListener(view -> {
-                if(game.isFastMode()){
+                if (game.isFastMode()) {
                     //set game to 1x speed
                     game.setFastMode(false);
-                    int color = getResources().getColor(R.color.ff_off, getTheme());
+                    int color = getColor(R.color.ff_off);
                     btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
-                }
-                else{
+                } else {
                     game.setFastMode(true);
                     //set game to 2x speed
-                    int color = getResources().getColor(R.color.ff_on, getTheme());
+                    int color = getColor(R.color.ff_on);
                     btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
                 }
             });
@@ -213,14 +203,18 @@ public class GameActivity extends AppCompatActivity {
 
                             // check if distance from click to tower is within radius
                             if (distance < Tower.BASE_SIZE / 2 * SELECT_TOLERANCE) {
-                                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                                audioButtonPress
+                                    .play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                                 isTowerMenuScrollable = false;
                                 enableImageViews(towerList, false);
                                 setSelectionMenuVisible(true);
 
                                 // setting sell button text
-                                btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
+                                btn_sellTower.setText(String.format(
+                                    getString(R.string.sell_for),
+                                    tower.getStats().getSellPrice()
+                                ));
 
                                 // Notify game of selected tower
                                 game.selectTower(tower);
@@ -249,7 +243,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onGameOver(){
+                public void onGameOver() {
                     gameOver();
                     updateScoresAndClose(game);
                 }
@@ -285,7 +279,8 @@ public class GameActivity extends AppCompatActivity {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                     game.setDragType(selectedTowerType);
-                    audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                    audioButtonPress
+                        .play(view.getContext(), Settings.getSFXVolume(view.getContext()));
                     return true;
                 }
                 // remove range circle when dragging over side bar
@@ -353,7 +348,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-    private void updatePlayBtn(){
+    private void updatePlayBtn() {
         btn_fast_fwd.setVisibility(View.GONE);
         btn_fast_fwd.setEnabled(false);
         btn_play.setVisibility(View.VISIBLE);
@@ -394,7 +389,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * This method goes to the UpdateScoresActivity
      */
-    public void updateScoresAndClose(Game game){
+    public void updateScoresAndClose(Game game) {
         Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
         intent.putExtra("score", game.getScore());
         startActivity(intent);
@@ -483,7 +478,10 @@ public class GameActivity extends AppCompatActivity {
                     int upgradeCost = tower.getStats().getUpgrade(path, true).cost;
 
                     text.setText(tower.getStats().getUpgrade(path, true).displayName);
-                    button.setText("$" + upgradeCost);
+                    button.setText(String.format(
+                        getString(R.string.money),
+                        upgradeCost
+                    ));
 
                     if (upgradeCost <= game.getMoney()) {
                         button.setVisibility(View.VISIBLE);
@@ -505,7 +503,10 @@ public class GameActivity extends AppCompatActivity {
                 progBar[path].setProgress(tower.getStats().getUpgradeProgress(path) * 33);
             }
 
-            btn_sellTower.setText("Sell for: $" + tower.getStats().getSellPrice());
+            btn_sellTower.setText(String.format(
+                getString(R.string.sell_for),
+                tower.getStats().getSellPrice()
+            ));
         }
     }
 

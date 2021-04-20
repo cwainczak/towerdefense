@@ -2,13 +2,11 @@ package com.wsu.towerdefense.Controller.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Controller.Projectile;
-import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.Controller.tower.Upgrade.Effect;
 import com.wsu.towerdefense.Controller.tower.Upgrade.StatType;
-
+import com.wsu.towerdefense.Util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

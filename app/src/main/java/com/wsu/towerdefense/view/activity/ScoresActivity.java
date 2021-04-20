@@ -3,19 +3,12 @@ package com.wsu.towerdefense.view.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.Model.Highscores.HighScore;
-import com.wsu.towerdefense.Highscores.DBListener;
-
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +28,6 @@ public class ScoresActivity extends AppCompatActivity {
     TextView txt_score3;
     TextView txt_score4;
     TextView txt_score5;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,31 +53,24 @@ public class ScoresActivity extends AppCompatActivity {
         List<TextView> txt_scores = Arrays.asList(txt_score1, txt_score2, txt_score3, txt_score4, txt_score5);
 
 
-        DBTools dbt = new DBTools(new DBListener.OnTaskEnded() {
+        DBTools dbt = new DBTools(rs -> {
+            try {
+                ArrayList<HighScore> highScores = new ArrayList<>();
+                while (rs.next()) {
+                    String name = rs.getString(1);
+                    int score = rs.getInt(2);
 
-            @Override
-            public void onTaskEnd(ResultSet rs) {
-                try {
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    ArrayList<HighScore> highScores = new ArrayList<>();
-                    while (rs.next()) {
-                        String name = rs.getString(1);
-                        int score = rs.getInt(2);
-
-                        // create new HighScore object and add it to an arrayList
-                        HighScore hs = new HighScore(name, score);
-                        highScores.add(hs);
-                    }
-
-                    for (int i = 0; i < highScores.size(); i++) {
-                        txt_names.get(i).setText(highScores.get(i).getName());
-                        txt_scores.get(i).setText(String.valueOf(highScores.get(i).getScore()));
-                    }
-
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                    // create new HighScore object and add it to an arrayList
+                    HighScore hs = new HighScore(name, score);
+                    highScores.add(hs);
                 }
 
+                for (int i = 0; i < highScores.size(); i++) {
+                    txt_names.get(i).setText(highScores.get(i).getName());
+                    txt_scores.get(i).setText(String.valueOf(highScores.get(i).getScore()));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
 

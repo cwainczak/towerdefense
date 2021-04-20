@@ -1,17 +1,18 @@
 package com.wsu.towerdefense.Model.save;
 
-import com.wsu.towerdefense.Model.Game;
-import com.wsu.towerdefense.Model.Game.Difficulty;
 import com.wsu.towerdefense.Controller.Waves;
 import com.wsu.towerdefense.Controller.tower.Tower;
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.Model.Game.Difficulty;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SaveState implements Serializable {
 
     public final String saveFile;
+    public final LocalDateTime date;
 
     // save data
     public final String mapName;
@@ -22,8 +23,9 @@ public class SaveState implements Serializable {
     public final Waves waves;
     public final Difficulty difficulty;
 
-    public SaveState(String saveFile, Game game) {
+    public SaveState(String saveFile, LocalDateTime date, Game game) {
         this.saveFile = saveFile;
+        this.date = date;
 
         this.mapName = game.getMap().getName();
         this.towers = new ArrayList<>(game.getTowers());
@@ -32,20 +34,5 @@ public class SaveState implements Serializable {
         this.score = game.getScore();
         this.waves = game.getWaves();
         this.difficulty = game.getDifficulty();
-    }
-
-    @Override
-    public String toString() {
-        return "SaveState{" +
-            "saveFile='" + saveFile + '\'' +
-            ", mapName='" + mapName + '\'' +
-            ", lives='" + lives + '\'' +
-            ", money='" + money + '\'' +
-            ", score='" + score + '\'' +
-            ", wave='" + waves.getCurWave() + '\'' +
-            ", difficulty='" + difficulty + '\'' +
-            ", towers=" + (towers.stream().map(Object::toString)
-            .collect(Collectors.joining(", "))) +
-            '}';
     }
 }

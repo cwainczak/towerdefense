@@ -6,17 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Controller.Enemy;
-import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.Controller.Projectile;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
+import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

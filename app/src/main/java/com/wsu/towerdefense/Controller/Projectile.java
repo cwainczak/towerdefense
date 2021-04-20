@@ -5,15 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-
 import java.util.List;
 
 public class Projectile extends AbstractMapObject implements SoundSource {

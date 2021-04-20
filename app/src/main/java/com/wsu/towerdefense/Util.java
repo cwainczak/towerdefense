@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

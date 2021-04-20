@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.time.LocalDateTime;
 
 /**
  * Saves and loads {@link Game} state via {@link SaveState} in internal storage
@@ -24,7 +25,7 @@ public class Serializer {
     public static void save(Context context, String saveFile, Game game) throws IOException {
         Log.i(context.getString(R.string.logcatKey), "Saving game to save file '" + saveFile + "'");
 
-        SaveState saveState = new SaveState(saveFile, game);
+        SaveState saveState = new SaveState(saveFile, LocalDateTime.now(), game);
 
         try (
             FileOutputStream fileOutputStream =

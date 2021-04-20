@@ -1,9 +1,7 @@
 package com.wsu.towerdefense.Model.Highscores;
 
 import android.os.AsyncTask;
-
 import com.wsu.towerdefense.Highscores.DBListener;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
