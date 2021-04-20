@@ -134,12 +134,12 @@ public class GameActivity extends AppCompatActivity {
         };
 
         towerList = Arrays.asList(
-            findViewById(R.id.img_Tower1),
-            findViewById(R.id.img_Tower2),
-            findViewById(R.id.img_Tower3),
-            findViewById(R.id.img_Tower4),
-            findViewById(R.id.img_Tower5),
-            findViewById(R.id.img_Tower6)
+            findViewById(R.id.img_tower_1),
+            findViewById(R.id.img_tower_2),
+            findViewById(R.id.img_tower_3),
+            findViewById(R.id.img_tower_4),
+            findViewById(R.id.img_tower_5),
+            findViewById(R.id.img_tower_6)
         );
 
         towerTypes = Arrays.asList(

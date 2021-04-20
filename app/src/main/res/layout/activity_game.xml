@@ -129,7 +129,7 @@
                     app:srcCompat="@mipmap/tower_5" />
 
                 <ImageView
-                    android:id="@+id/img_Tower6"
+                    android:id="@+id/img_tower_6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
