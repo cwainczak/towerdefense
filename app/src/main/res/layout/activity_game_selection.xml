@@ -6,6 +6,19 @@
   android:layout_height="match_parent"
   tools:context=".view.activity.GameSelectionActivity">
 
+  <ImageView
+      android:id="@+id/imageView3"
+      android:layout_width="731dp"
+      android:layout_height="411dp"
+      android:contentDescription="@string/todo"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.0"
+      app:srcCompat="@mipmap/main_menu_background" />
+
   <ImageButton
     android:id="@+id/btn_pause5"
     android:layout_width="45dp"
@@ -31,19 +44,6 @@
     android:onClick="btnSettingsClicked"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
-
-  <ImageView
-    android:id="@+id/imageView3"
-    android:layout_width="731dp"
-    android:layout_height="411dp"
-    android:contentDescription="@string/todo"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintVertical_bias="0.0"
-    app:srcCompat="@mipmap/main_menu_background" />
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="wrap_content"
