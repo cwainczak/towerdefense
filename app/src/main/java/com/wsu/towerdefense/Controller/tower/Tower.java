@@ -9,7 +9,6 @@ import android.graphics.PointF;
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Controller.Enemy;
 import com.wsu.towerdefense.Controller.Projectile;
-import com.wsu.towerdefense.Controller.Projectile.Type;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Model.Game;
@@ -21,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,9 +34,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     public enum Type {
         BASIC_HOMING(
-            "homing",
-            R.mipmap.tower_2,
-            R.mipmap.tower_2_turret,
+            "Homing",
+            R.mipmap.tower_basic_homing_comb,
+            R.mipmap.tower_basic_homing,
             384,
             2,
             Projectile.Type.ROCKET,
@@ -53,9 +51,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         BASIC_LINEAR(
-            "basic",
-            R.mipmap.tower_1,
-            R.mipmap.tower_1_turret,
+            "Basic",
+            R.mipmap.tower_basic_linear_comb,
+            R.mipmap.tower_basic_linear,
             384,
             1,
             Projectile.Type.BALL,
@@ -69,9 +67,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         DOUBLE_LINEAR(
-            "double",
-            R.mipmap.tower_3,
-            R.mipmap.tower_3_turret,
+            "Double",
+            R.mipmap.tower_double_linear_comb,
+            R.mipmap.tower_double_linear,
             384,
             1.25f,
             Projectile.Type.BALL,
@@ -86,9 +84,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         BIG_HOMING(
-            "big rocket",
-            R.mipmap.tower_4,
-            R.mipmap.tower_4_turret,
+            "Big Rocket",
+            R.mipmap.tower_big_homing_comb,
+            R.mipmap.tower_big_homing,
             384,
             2,
             Projectile.Type.BIG_ROCKET,
@@ -102,9 +100,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         SNIPER(
-            "sniper",
-            R.mipmap.tower_5,
-            R.mipmap.tower_5_turret,
+            "Sniper",
+            R.mipmap.tower_sniper_comb,
+            R.mipmap.tower_sniper,
             3000,
             2.5f,
             Projectile.Type.HITSCAN,
@@ -118,9 +116,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         TACK_SHOOTER(
-            "tack shooter",
-            R.mipmap.tower_6,
-            R.mipmap.tower_6_turret,
+            "Tack Shooter",
+            R.mipmap.tower_tack_comb,
+            R.mipmap.tower_tack,
             250,
             0.75f,
             Projectile.Type.TACK,
@@ -141,9 +139,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             }
         ),
         NESTOR(
-            "nestor",
-            R.mipmap.tower_7,
-            R.mipmap.tower_7_turret,
+            "Nestor",
+            R.mipmap.tower_nestor_comb,
+            R.mipmap.tower_nestor,
             450,
             0.25f,
             Projectile.Type.BEAK,
@@ -426,7 +424,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         double angle = Util.getAngleBetweenPoints(this.location, spawnPoint);
 
         projectiles.add(
-            new Projectile(context,
+            new Projectile(context, this,
                 spawnPoint,
                 stats.getProjectileType(),
                 target,
@@ -464,7 +462,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         return killCount;
     }
 
-    public void incrementKillCount(){
+    public void incrementKillCount() {
         this.killCount++;
     }
 

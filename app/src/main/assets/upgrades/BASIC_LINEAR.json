@@ -4,7 +4,7 @@
       "displayName": "Damage 1",
       "description": "Increases your tower's damage strength to Level 1!",
       "cost": "50",
-      "image": "tower_1_1_turret",
+      "image": "tower_basic_linear_1",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.1
@@ -14,7 +14,7 @@
       "displayName": "Damage 2",
       "description": "Increases your tower's damage strength to Level 2!",
       "cost": "100",
-      "image": "tower_1_2_turret",
+      "image": "tower_basic_linear_2",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.2
@@ -24,7 +24,7 @@
       "displayName": "Speed",
       "description": "Increases the speed of your tower's projectiles!",
       "cost": "200",
-      "image": "tower_1_3_turret",
+      "image": "tower_basic_linear_3",
       "effect": {
         "type": "PROJECTILE_SPEED",
         "value": 0.5
@@ -36,7 +36,7 @@
       "displayName": "Fire rate 1",
         "description": "Increases the pace at which your tower shoots projectiles to Level 1!",
       "cost": "50",
-      "image": "tower_1_1_turret",
+      "image": "tower_basic_linear_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -46,7 +46,7 @@
       "displayName": "Fire rate 2",
       "description": "Increases the pace at which your tower shoots projectiles to Level 2!",
       "cost": "100",
-      "image": "tower_1_2_turret",
+      "image": "tower_basic_linear_2",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -56,7 +56,7 @@
       "displayName": "Fire rate 3",
       "description": "Increases the pace at which your tower shoots projectiles to Level 3!",
       "cost": "200",
-      "image": "tower_1_3_turret",
+      "image": "tower_basic_linear_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -68,7 +68,7 @@
       "displayName": "Range 1",
         "description": "Increases the range in which your tower sees and shoots enemies to Level 1!",
       "cost": "50",
-      "image": "tower_1_1_turret",
+      "image": "tower_basic_linear_1",
       "effect": {
         "type": "RANGE",
         "value": 0.1
@@ -78,7 +78,7 @@
       "displayName": "See Invisible",
       "description": "Unlocks the ability for your tower to see invisible enemies! (Level 2)",
       "cost": "100",
-      "image": "tower_1_2_turret",
+      "image": "tower_basic_linear_2",
       "effect": {
         "type": "SEE_INVISIBLE",
         "value": "True"
@@ -88,7 +88,7 @@
       "displayName": "Range 3",
       "description": "Increases the range in which your tower sees and shoots enemies to Level 3!",
       "cost": "200",
-      "image": "tower_1_3_turret",
+      "image": "tower_basic_linear_3",
       "effect": {
         "type": "RANGE",
         "value": 0.2

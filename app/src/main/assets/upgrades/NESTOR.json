@@ -4,7 +4,7 @@
       "displayName": "Damage 1",
       "description": "",
       "cost": "250",
-      "image": "tower_6_1_turret",
+      "image": "tower_nestor_1",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.1
@@ -14,7 +14,7 @@
       "displayName": "Damage 2",
       "description": "",
       "cost": "400",
-      "image": "tower_6_2_turret",
+      "image": "tower_nestor_2",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.2
@@ -24,7 +24,7 @@
       "displayName": "Speed",
       "description": "",
       "cost": "650",
-      "image": "tower_6_3_turret",
+      "image": "tower_nestor_3",
       "effect": {
         "type": "PROJECTILE_SPEED",
         "value": 0.5
@@ -36,7 +36,7 @@
       "displayName": "Fire rate 1",
       "description": "",
       "cost": "250",
-      "image": "tower_6_1_turret",
+      "image": "tower_nestor_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -46,7 +46,7 @@
       "displayName": "Fire rate 2",
       "description": "",
       "cost": "450",
-      "image": "tower_6_2_turret",
+      "image": "tower_nestor_2",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -56,7 +56,7 @@
       "displayName": "Fire rate 3",
       "description": "",
       "cost": "600",
-      "image": "tower_6_3_turret",
+      "image": "tower_nestor_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -68,7 +68,7 @@
       "displayName": "Range 1",
       "description": "",
       "cost": "300",
-      "image": "tower_6_1_turret",
+      "image": "tower_nestor_1",
       "effect": {
         "type": "RANGE",
         "value": 0.1
@@ -78,7 +78,7 @@
       "displayName": "See Invisible",
       "description": "",
       "cost": "400",
-      "image": "tower_6_2_turret",
+      "image": "tower_nestor_2",
       "effect": {
         "type": "SEE_INVISIBLE",
         "value": "True"
@@ -88,7 +88,7 @@
       "displayName": "Range 3",
       "description": "",
       "cost": "600",
-      "image": "tower_6_3_turret",
+      "image": "tower_nestor_3",
       "effect": {
         "type": "RANGE",
         "value": 0.2

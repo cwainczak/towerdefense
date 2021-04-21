@@ -35,7 +35,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             10,
             -1,
             false,
-            R.mipmap.projectile_1,
+            R.mipmap.projectile_ball,
             -1,
             -1,
             Behavior.LINEAR
@@ -45,7 +45,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             15,
             -1,
             true,
-            R.mipmap.projectile_2,
+            R.mipmap.projectile_rocket,
             R.raw.game_rocket_travel,
             R.raw.game_rocket_explode,
             Behavior.HOMING
@@ -55,7 +55,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             20,
             -1,
             true,
-            R.mipmap.projectile_3,
+            R.mipmap.projectile_big_rocket,
             R.raw.game_rocket_travel,
             R.raw.game_rocket_explode,
             Behavior.HOMING
@@ -65,7 +65,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             20,
             -1,
             true,
-            R.mipmap.projectile_1, // image has no effect
+            R.mipmap.projectile_ball, // image has no effect
             -1,
             -1,
             Behavior.HITSCAN
@@ -75,7 +75,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             8,
             120,
             false,
-            R.mipmap.projectile_1,
+            R.mipmap.projectile_ball,
             -1,
             -1,
             Behavior.LINEAR
@@ -83,8 +83,9 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         BEAK(
             750f,
             2,
+            -1,
             true,
-            R.mipmap.projectile_4,
+            R.mipmap.projectile_beak,
             -1,
             -1,
             Behavior.LINEAR

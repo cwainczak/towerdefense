@@ -176,7 +176,7 @@
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_upgrades"
-            app:srcCompat="@mipmap/tower_1" />
+            app:srcCompat="@mipmap/tower_basic_linear_comb" />
 
         <ImageView
             android:id="@+id/img_towerImageTurret"
@@ -186,14 +186,13 @@
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_upgrades"
-            app:srcCompat="@mipmap/tower_1" />
+            app:srcCompat="@mipmap/tower_basic_linear_comb" />
 
         <TextView
             android:id="@+id/txt_kill_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="2dp"
-            android:text="@string/_1000"
             android:textAlignment="textEnd"
             android:textColor="#000000"
             app:layout_constraintBottom_toTopOf="@+id/selectionBox_1"
