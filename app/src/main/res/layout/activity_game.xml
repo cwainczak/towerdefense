@@ -126,6 +126,17 @@
                     android:tag="Tower 5"
                     app:srcCompat="@mipmap/tower_5" />
 
+                <ImageView
+                    android:id="@+id/img_Tower8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/todo"
+                    android:onClick="towerSelected"
+                    android:tag="Tower 5"
+                    app:srcCompat="@mipmap/tower_8" />
+
             </LinearLayout>
         </ScrollView>
 

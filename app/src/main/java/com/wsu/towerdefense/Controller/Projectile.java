@@ -35,6 +35,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             1000f,
             10,
             false,
+            0.0,
+            1.0,
             R.mipmap.projectile_1,
             -1,
             -1,
@@ -44,29 +46,46 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             750f,
             15,
             true,
+            0.0,
+            1.0,
             R.mipmap.projectile_2,
             R.raw.game_rocket_travel,
             R.raw.game_rocket_explode,
             Behavior.HOMING
         ),
         BIG_ROCKET(
-                550f,
-                20,
-                true,
-                R.mipmap.projectile_3,
-                R.raw.game_rocket_travel,
-                R.raw.game_rocket_explode,
-                Behavior.HOMING
+            550f,
+            20,
+            true,
+            0.0,
+            1.0,
+            R.mipmap.projectile_3,
+            R.raw.game_rocket_travel,
+            R.raw.game_rocket_explode,
+            Behavior.HOMING
         ),
         HITSCAN(
             0f,
             20,
             true,
+            0.0,
+            1.0,
             R.mipmap.projectile_1, // image has no effect
             -1,
             -1,
             Behavior.HITSCAN
-        );
+        ),
+        SLOW(
+            1000f,
+            2,
+            false,
+            2.0,
+            0.5,
+            R.mipmap.projectile_5,
+            -1,
+            -1,
+            Behavior.LINEAR
+            );
 
         final float speed;
         final int damage;
@@ -74,20 +93,25 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         final int travelSoundID;
         final int impactSoundID;
         final boolean armorPiercing;
+        public final double slowEnemyTime;
+        public final double slowRate;
         final Behavior behavior;
 
         /**
          * @param speed         The speed of the projectile
          * @param damage        Damage done to an Enemy hit by this projectile
+         * @param armorPiercing Whether or not this {@link Type } can pierce {@link Enemy} armor
+         * @param slowEnemyTime How long this {@link Type } will reduce {@link Enemy} speed for
+         * @param slowRate      The value {@link Enemy} speed will be mulitplied by
          * @param imageID       The Resource ID of the image of the projectile
-         * @param armorPiercing Whether or not this {@link Projectile.Type } can pierce {@link Enemy
-         *                      } armor
          */
-        Type(float speed, int damage, boolean armorPiercing, int imageID, int travelSoundID,
+        Type(float speed, int damage, boolean armorPiercing, double slowEnemyTime, double slowRate, int imageID, int travelSoundID,
              int impactSoundID, Behavior behavior) {
             this.speed = speed;
             this.damage = damage;
             this.armorPiercing = armorPiercing;
+            this.slowEnemyTime = slowEnemyTime;
+            this.slowRate = slowRate;
             this.imageID = imageID;
             this.travelSoundID = travelSoundID;
             this.impactSoundID = impactSoundID;
@@ -112,16 +136,22 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
     private final float speedModifier;
     private final float damageModifier;
+    private final double slowTime;
+    private final double slowRate;
 
     public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
         float speedModifier,
-        float damageModifier) {
+        float damageModifier,
+        double slowTime,
+        double slowRate) {
         super(context, location, type.imageID);
 
         this.type = type;
         this.target = target;
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
+        this.slowTime = slowTime;
+        this.slowRate = slowRate;
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -221,6 +251,10 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     public float getEffectiveDamage() {
         return this.type.damage * this.damageModifier;
     }
+
+    public double getSlowTime() { return slowTime; }
+
+    public double getSlowRate() { return slowRate; }
 
     private void remove(Context context) {
         remove = true;

@@ -30,6 +30,18 @@ import java.util.List;
 
 public class Game extends AbstractGame implements SoundSource {
 
+    /**
+     * Sends game events to UI
+     */
+    public interface GameListener {
+
+        void onMoneyChanged();
+
+        void onWaveEnd();
+
+        void onGameOver();
+    }
+
     private static final int START_LIVES = 25;
     private static final int START_MONEY = 400;
     private static final int START_SCORE = 0;
@@ -291,18 +303,6 @@ public class Game extends AbstractGame implements SoundSource {
     }
 
     // UI
-
-    /**
-     * Sends game events to UI
-     */
-    public interface GameListener {
-
-        void onMoneyChanged();
-
-        void onWaveEnd();
-
-        void onGameOver();
-    }
 
     public void setGameListener(GameListener listener) {
         this.listener = listener;
