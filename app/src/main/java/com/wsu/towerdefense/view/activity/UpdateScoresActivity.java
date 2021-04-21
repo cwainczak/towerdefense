@@ -34,7 +34,7 @@ public class UpdateScoresActivity extends Activity {
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
     }
 
-    public void btnOkayOnClick(View view) {
+    public void btnSubmitOnClick(View view) {
         EditText textField = findViewById(R.id.plt_username);
         this.playerUsername = textField.getText().toString();
         if (StringUtils.isEmptyOrWhitespaceOnly(this.playerUsername)){

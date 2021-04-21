@@ -20,6 +20,13 @@ public class MainActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
+
+        testUpdateScoresActivity();
+    }
+
+    private void testUpdateScoresActivity(){
+        Intent intent = new Intent(this, UpdateScoresActivity.class);
+        startActivity(intent);
     }
 
     /**
