@@ -9,6 +9,7 @@ import android.graphics.PointF;
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Controller.Enemy;
 import com.wsu.towerdefense.Controller.Projectile;
+import com.wsu.towerdefense.Controller.Projectile.Type;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Model.Game;
@@ -138,6 +139,22 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 new PointF(0, 65),
                 new PointF(65 / (float) Math.sqrt(2), 65 / (float) Math.sqrt(2))
             }
+        ),
+        NESTOR(
+            "nestor",
+            R.mipmap.tower_7,
+            R.mipmap.tower_7_turret,
+            450,
+            0.25f,
+            Projectile.Type.BEAK,
+            800,
+            R.raw.game_tower_shoot_1,
+            false,
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, -50)
+            }
         );
 
         public final String name;
@@ -196,6 +213,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     private transient AdvancedSoundPlayer audioShoot;
 
+    private int killCount = 0;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
@@ -441,4 +459,13 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
             : null;
     }
+
+    public int getKillCount() {
+        return killCount;
+    }
+
+    public void incrementKillCount(){
+        this.killCount++;
+    }
+
 }
