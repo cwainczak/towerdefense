@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
 import com.mysql.jdbc.StringUtils;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;

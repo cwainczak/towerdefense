@@ -19,23 +19,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.wsu.towerdefense.Model.Game;
-import com.wsu.towerdefense.Model.Game.Difficulty;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.Controller.map.AbstractMap;
 import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
 import com.wsu.towerdefense.Controller.tower.Upgrade;
-
+import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.Model.Game.Difficulty;
+import com.wsu.towerdefense.Model.MapReader;
+import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -77,7 +80,6 @@ public class GameActivity extends AppCompatActivity {
     private TextView txt_selectedTowerKillCount;
 
     private List<ImageView> towerList;
-    private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
 
     private Game game;
@@ -95,9 +97,9 @@ public class GameActivity extends AppCompatActivity {
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
         cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
 
-        this.img_selectedTowerBase = findViewById(R.id.img_towerImageBase);
-        this.img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
-        this.txt_selectedTowerKillCount = findViewById(R.id.txt_kill_count);
+        img_selectedTowerBase = findViewById(R.id.img_towerImageBase);
+        img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
+        txt_selectedTowerKillCount = findViewById(R.id.txt_kill_count);
 
         sv_tower = findViewById(R.id.sv_tower);
         scrollViewInit();
@@ -133,23 +135,9 @@ public class GameActivity extends AppCompatActivity {
                 findViewById(R.id.txt_upgrade_3_info)
         };
 
-        towerList = Arrays.asList(
-            findViewById(R.id.img_tower_1),
-            findViewById(R.id.img_tower_2),
-            findViewById(R.id.img_tower_3),
-            findViewById(R.id.img_tower_4),
-            findViewById(R.id.img_tower_5),
-            findViewById(R.id.img_tower_6)
-        );
+        towerList = new ArrayList<>();
 
-        towerTypes = Arrays.asList(
-            Tower.Type.BASIC_LINEAR,
-            Tower.Type.BASIC_HOMING,
-            Tower.Type.DOUBLE_LINEAR,
-            Tower.Type.BIG_HOMING,
-            Tower.Type.SNIPER,
-            Tower.Type.NESTOR
-        );
+        addTowerViews();
 
         addDragListeners();
 
@@ -214,13 +202,12 @@ public class GameActivity extends AppCompatActivity {
             });
 
             btn_fast_fwd.setOnClickListener(view -> {
-                if(game.isFastMode()){
+                if (game.isFastMode()) {
                     //set game to 1x speed
                     game.setFastMode(false);
                     int color = getResources().getColor(R.color.ff_off, getTheme());
                     btn_fast_fwd.getBackground().setColorFilter(color, Mode.SRC_ATOP);
-                }
-                else{
+                } else {
                     game.setFastMode(true);
                     //set game to 2x speed
                     int color = getResources().getColor(R.color.ff_on, getTheme());
@@ -238,7 +225,8 @@ public class GameActivity extends AppCompatActivity {
 
                             // check if distance from click to tower is within radius
                             if (distance < Tower.BASE_SIZE / 2 * SELECT_TOLERANCE) {
-                                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                                audioButtonPress
+                                    .play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
                                 isTowerMenuScrollable = false;
                                 enableImageViews(towerList, false);
@@ -275,7 +263,7 @@ public class GameActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onGameOver(){
+                public void onGameOver() {
                     gameOver();
                     updateScoresAndClose(game);
                 }
@@ -288,6 +276,31 @@ public class GameActivity extends AppCompatActivity {
 
             updateTowerSelection();
         });
+    }
+
+    private void addTowerViews() {
+        final int margin = Util.dpToPixels(getResources(), 5);
+
+        LinearLayout imageContainer = findViewById(R.id.tower_list);
+        towerList = new ArrayList<>();
+
+        for (Tower.Type type : Tower.Type.values()) {
+            ImageView image = new ImageView(this);
+            image.setImageResource(type.uiResID);
+            image.setOnClickListener(this::towerSelected);
+            image.setTag(type.name);
+
+            LayoutParams layout = new LayoutParams(new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT)
+            );
+            layout.setMarginStart(margin);
+            layout.setMarginEnd(margin);
+            image.setLayoutParams(layout);
+
+            towerList.add(image);
+            imageContainer.addView(image);
+        }
     }
 
     private void addDragListeners() {
@@ -304,14 +317,15 @@ public class GameActivity extends AppCompatActivity {
                 v.startDragAndDrop(data, dragshadow, v, 0);
 
                 // Get the tower Type using the image
-                selectedTowerType = towerTypes.get(_i);
+                selectedTowerType = Tower.Type.values()[_i];
                 return true;
             });
             image.setOnDragListener((view, event) -> {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                     game.setDragType(selectedTowerType);
-                    audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                    audioButtonPress
+                        .play(view.getContext(), Settings.getSFXVolume(view.getContext()));
                     return true;
                 }
                 // remove range circle when dragging over side bar
@@ -379,7 +393,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-    private void updatePlayBtn(){
+    private void updatePlayBtn() {
         btn_fast_fwd.setVisibility(View.GONE);
         btn_fast_fwd.setEnabled(false);
         btn_play.setVisibility(View.VISIBLE);
@@ -394,7 +408,7 @@ public class GameActivity extends AppCompatActivity {
 
             // Enable towers (in menu) with cost equal to or lower
             // than cost of their respective Type
-            if (money >= towerTypes.get(i).cost) {
+            if (money >= Tower.Type.values()[i].cost) {
                 image.setColorFilter(null);
                 final int _i = i;
                 image.setOnLongClickListener(view -> {
@@ -405,7 +419,7 @@ public class GameActivity extends AppCompatActivity {
                     view.startDragAndDrop(data, dragshadow, view, 0);
 
                     // Get the tower Type using the image
-                    selectedTowerType = towerTypes.get(_i);
+                    selectedTowerType = Tower.Type.values()[_i];
                     return true;
                 });
             }
@@ -420,7 +434,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * This method goes to the UpdateScoresActivity
      */
-    public void updateScoresAndClose(Game game){
+    public void updateScoresAndClose(Game game) {
         Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
         intent.putExtra("score", game.getScore());
         startActivity(intent);

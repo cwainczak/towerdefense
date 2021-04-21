@@ -7,21 +7,19 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-
 import com.wsu.towerdefense.AbstractGame;
 import com.wsu.towerdefense.Controller.Enemy;
 import com.wsu.towerdefense.Controller.Enemy.Type;
-import com.wsu.towerdefense.MapEvent;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Controller.Waves;
 import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Controller.map.Map;
+import com.wsu.towerdefense.Controller.tower.Tower;
+import com.wsu.towerdefense.MapEvent;
 import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.Model.save.Serializer;
-import com.wsu.towerdefense.Controller.tower.Tower;
-
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
