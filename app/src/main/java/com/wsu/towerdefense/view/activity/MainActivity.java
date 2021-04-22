@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        testUpdateScoresActivity();
+        //testUpdateScoresActivity();
     }
 
     private void testUpdateScoresActivity(){

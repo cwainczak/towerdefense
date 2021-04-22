@@ -18,12 +18,12 @@ import com.wsu.towerdefense.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class UpdateScoresActivity extends Activity {
 
     private String playerUsername;
     private int playerScore;
-
-    private static volatile boolean showOverlay = true;
 
     private final int MAX_USERNAME_LENGTH = 25;
     private enum ERROR_TYPE {
@@ -39,12 +39,13 @@ public class UpdateScoresActivity extends Activity {
         this.playerScore = getIntent().getIntExtra("score", 0);
         TextView scoreDisplayer = findViewById(R.id.txv_score);
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
-        displayWinOrLoss(true, true);
+        boolean hasWon = getIntent().getBooleanExtra("won", false);
+        displayWinOrLoss(true, hasWon);
         Timer overlayTimer = new Timer();
         overlayTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(() -> displayWinOrLoss(false, true));
+                runOnUiThread(() -> displayWinOrLoss(false, hasWon));
             }
         }, 5000);
     }
@@ -82,13 +83,19 @@ public class UpdateScoresActivity extends Activity {
         ((TextView) findViewById(R.id.txv_error_msg)).setText(errorMessage);
     }
 
-    private void displayWinOrLoss(boolean display, boolean didWin){
+    private void displayWinOrLoss(boolean display, boolean hasWon){
         ImageView tint = findViewById(R.id.img_tint);
         Button submitButton = findViewById(R.id.btn_submit);
         tint.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
         submitButton.setVisibility(display ? View.INVISIBLE : View.VISIBLE);
-        if (!display){
-            findViewById(R.id.gifImageView).setVisibility(View.INVISIBLE);
+        GifImageView gifImageView = findViewById(R.id.gifImageView);
+        // when you win or you lose should be displayed
+        if (display){
+            gifImageView.setBackgroundResource(hasWon ? R.drawable.you_win_gif : R.drawable.you_win_gif);
+        }
+        // when you win or you lose should not be displayed
+        else {
+            gifImageView.setVisibility(View.INVISIBLE);
         }
     }
 
