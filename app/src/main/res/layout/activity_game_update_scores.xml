@@ -39,7 +39,7 @@
             app:layout_constraintVertical_bias="0.605" />
 
         <ImageView
-            android:id="@+id/imv_error_symbol"
+            android:id="@+id/img_error_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btn_submit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.018"
-            app:layout_constraintStart_toEndOf="@+id/imv_error_symbol"
+            app:layout_constraintStart_toEndOf="@+id/img_error_symbol"
             app:layout_constraintTop_toBottomOf="@+id/plt_username"
             app:layout_constraintVertical_bias="0.2" />
 
@@ -70,21 +70,46 @@
             android:onClick="btnSubmitOnClick"
             android:text="@string/submit"
             android:textSize="18sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.924" />
 
-        <pl.droidsonroids.gif.GifImageView
-            android:id="@+id/gifImageView"
-            android:layout_width="344dp"
-            android:layout_height="229dp"
-            android:src="@drawable/you_win_gif"
+        <ImageView
+            android:id="@+id/img_tint"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.75"
+            android:background="#000000"
+            android:contentDescription="@string/todo"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/gifImageView"
+                    android:layout_width="344dp"
+                    android:layout_height="229dp"
+                    android:src="@drawable/you_win_gif"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
