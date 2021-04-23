@@ -103,7 +103,6 @@
                     android:id="@+id/gifImageView"
                     android:layout_width="344dp"
                     android:layout_height="229dp"
-                    android:src="@drawable/you_win_gif"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

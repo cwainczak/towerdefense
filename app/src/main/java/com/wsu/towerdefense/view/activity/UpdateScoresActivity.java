@@ -47,7 +47,7 @@ public class UpdateScoresActivity extends Activity {
             public void run() {
                 runOnUiThread(() -> displayWinOrLoss(false, hasWon));
             }
-        }, 5000);
+        }, 7000);
     }
 
     public void btnSubmitOnClick(View view) {
@@ -91,7 +91,7 @@ public class UpdateScoresActivity extends Activity {
         GifImageView gifImageView = findViewById(R.id.gifImageView);
         // when you win or you lose should be displayed
         if (display){
-            gifImageView.setBackgroundResource(hasWon ? R.drawable.you_win_gif : R.drawable.you_win_gif);
+            gifImageView.setBackgroundResource(hasWon ? R.drawable.you_win : R.drawable.you_lose_pickle);
         }
         // when you win or you lose should not be displayed
         else {
