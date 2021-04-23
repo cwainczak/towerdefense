@@ -99,7 +99,12 @@ public class UpdateScoresActivity extends Activity {
         }
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ActivityUtil.hideNavigator(getWindow());
+        }
+    }
+
 }
-
-
-
