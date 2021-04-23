@@ -44,18 +44,18 @@ public class MapSelectionActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        txt_mapName = findViewById(R.id.txt_mapName);
+        txt_mapName = findViewById(R.id.txt_selectedMapName);
         showText(null);
         addImageViews();
 
-        btn_play = findViewById(R.id.play_button);
+        btn_play = findViewById(R.id.btn_playMapSelection);
         btn_play.setEnabled(false);
 
-        btn_easy = findViewById(R.id.easy_button);
+        btn_easy = findViewById(R.id.btn_easyMapSelection);
         selected_difficulty = btn_easy;
-        btn_medium = findViewById(R.id.medium_button);
+        btn_medium = findViewById(R.id.btn_mediumMapSelection);
         btn_medium.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-        btn_hard = findViewById(R.id.hard_button);
+        btn_hard = findViewById(R.id.btn_hardMapSelection);
         btn_hard.setTextColor(getResources().getColor(R.color.not_selected_text, null));
     }
 
