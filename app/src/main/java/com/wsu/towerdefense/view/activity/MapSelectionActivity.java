@@ -18,6 +18,8 @@ import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Model.save.Serializer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     private Button btn_medium;
     private Button btn_hard;
     private Button selected_difficulty;
+    private LinearLayout imageContainer;
 
     private AbstractMap selectedMap;
 
@@ -44,19 +47,21 @@ public class MapSelectionActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        txt_mapName = findViewById(R.id.txt_mapName);
-        showText(null);
+        txt_mapName = findViewById(R.id.txt_selectedMapName);
+        imageContainer = findViewById(R.id.imageContainer);
+        btn_play = findViewById(R.id.btn_playMapSelection);
+        btn_easy = findViewById(R.id.btn_easyMapSelection);
+        btn_medium = findViewById(R.id.btn_mediumMapSelection);
+        btn_hard = findViewById(R.id.btn_hardMapSelection);
+
         addImageViews();
 
-        btn_play = findViewById(R.id.play_button);
         btn_play.setEnabled(false);
-
-        btn_easy = findViewById(R.id.easy_button);
         selected_difficulty = btn_easy;
-        btn_medium = findViewById(R.id.medium_button);
         btn_medium.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-        btn_hard = findViewById(R.id.hard_button);
         btn_hard.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        btn_medium.setTextColor(getColor(R.color.not_selected_text));
+        btn_hard.setTextColor(getColor(R.color.not_selected_text));
     }
 
     private void addImageViews() {
@@ -65,7 +70,6 @@ public class MapSelectionActivity extends AppCompatActivity {
         final int marginStart = Util.dpToPixels(getResources(), 10);
         final int marginEnd = Util.dpToPixels(getResources(), 20);
 
-        LinearLayout imageContainer = findViewById(R.id.imageContainer);
         mapList = new ArrayList<>();
 
         for (AbstractMap map : MapReader.getMaps()) {
@@ -82,6 +86,14 @@ public class MapSelectionActivity extends AppCompatActivity {
             mapList.add(image);
             imageContainer.addView(image);
         }
+    }
+
+    private int dpToPixels(int dp) {
+        return (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            getResources().getDisplayMetrics()
+        );
     }
 
     private void showText(String str) {
@@ -131,7 +143,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void btnEasyClicked(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty.setTextColor(getColor(R.color.not_selected_text));
         selected_difficulty = btn_easy;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
     }
@@ -139,7 +151,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void btnMediumClicked(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty.setTextColor(getColor(R.color.not_selected_text));
         selected_difficulty = btn_medium;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
     }
@@ -147,7 +159,7 @@ public class MapSelectionActivity extends AppCompatActivity {
     public void btnHardClicked(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-        selected_difficulty.setTextColor(getResources().getColor(R.color.not_selected_text, null));
+        selected_difficulty.setTextColor(getColor(R.color.not_selected_text));
         selected_difficulty = btn_hard;
         selected_difficulty.setTextColor(getColor(android.R.color.white));
     }

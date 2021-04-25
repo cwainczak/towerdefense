@@ -5,15 +5,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.Model.save.Serializer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 public class GameSelectionActivity extends AppCompatActivity {
+
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("M/dd/yy HH:mm:ss");
 
     private AdvancedSoundPlayer audioButtonPress;
 
@@ -21,6 +27,7 @@ public class GameSelectionActivity extends AppCompatActivity {
 
     private Button btn_resume;
     private Button btn_delete;
+    private TextView txt_saveInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,7 @@ public class GameSelectionActivity extends AppCompatActivity {
 
         btn_resume = findViewById(R.id.resumeGame);
         btn_delete = findViewById(R.id.deleteGame);
+        txt_saveInfo = findViewById(R.id.txt_saveInfo);
 
         // load save game if it exists
         boolean hasSave = Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE);
@@ -43,9 +51,40 @@ public class GameSelectionActivity extends AppCompatActivity {
         if (hasSave) {
             try {
                 saveState = Serializer.load(this, Serializer.SAVEFILE);
+
+                populateSaveInfo(true, false);
             } catch (IOException | ClassNotFoundException e) {
                 Log.e(getString(R.string.logcatKey), "Error while loading save file", e);
+
+                btn_resume.setEnabled(false);
+                setLoadError(true);
+                populateSaveInfo(true, true);
             }
+        } else {
+            populateSaveInfo(false, false);
+        }
+    }
+
+    private void setLoadError(boolean error) {
+        btn_resume.setBackgroundTintList(
+            ContextCompat
+                .getColorStateList(this, error ? R.color.error_button : R.color.normal_button)
+        );
+    }
+
+    private void populateSaveInfo(boolean has, boolean error) {
+        if (error) {
+            txt_saveInfo.setText(R.string.load_error);
+        } else if (has) {
+            txt_saveInfo.setText(String.format(
+                getString(R.string.save_info),
+                format.format(saveState.date),
+                MapReader.get(saveState.mapName).getDisplayName(),
+                saveState.waves.getCurWave() + 1,
+                saveState.difficulty.toString()
+            ));
+        } else {
+            txt_saveInfo.setText(R.string.no_saved_game);
         }
     }
 
@@ -84,6 +123,9 @@ public class GameSelectionActivity extends AppCompatActivity {
 
             btn_resume.setEnabled(false);
             btn_delete.setEnabled(false);
+
+            setLoadError(false);
+            populateSaveInfo(false, false);
         }
     }
 

@@ -39,7 +39,8 @@ public class Enemy extends AbstractMapObject {
         final int resource;
         final int armorResource;
 
-        Type(float speed, int hp, int price, int damage, boolean invisible, int resource, int armorResource) {
+        Type(float speed, int hp, int price, int damage, boolean invisible, int resource,
+            int armorResource) {
             this.speed = speed;
             this.hp = hp;
             this.price = price;
@@ -49,17 +50,23 @@ public class Enemy extends AbstractMapObject {
             this.armorResource = armorResource;
         }
 
-        public int getDamage(){
+        public int getDamage() {
             return this.damage;
         }
     }
+
+    private static final float HEALTH_BAR_Y_OFFSET = -70;
+    private static final float HEALTH_BAR_WIDTH = 90;
+    private static final float HEALTH_BAR_HEIGHT = 15;
+    private static final int HEALTH_BAR_BG_COLOR = Color.RED;
+    private static final int HEALTH_BAR_FG_COLOR = Color.GREEN;
 
     private final Type type;
 
     private int hp;
     private boolean isAlive;
     private boolean hasBeenKilled = false;
-    private boolean isInvisible;
+    private final boolean isInvisible;
 
     private float velX;
     private float velY;
@@ -69,6 +76,9 @@ public class Enemy extends AbstractMapObject {
     private PointF target;
 
     private Bitmap armor;
+
+    private double slowTime = 0.0;
+    private float speed;
 
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
@@ -94,6 +104,7 @@ public class Enemy extends AbstractMapObject {
         this.velY = 0;
 
         this.armor = (type.armorResource == -1) ? null : Util.getBitmapByID(context, type.armorResource);
+        this.speed = type.speed;
     }
 
     /**
@@ -109,19 +120,28 @@ public class Enemy extends AbstractMapObject {
         // target, and there are more Points in path, set location to target instead and set target to
         // next Point in path.
 
+        // Update the time left for this Enemy to be slowed
+        if (slowTime > 0) {
+            if (slowTime > delta) {
+                slowTime -= delta;
+            } else {
+                slowTime = 0.0;
+                speed = type.speed;
+                updateVelocity();
+            }
+        }
+
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
         double distance = Math.hypot(location.x - target.x, location.y - target.y);
 
-        if (distance <= Math.abs(type.speed * delta)) {
+        if (distance <= Math.abs(speed * delta)) {
             if (path.hasNext()) {
                 //set location to target, and update target
                 location = new PointF(target.x, target.y);
                 target = path.next();
 
-                PointF newVel = Util.velocityTowardsPoint(this.location, this.target, this.type.speed);
-                this.velX = newVel.x;
-                this.velY = newVel.y;
+                updateVelocity();
             } else {
                 // If there are no more points in the path
                 isAtPathEnd = true;
@@ -152,18 +172,33 @@ public class Enemy extends AbstractMapObject {
 
             // Draw Enemy armor, if present
             if (armor != null) {
-                canvas.drawBitmap(armor,x - bitmap.getWidth() / 2f,
-                        y - bitmap.getHeight() / 2f, null);
+                canvas.drawBitmap(armor, x - bitmap.getWidth() / 2f,
+                    y - bitmap.getHeight() / 2f, null);
             }
 
-            // Draw the Enemy hp above the bitmap
-            int offset = 10;
+            // show health bar if damaged
+            if (this.hp < this.type.hp) {
+                paint.reset();
 
-            paint.reset();
-            paint.setColor(Color.WHITE);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(50);
-            canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
+                paint.setColor(HEALTH_BAR_BG_COLOR);
+                canvas.drawRect(
+                    x - HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET,
+                    x + HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET + HEALTH_BAR_HEIGHT,
+                    paint
+                );
+
+                float remainingHealth = (float) this.hp / this.type.hp;
+                paint.setColor(HEALTH_BAR_FG_COLOR);
+                canvas.drawRect(
+                    x - HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET,
+                    x - HEALTH_BAR_WIDTH / 2 + remainingHealth * HEALTH_BAR_WIDTH,
+                    y + HEALTH_BAR_Y_OFFSET + HEALTH_BAR_HEIGHT,
+                    paint
+                );
+            }
         }
     }
 
@@ -184,15 +219,36 @@ public class Enemy extends AbstractMapObject {
     }
 
     public void hitByProjectile(Projectile projectile) {
+        if (projectile.type.slowRate < 1.0) {
+            slow(projectile);
+        }
         if (armor == null) {
             hp -= (int) projectile.getEffectiveDamage();
             if (hp <= 0) {
                 isAlive = false;
             }
-        }
-        else if (projectile.type.isArmorPiercing()) {
+        } else if (projectile.type.armorPiercing) {
             armor = null;
         }
+    }
+
+    /**
+     * Reduces this Enemy's speed for the time and amount specified by the projectile passed
+     *
+     * @param projectile The Projectile that determines how long and by how much to slow the enemy
+     */
+    private void slow(Projectile projectile) {
+        if (projectile.getSlowTime() > slowTime) {
+            slowTime = projectile.getSlowTime();
+            speed = (float) (type.speed * projectile.getSlowRate());
+            updateVelocity();
+        }
+    }
+
+    private void updateVelocity() {
+        PointF newVel = Util.velocityTowardsPoint(this.location, this.target, speed);
+        this.velX = newVel.x;
+        this.velY = newVel.y;
     }
 
     public boolean isAlive() {
@@ -223,14 +279,15 @@ public class Enemy extends AbstractMapObject {
         return type;
     }
 
-    public boolean isInvisible() { return isInvisible; }
+    public boolean isInvisible() {
+        return isInvisible;
+    }
 
     public boolean getHasBeenKilled() {
         return hasBeenKilled;
     }
 
-    public void setHasBeenKilled(boolean hasBeenKilled){
+    public void setHasBeenKilled(boolean hasBeenKilled) {
         this.hasBeenKilled = hasBeenKilled;
     }
-
 }

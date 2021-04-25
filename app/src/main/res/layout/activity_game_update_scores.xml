@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/update_scores_csl"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@mipmap/in_game_scores_background">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/update_scores_csl"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@mipmap/in_game_scores_background">
 
-        <Button
-            android:id="@+id/btn_okay"
-            android:layout_width="233dp"
-            android:layout_height="55dp"
-            android:backgroundTint="#009688"
-            android:onClick="btnOkayOnClick"
-            android:text="@string/okay"
-            android:textSize="18sp"
+        <TextView
+            android:id="@+id/txv_score"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="@string/your_score"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.856" />
+            app:layout_constraintVertical_bias="0.371" />
 
         <EditText
             android:id="@+id/plt_username"
@@ -35,36 +35,10 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.466" />
-
-        <TextView
-            android:id="@+id/txv_score"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:text="@string/your_score"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.202" />
-
-        <TextView
-            android:id="@+id/txv_error_msg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_okay"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.02"
-            app:layout_constraintStart_toEndOf="@+id/imv_error_symbol"
-            app:layout_constraintTop_toBottomOf="@+id/plt_username"
-            app:layout_constraintVertical_bias="0.13" />
+            app:layout_constraintVertical_bias="0.605" />
 
         <ImageView
-            android:id="@+id/imv_error_symbol"
+            android:id="@+id/img_error_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
@@ -73,7 +47,67 @@
             app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/plt_username"
-            app:layout_constraintVertical_bias="0.01999998" />
+            app:layout_constraintVertical_bias="0.021" />
+
+        <TextView
+            android:id="@+id/txv_error_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_submit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.018"
+            app:layout_constraintStart_toEndOf="@+id/img_error_symbol"
+            app:layout_constraintTop_toBottomOf="@+id/plt_username"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="233dp"
+            android:layout_height="55dp"
+            android:backgroundTint="#009688"
+            android:onClick="btnSubmitOnClick"
+            android:text="@string/submit"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.924" />
+
+        <ImageView
+            android:id="@+id/img_tint"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.75"
+            android:background="#000000"
+            android:contentDescription="@string/todo"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/gifImageView"
+                    android:layout_width="344dp"
+                    android:layout_height="229dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
