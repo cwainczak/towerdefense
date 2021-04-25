@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.mysql.jdbc.StringUtils;
@@ -17,30 +18,39 @@ public class UpdateScoresActivity extends Activity {
     private int playerScore;
 
     private final int MAX_USERNAME_LENGTH = 25;
-    private enum ERROR_TYPE {
+
+    private enum ErrorType {
         BLANK,
         OVER_CAPACITY
     }
+
+    private TextView txv_error_msg;
+    private ImageView imv_error_symbol;
+    private EditText textField;
+    private TextView scoreDisplayer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_update_scores);
         onWindowFocusChanged(true);
+
+        txv_error_msg = findViewById(R.id.txv_error_msg);
+        imv_error_symbol = findViewById(R.id.imv_error_symbol);
+        textField = findViewById(R.id.plt_username);
+        scoreDisplayer = findViewById(R.id.txv_score);
+
         this.playerScore = getIntent().getIntExtra("score", 0);
-        TextView scoreDisplayer = findViewById(R.id.txv_score);
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
     }
 
     public void btnOkayOnClick(View view) {
-        EditText textField = findViewById(R.id.plt_username);
         this.playerUsername = textField.getText().toString();
-        if (StringUtils.isEmptyOrWhitespaceOnly(this.playerUsername)){
-            displayError(ERROR_TYPE.BLANK);
+        if (StringUtils.isEmptyOrWhitespaceOnly(this.playerUsername)) {
+            displayError(ErrorType.BLANK);
             return;
-        }
-        else if (this.playerUsername.length() > this.MAX_USERNAME_LENGTH){
-            displayError(ERROR_TYPE.OVER_CAPACITY);
+        } else if (this.playerUsername.length() > this.MAX_USERNAME_LENGTH) {
+            displayError(ErrorType.OVER_CAPACITY);
             return;
         }
         DBTools dbt = new DBTools();
@@ -51,18 +61,19 @@ public class UpdateScoresActivity extends Activity {
         startActivity(intent);
     }
 
-    public void displayError(ERROR_TYPE error_type){
-        findViewById(R.id.imv_error_symbol).setBackgroundResource(R.mipmap.error_symbol);
+    public void displayError(ErrorType errorType) {
+        imv_error_symbol.setBackgroundResource(R.mipmap.error_symbol);
+
         String errorMessage = "";
-        switch (error_type) {
+        switch (errorType) {
             case BLANK:
-                errorMessage = "No username entered";
+                errorMessage = getString(R.string.blank_username);
                 break;
             case OVER_CAPACITY:
-                errorMessage = "Username too long";
+                errorMessage = getString(R.string.username_long);
                 break;
         }
-        ((TextView) findViewById(R.id.txv_error_msg)).setText(errorMessage);
+        txv_error_msg.setText(errorMessage);
     }
 
 }
