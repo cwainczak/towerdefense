@@ -1,9 +1,9 @@
-package com.wsu.towerdefense.Highscores;
+package com.wsu.towerdefense;
 
+import static com.wsu.towerdefense.Model.Highscores.DBListener.*;
 import static org.junit.Assert.assertEquals;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.wsu.towerdefense.Model.Highscores.DBConnection;
+import com.wsu.towerdefense.Model.Highscores.DBListener;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.Model.Highscores.HighScore;
 import java.sql.ResultSet;
@@ -12,12 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(JUnit4.class)
 public class DBToolsTest {
     List<HighScore> highScores = new ArrayList<>();
     boolean operationComplete = false;
-    DBListener.OnTaskEnded listener = new DBListener.OnTaskEnded() {
+    OnTaskEnded listener = new OnTaskEnded() {
         @Override
         public void onTaskEnd(ResultSet rs) {
             try {
@@ -40,9 +41,10 @@ public class DBToolsTest {
     private void resetDB() throws InterruptedException, SQLException {
         DBTools dbt = new DBTools(listener);
         dbt.setDBCon(DBConnection.getDBCon(true));
+        System.out.println("connected");
 
         highScores = new ArrayList<>();
-        dbt.setTestStmt("DELETE FROM HIGHSCORES");
+        dbt.setTestStmt("DELETE FROM EASY");
         dbt.execute();
 
         while (!operationComplete){

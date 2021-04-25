@@ -1,8 +1,8 @@
-package com.wsu.towerdefense.Controller;
+package com.wsu.towerdefense.Model;
 
 import android.content.Context;
 import android.util.Log;
-import com.wsu.towerdefense.Model.Game;
+
 import com.wsu.towerdefense.R;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class Waves implements Serializable {
             updateTimeSinceSpawn(delta);
 
             if ((setStarted || setDelayPassed()) && delayPassed()) {
-                    game.spawnEnemy(next(game));
+                    game.spawnEnemy(next());
             }
         }
     }
@@ -133,9 +133,9 @@ public class Waves implements Serializable {
     }
 
     /**
-     * helper function of {@link #next(Game game)} which increments spawned, set and wave accordingly
+     * helper function of {@link #next()} which increments spawned, set and wave accordingly
      */
-    private void progressWave(Game game){
+    private void progressWave(){
         spawnedThisSet++;
 
         // if all enemies have been spawned in the set
@@ -162,9 +162,9 @@ public class Waves implements Serializable {
     /**
      * @return current enemyType and progresses Wave
      */
-    public Enemy.Type next(Game game){
+    public Enemy.Type next(){
         Enemy.Type tempType = types.get(curWave - 1).get(curSet);
-        progressWave(game);
+        progressWave();
         return tempType;
     }
 
@@ -213,4 +213,6 @@ public class Waves implements Serializable {
     public boolean isGameEnded() {
         return gameEnded;
     }
+
+    // overloaded functions used for testing
 }

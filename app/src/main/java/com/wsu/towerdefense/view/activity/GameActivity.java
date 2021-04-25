@@ -26,25 +26,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Controller.tower.Tower;
-import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
-import com.wsu.towerdefense.Controller.tower.Upgrade;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Controller.map.AbstractMap;
-import com.wsu.towerdefense.Controller.tower.Tower;
-import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
-import com.wsu.towerdefense.Controller.tower.Upgrade;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Model.tower.Tower;
+import com.wsu.towerdefense.Model.tower.TowerUpgradeData;
+import com.wsu.towerdefense.Model.tower.Upgrade;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.Model.Game.Difficulty;
-import com.wsu.towerdefense.Model.save.SaveState;
-import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GameActivity extends AppCompatActivity {
@@ -532,7 +524,7 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Sets the kill count label respective to the selected tower
      *
-     * @tower The tower that will provide the kill count value to the label
+     * @param tower The tower that will provide the kill count value to the label
      */
     private void setTowerKillCountLabel(Tower tower){
         this.txt_selectedTowerKillCount.setText(String.valueOf(tower.getKillCount()));

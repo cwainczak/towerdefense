@@ -1,15 +1,18 @@
 package com.wsu.towerdefense;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import com.wsu.towerdefense.Controller.Enemy;
-import com.wsu.towerdefense.Controller.Waves;
-import java.util.Arrays;
-import java.util.List;
+import com.wsu.towerdefense.Model.Enemy;
+import com.wsu.towerdefense.Model.Waves;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-@RunWith(AndroidJUnit4.class)
+import java.util.Arrays;
+import java.util.List;
+
+@RunWith(JUnit4.class)
 public class WavesTest extends TestCase {
     List<List<Integer>> a1 = Arrays.asList(
             Arrays.asList(3, 2),

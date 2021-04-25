@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.Controller;
+package com.wsu.towerdefense.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import com.wsu.towerdefense.AbstractMapObject;
-import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Util;
 import java.util.List;
