@@ -77,6 +77,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         TACK(
             500,
             8,
+            1,
             120,
             false,
             R.mipmap.projectile_ball,

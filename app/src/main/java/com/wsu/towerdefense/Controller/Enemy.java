@@ -29,8 +29,7 @@ public class Enemy extends AbstractMapObject {
         // Invisible enemy types
         I1(200, 20, 15, 1, true, R.mipmap.invisible_slime_1, -1),
         I2(300, 20, 20, 2, true, R.mipmap.invisible_slime_2, -1),
-        I3(200, 50, 35, 3, true, R.mipmap.invisible_slime_3, -1),
-        ;
+        I3(200, 50, 35, 3, true, R.mipmap.invisible_slime_3, -1);
         
         final float speed;
         final int hp;
