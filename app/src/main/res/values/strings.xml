@@ -60,4 +60,5 @@
   <string name="blank_username">No username entered</string>
   <string name="username_long">Username too long</string>
   <string name="fully_upgraded">Tower is fully upgraded in this category!</string>
+  <string name="submit">submit</string>
 </resources>

@@ -80,7 +80,7 @@ public class GameSelectionActivity extends AppCompatActivity {
                 getString(R.string.save_info),
                 format.format(saveState.date),
                 MapReader.get(saveState.mapName).getDisplayName(),
-                saveState.waves.getCurWave(),
+                saveState.waves.getCurWave() + 1,
                 saveState.difficulty.toString()
             ));
         } else {

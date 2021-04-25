@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +12,11 @@ import androidx.annotation.Nullable;
 import com.mysql.jdbc.StringUtils;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import pl.droidsonroids.gif.GifImageView;
 
 public class UpdateScoresActivity extends Activity {
 
@@ -25,9 +31,12 @@ public class UpdateScoresActivity extends Activity {
     }
 
     private TextView txv_error_msg;
-    private ImageView imv_error_symbol;
+    private ImageView img_error_symbol;
     private EditText textField;
     private TextView scoreDisplayer;
+    private ImageView tint;
+    private Button submitButton;
+    private GifImageView gifImageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,15 +45,29 @@ public class UpdateScoresActivity extends Activity {
         onWindowFocusChanged(true);
 
         txv_error_msg = findViewById(R.id.txv_error_msg);
-        imv_error_symbol = findViewById(R.id.imv_error_symbol);
+        img_error_symbol = findViewById(R.id.img_error_symbol);
         textField = findViewById(R.id.plt_username);
         scoreDisplayer = findViewById(R.id.txv_score);
+        tint = findViewById(R.id.img_tint);
+        submitButton = findViewById(R.id.btn_submit);
+        gifImageView = findViewById(R.id.gifImageView);
 
         this.playerScore = getIntent().getIntExtra("score", 0);
+        boolean hasWon = getIntent().getBooleanExtra("won", false);
+
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
+
+        displayWinOrLoss(true, hasWon);
+        Timer overlayTimer = new Timer();
+        overlayTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> displayWinOrLoss(false, hasWon));
+            }
+        }, 7000);
     }
 
-    public void btnOkayOnClick(View view) {
+    public void btnSubmitOnClick(View view) {
         this.playerUsername = textField.getText().toString();
         if (StringUtils.isEmptyOrWhitespaceOnly(this.playerUsername)) {
             displayError(ErrorType.BLANK);
@@ -62,7 +85,7 @@ public class UpdateScoresActivity extends Activity {
     }
 
     public void displayError(ErrorType errorType) {
-        imv_error_symbol.setBackgroundResource(R.mipmap.error_symbol);
+        img_error_symbol.setBackgroundResource(R.mipmap.error_symbol);
 
         String errorMessage = "";
         switch (errorType) {
@@ -76,7 +99,26 @@ public class UpdateScoresActivity extends Activity {
         txv_error_msg.setText(errorMessage);
     }
 
+    private void displayWinOrLoss(boolean display, boolean hasWon) {
+        tint.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
+        submitButton.setVisibility(display ? View.INVISIBLE : View.VISIBLE);
+        // when you win or you lose should be displayed
+        if (display) {
+            gifImageView.setBackgroundResource(
+                hasWon ? R.drawable.you_win : R.drawable.you_lose_pickle
+            );
+        }
+        // when you win or you lose should not be displayed
+        else {
+            gifImageView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            ActivityUtil.hideNavigator(getWindow());
+        }
+    }
 }
-
-
-
