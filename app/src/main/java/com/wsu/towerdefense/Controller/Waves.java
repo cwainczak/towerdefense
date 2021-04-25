@@ -2,11 +2,8 @@ package com.wsu.towerdefense.Controller;
 
 import android.content.Context;
 import android.util.Log;
-
-import com.wsu.towerdefense.Controller.Enemy;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

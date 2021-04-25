@@ -16,8 +16,11 @@ public class Upgrade {
         FIRE_RATE,
         PROJECTILE_SPEED,
         PROJECTILE_DAMAGE,
+        PROJECTILE_RANGE,
         PROJECTILE,
-        SEE_INVISIBLE
+        SEE_INVISIBLE,
+        SLOW_TIME,
+        SLOW_RATE
     }
 
     public static class Effect<T> {

@@ -1,19 +1,17 @@
 package com.wsu.towerdefense.Highscores;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.wsu.towerdefense.Model.Highscores.DBConnection;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.Model.Highscores.HighScore;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class DBToolsTest {
@@ -41,7 +39,7 @@ public class DBToolsTest {
 
     private void resetDB() throws InterruptedException, SQLException {
         DBTools dbt = new DBTools(listener);
-        dbt.setDBCon(DBConnection.getDBCon("HighscoresTest"));
+        dbt.setDBCon(DBConnection.getDBCon(true));
 
         highScores = new ArrayList<>();
         dbt.setTestStmt("DELETE FROM HIGHSCORES");
@@ -56,7 +54,7 @@ public class DBToolsTest {
 
     private void addHighscore(String name, int score) throws SQLException, InterruptedException {
         DBTools dbt = new DBTools(listener);
-        dbt.setDBCon(DBConnection.getDBCon("HighscoresTest"));
+        dbt.setDBCon(DBConnection.getDBCon(true));
 
         highScores = new ArrayList<>();
         dbt.setTestWrite(true);

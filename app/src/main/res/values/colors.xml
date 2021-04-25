@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pause_background">#A0000000</color>
-    <color name="valid_range">#FF505050</color>
-    <color name="invalid_range">#FFB40000</color>
-    <color name="not_selected_text">#81BFC7</color>
-    <color name="ff_off">#009688</color>
-    <color name="ff_on">#10776D</color>
+  <color name="pause_background">#A0000000</color>
+  <color name="valid_range">#FF505050</color>
+  <color name="invalid_range">#FFB40000</color>
+  <color name="not_selected_text">#81BFC7</color>
+  <color name="ff_off">#009688</color>
+  <color name="ff_on">#10776D</color>
+  <color name="error_button">#D96057</color>
+  <color name="normal_button">#4CAF50</color>
 </resources>
