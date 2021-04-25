@@ -159,7 +159,7 @@ public class Game extends AbstractGame implements SoundSource {
 
         // Update Waves
         waves.update(this, delta);
-        if(!waves.isRunning() && enemies.isEmpty() && waveRunning){
+        if (!waves.isRunning() && enemies.isEmpty() && waveRunning) {
             waveRunning = false;
             listener.onWaveEnd();
         }
@@ -186,8 +186,8 @@ public class Game extends AbstractGame implements SoundSource {
 //            }
             if (selectedTower == t) {
                 drawRange(canvas, paint, t.getLocation(),
-                        t.getType() == Tower.Type.SNIPER ? Tower.BASE_SIZE : t.getStats().getRange(),
-                        true);
+                    t.getType() == Tower.Type.SNIPER ? Tower.BASE_SIZE : t.getStats().getRange(),
+                    true);
             }
 
             t.render(lerp, canvas, paint);
@@ -199,8 +199,8 @@ public class Game extends AbstractGame implements SoundSource {
 
         if (dragLocation != null) {
             drawRange(canvas, paint, dragLocation,
-                    dragType == Tower.Type.SNIPER ? Tower.BASE_SIZE : dragType.range,
-                    isValidPlacement(dragLocation));
+                dragType == Tower.Type.SNIPER ? Tower.BASE_SIZE : dragType.range,
+                isValidPlacement(dragLocation));
         }
 
         drawHUD(canvas, paint);
@@ -367,6 +367,20 @@ public class Game extends AbstractGame implements SoundSource {
             this.waves = waves;
             this.priceModifier = priceModifier;
         }
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case EASY:
+                    return "Easy";
+                case MEDIUM:
+                    return "Medium";
+                case HARD:
+                    return "Hard";
+                default:
+                    return "";
+            }
+        }
     }
 
     // GETTERS/SETTERS
@@ -376,7 +390,7 @@ public class Game extends AbstractGame implements SoundSource {
      *
      * @param amount The amount of score to add
      */
-    private void addScore(int amount){
+    private void addScore(int amount) {
         score += amount;
     }
 
@@ -449,17 +463,17 @@ public class Game extends AbstractGame implements SoundSource {
         this.audioPlaceTower.release();
     }
 
-    public void setWaveRunning(boolean waveRunning){
+    public void setWaveRunning(boolean waveRunning) {
         this.waveRunning = waveRunning;
         waves.setRunning(waveRunning);
     }
 
-    public void setFastMode(boolean isFastMode){
+    public void setFastMode(boolean isFastMode) {
         this.isFastMode = isFastMode;
         this.setDoubleSpeed(isFastMode);
     }
 
-    public boolean isFastMode(){
+    public boolean isFastMode() {
         return isFastMode;
     }
 }

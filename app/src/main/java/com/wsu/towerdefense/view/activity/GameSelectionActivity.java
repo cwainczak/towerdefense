@@ -81,7 +81,7 @@ public class GameSelectionActivity extends AppCompatActivity {
                 format.format(saveState.date),
                 MapReader.get(saveState.mapName).getDisplayName(),
                 saveState.waves.getCurWave(),
-                saveState.difficulty.name().toLowerCase()
+                saveState.difficulty.toString()
             ));
         } else {
             txt_saveInfo.setText(R.string.no_saved_game);
