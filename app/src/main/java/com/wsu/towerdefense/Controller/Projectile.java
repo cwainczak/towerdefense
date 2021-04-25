@@ -36,14 +36,16 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball,
             Behavior.LINEAR,
             1000f,
-            10
+            10,
+            2
         ),
 
         ROCKET(
             R.mipmap.projectile_rocket,
             Behavior.HOMING,
             750f,
-            15
+            15,
+            1
         ) {{
             piercing();
             sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
@@ -53,7 +55,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_big_rocket,
             Behavior.HOMING,
             550f,
-            20
+            20,
+            1
         ) {{
             piercing();
             sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
@@ -63,7 +66,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball, // image has no effect
             Behavior.HITSCAN,
             -1,
-            20
+            20,
+            1
         ) {{
             piercing();
         }},
@@ -72,7 +76,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball,
             Behavior.LINEAR,
             500,
-            8
+            8,
+            1
         ) {{
             range(120);
         }},
@@ -81,7 +86,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_beak,
             Behavior.LINEAR,
             750f,
-            5
+            5,
+            3
         ) {{
             piercing();
         }},
@@ -90,7 +96,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_snowflake,
             Behavior.LINEAR,
             1000,
-            2
+            2,
+            1
         ) {{
             slow(2.0, 0.5);
         }};
@@ -99,6 +106,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         public final Behavior behavior;
         public final float speed;
         public final int damage;
+        public int pierce;
         public int range;
         public boolean armorPiercing;
         public double slowEnemyTime;
@@ -110,12 +118,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             int imageID,
             Behavior behavior,
             float speed,
-            int damage
+            int damage,
+            int pierce
         ) {
             this.imageID = imageID;
             this.behavior = behavior;
             this.speed = speed;
             this.damage = damage;
+            this.pierce = pierce;
 
             this.range = -1;
             this.armorPiercing = false;

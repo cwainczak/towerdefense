@@ -358,8 +358,8 @@ public class Game extends AbstractGame implements SoundSource {
 
     // DIFFICULTY ENUM
     public enum Difficulty {
-        EASY(5, 1),
-        MEDIUM(7, 0.9f),
+        EASY(10, 1),
+        MEDIUM(10, 0.9f),
         HARD(10, 0.8f);
 
         public final int waves;
