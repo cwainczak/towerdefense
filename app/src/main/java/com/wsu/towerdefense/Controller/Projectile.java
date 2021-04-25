@@ -34,7 +34,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         BALL(
             1000f,
             10,
-            3,
+            2,
             false,
             R.mipmap.projectile_1,
             -1,
@@ -43,7 +43,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         ),
         ROCKET(
             750f,
-            15,
+            20,
             1,
             true,
             R.mipmap.projectile_2,
@@ -53,7 +53,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         ),
         BIG_ROCKET(
                 550f,
-                20,
+                40,
                 1,
                 true,
                 R.mipmap.projectile_3,
@@ -73,7 +73,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         ),
         BEAK(
             750f,
-                    2,
+                    5,
+                    3,
                     true,
             R.mipmap.projectile_4,
             -1,
