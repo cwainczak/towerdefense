@@ -6,12 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Util;
-
 import java.util.List;
 import java.util.ListIterator;
 
@@ -61,6 +59,7 @@ public class Enemy extends AbstractMapObject {
 
     private int hp;
     private boolean isAlive;
+    private boolean hasBeenKilled = false;
     private boolean isInvisible;
 
     private float velX;
@@ -226,5 +225,13 @@ public class Enemy extends AbstractMapObject {
     }
 
     public boolean isInvisible() { return isInvisible; }
+
+    public boolean getHasBeenKilled() {
+        return hasBeenKilled;
+    }
+
+    public void setHasBeenKilled(boolean hasBeenKilled){
+        this.hasBeenKilled = hasBeenKilled;
+    }
 
 }
