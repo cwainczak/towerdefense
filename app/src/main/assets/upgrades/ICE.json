@@ -1,0 +1,98 @@
+{
+  "path1": [
+    {
+      "displayName": "Slow Time",
+      "description": "",
+      "cost": "75",
+      "image": "tower_ice_1",
+      "effect": {
+        "type": "SLOW_TIME",
+        "value": 2.5
+      }
+    },
+    {
+      "displayName": "Damage 2",
+      "description": "",
+      "cost": "100",
+      "image": "tower_ice_2",
+      "effect": {
+        "type": "PROJECTILE_DAMAGE",
+        "value": 0.2
+      }
+    },
+    {
+      "displayName": "Slow Time 2",
+      "description": "",
+      "cost": "200",
+      "image": "tower_ice_3",
+      "effect": {
+        "type": "SLOW_TIME",
+        "value": 3.0
+      }
+    }
+  ],
+  "path2": [
+    {
+      "displayName": "Fire rate 1",
+      "description": "",
+      "cost": "50",
+      "image": "tower_ice_1",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.1
+      }
+    },
+    {
+      "displayName": "Speed Reduction",
+      "description": "",
+      "cost": "100",
+      "image": "tower_ice_2",
+      "effect": {
+        "type": "SLOW_RATE",
+        "value": -0.2
+      }
+    },
+    {
+      "displayName": "Fire rate 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_ice_3",
+      "effect": {
+        "type": "FIRE_RATE",
+        "value": -0.2
+      }
+    }
+  ],
+  "path3": [
+    {
+      "displayName": "Range 1",
+      "description": "",
+      "cost": "50",
+      "image": "tower_ice_1",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.1
+      }
+    },
+    {
+      "displayName": "See Invisible",
+      "description": "",
+      "cost": "100",
+      "image": "tower_ice_2",
+      "effect": {
+        "type": "SEE_INVISIBLE",
+        "value": "True"
+      }
+    },
+    {
+      "displayName": "Range 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_ice_3",
+      "effect": {
+        "type": "RANGE",
+        "value": 0.2
+      }
+    }
+  ]
+}

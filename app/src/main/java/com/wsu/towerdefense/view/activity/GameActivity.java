@@ -332,8 +332,6 @@ public class GameActivity extends AppCompatActivity {
                 // allow image to be dragged
                 if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
                     game.setDragType(selectedTowerType);
-                    audioButtonPress
-                        .play(view.getContext(), Settings.getSFXVolume(view.getContext()));
                     return true;
                 }
                 // remove range circle when dragging over side bar

@@ -29,8 +29,7 @@ public class Enemy extends AbstractMapObject {
         // Invisible enemy types
         I1(200, 10, 25, 1, true, R.mipmap.invisible_slime_1, -1),
         I2(300, 10, 35, 2, true, R.mipmap.invisible_slime_2, -1),
-        I3(200, 50, 40, 3, true, R.mipmap.invisible_slime_3, -1),
-        ;
+        I3(200, 50, 40, 3, true, R.mipmap.invisible_slime_3, -1);
 
         final float speed;
         final int hp;
@@ -78,6 +77,9 @@ public class Enemy extends AbstractMapObject {
 
     private Bitmap armor;
 
+    private double slowTime = 0.0;
+    private float speed;
+
     /**
      * An Enemy is a movable Map object. Enemies will move along a predetermined path defined by the
      * Map they are placed on. They will continue moving along the path until they reach the end or
@@ -101,8 +103,8 @@ public class Enemy extends AbstractMapObject {
         this.velX = 0;
         this.velY = 0;
 
-        this.armor =
-            (type.armorResource == -1) ? null : Util.getBitmapByID(context, type.armorResource);
+        this.armor = (type.armorResource == -1) ? null : Util.getBitmapByID(context, type.armorResource);
+        this.speed = type.speed;
     }
 
     /**
@@ -118,20 +120,28 @@ public class Enemy extends AbstractMapObject {
         // target, and there are more Points in path, set location to target instead and set target to
         // next Point in path.
 
+        // Update the time left for this Enemy to be slowed
+        if (slowTime > 0) {
+            if (slowTime > delta) {
+                slowTime -= delta;
+            } else {
+                slowTime = 0.0;
+                speed = type.speed;
+                updateVelocity();
+            }
+        }
+
         //check if distance between location and target is less than or equal to distance between
         //location and next location, and there are more Points int path
         double distance = Math.hypot(location.x - target.x, location.y - target.y);
 
-        if (distance <= Math.abs(type.speed * delta)) {
+        if (distance <= Math.abs(speed * delta)) {
             if (path.hasNext()) {
                 //set location to target, and update target
                 location = new PointF(target.x, target.y);
                 target = path.next();
 
-                PointF newVel = Util
-                    .velocityTowardsPoint(this.location, this.target, this.type.speed);
-                this.velX = newVel.x;
-                this.velY = newVel.y;
+                updateVelocity();
             } else {
                 // If there are no more points in the path
                 isAtPathEnd = true;
@@ -209,14 +219,36 @@ public class Enemy extends AbstractMapObject {
     }
 
     public void hitByProjectile(Projectile projectile) {
+        if (projectile.type.slowRate < 1.0) {
+            slow(projectile);
+        }
         if (armor == null) {
             hp -= (int) projectile.getEffectiveDamage();
             if (hp <= 0) {
                 isAlive = false;
             }
-        } else if (projectile.type.isArmorPiercing()) {
+        } else if (projectile.type.armorPiercing) {
             armor = null;
         }
+    }
+
+    /**
+     * Reduces this Enemy's speed for the time and amount specified by the projectile passed
+     *
+     * @param projectile The Projectile that determines how long and by how much to slow the enemy
+     */
+    private void slow(Projectile projectile) {
+        if (projectile.getSlowTime() > slowTime) {
+            slowTime = projectile.getSlowTime();
+            speed = (float) (type.speed * projectile.getSlowRate());
+            updateVelocity();
+        }
+    }
+
+    private void updateVelocity() {
+        PointF newVel = Util.velocityTowardsPoint(this.location, this.target, speed);
+        this.velX = newVel.x;
+        this.velY = newVel.y;
     }
 
     public boolean isAlive() {
@@ -258,5 +290,4 @@ public class Enemy extends AbstractMapObject {
     public void setHasBeenKilled(boolean hasBeenKilled) {
         this.hasBeenKilled = hasBeenKilled;
     }
-
 }

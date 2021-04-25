@@ -153,6 +153,22 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             new PointF[]{
                 new PointF(0, -50)
             }
+        ),
+        ICE(
+            "Ice",
+            R.mipmap.tower_ice_comb,
+            R.mipmap.tower_ice,
+            384,
+            1.5f,
+            Projectile.Type.SNOWFLAKE,
+            100,
+            R.raw.game_tower_shoot_1,
+            false,
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, -80)
+            }
         );
 
         public final String name;
@@ -431,7 +447,9 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 (float) angle,
                 stats.getProjectileSpeed(),
                 stats.getProjectileDamage(),
-                stats.getProjectileRange()
+                stats.getProjectileRange(),
+                stats.getProjectileSlowTime(),
+                stats.getProjectileSlowRate()
             ));
     }
 

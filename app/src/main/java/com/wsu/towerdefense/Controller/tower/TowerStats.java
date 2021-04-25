@@ -42,6 +42,8 @@ public class TowerStats implements Serializable {
     private float projectileSpeed;
     private float projectileDamage;
     private float projectileRange;
+    private double projectileSlowTime;
+    private double projectileSlowRate;
     private boolean canSeeInvisible;
     private int sellPrice;
     private Projectile.Type projectileType;
@@ -59,6 +61,8 @@ public class TowerStats implements Serializable {
         this.projectileSpeed = 1;
         this.projectileDamage = 1;
         this.projectileRange = 1;
+        this.projectileSlowTime = type.projectileType.slowEnemyTime;
+        this.projectileSlowRate = type.projectileType.slowRate;
         this.sellPrice = (int) (type.cost * REFUND_PERCENT);
         this.canSeeInvisible = type.canSeeInvisible;
         this.projectileType = type.projectileType;
@@ -136,10 +140,20 @@ public class TowerStats implements Serializable {
                 }
                 case PROJECTILE: {
                     this.projectileType = (Projectile.Type) effect.value;
+                    this.projectileSlowRate = projectileType.slowRate;
+                    this.projectileSlowTime = projectileType.slowEnemyTime;
                     break;
                 }
                 case SEE_INVISIBLE: {
                     this.canSeeInvisible = (Boolean) effect.value;
+                    break;
+                }
+                case SLOW_TIME: {
+                    this.projectileSlowTime = getModifier(activeEffects);
+                    break;
+                }
+                case SLOW_RATE: {
+                    this.projectileSlowRate += getModifier(activeEffects) - 1;
                     break;
                 }
             }
@@ -234,6 +248,12 @@ public class TowerStats implements Serializable {
     public float getProjectileRange() {
         return projectileRange;
     }
+
+    public double getProjectileSlowTime() {
+        return projectileSlowTime;
+    }
+
+    public double getProjectileSlowRate() { return projectileSlowRate; }
 
     public boolean canSeeInvisible() {
         return canSeeInvisible;
