@@ -2,9 +2,9 @@
   "path1": [
     {
       "displayName": "Damage 1",
-      "description": "",
+      "description": "Increases your tower's damage strength to Level 1!",
       "cost": "50",
-      "image": "tower_5_1_turret",
+      "image": "tower_sniper_1",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.1
@@ -12,9 +12,9 @@
     },
     {
       "displayName": "Damage 2",
-      "description": "",
+      "description": "Increases your tower's damage strength to Level 2!",
       "cost": "50",
-      "image": "tower_5_2_turret",
+      "image": "tower_sniper_2",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.1
@@ -22,9 +22,9 @@
     },
     {
       "displayName": "Damage 3",
-      "description": "",
+      "description": "Increases your tower's damage strength to Level 3!",
       "cost": "200",
-      "image": "tower_5_3_turret",
+      "image": "tower_sniper_3",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.2
@@ -34,9 +34,9 @@
   "path2": [
     {
       "displayName": "Fire rate 1",
-        "description": "",
+        "description": "Increases the pace at which your tower shoots projectiles to Level 1!",
       "cost": "50",
-      "image": "tower_5_1_turret",
+      "image": "tower_sniper_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -44,9 +44,9 @@
     },
     {
       "displayName": "Fire rate 2",
-      "description": "",
+      "description": "Increases the pace at which your tower shoots projectiles to Level 2!",
       "cost": "100",
-      "image": "tower_5_2_turret",
+      "image": "tower_sniper_2",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -54,9 +54,9 @@
     },
     {
       "displayName": "Fire rate 3",
-      "description": "",
+      "description": "Increases the pace at which your tower shoots projectiles to Level 3!",
       "cost": "200",
-      "image": "tower_5_3_turret",
+      "image": "tower_sniper_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -66,9 +66,9 @@
   "path3": [
     {
       "displayName": "Fire rate 1.1",
-      "description": "",
+      "description": "Blank for now",
       "cost": "200",
-      "image": "tower_5_1_turret",
+      "image": "tower_sniper_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -76,9 +76,9 @@
     },
     {
       "displayName": "See Invisible",
-      "description": "",
+      "description": "Blank for now",
       "cost": "100",
-      "image": "tower_5_2_turret",
+      "image": "tower_sniper_2",
       "effect": {
         "type": "SEE_INVISIBLE",
         "value": "True"
@@ -86,9 +86,9 @@
     },
     {
       "displayName": "Damage 4",
-      "description": "",
+      "description": "Blank for now",
       "cost": "500",
-      "image": "tower_5_3_turret",
+      "image": "tower_sniper_3",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.2

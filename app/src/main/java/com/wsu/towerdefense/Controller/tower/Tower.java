@@ -6,135 +6,198 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Controller.Enemy;
-import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.Controller.Projectile;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
+import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public class Tower extends AbstractMapObject implements Serializable, SoundSource {
 
+    public enum Behavior {
+        ALL,
+        CYCLING
+        // BOUNCE
+        // RANDOM
+    }
+
     public enum Type {
         BASIC_HOMING(
-            R.mipmap.tower_2_turret,
+            "Homing",
+            R.mipmap.tower_basic_homing_comb,
+            R.mipmap.tower_basic_homing,
             384,
             2,
-            1,
-            1,
             Projectile.Type.ROCKET,
             150,
             -1,
             false,
-            new ArrayList<>(Arrays.asList(new PointF(-20, -36),
-                new PointF(17, -36)))),
+            true,
+            Behavior.CYCLING,
+            new PointF[]{
+                new PointF(-20, -36),
+                new PointF(17, -36)
+            }
+        ),
         BASIC_LINEAR(
-            R.mipmap.tower_1_turret,
+            "Basic",
+            R.mipmap.tower_basic_linear_comb,
+            R.mipmap.tower_basic_linear,
             384,
-            1,
-            1,
             1,
             Projectile.Type.BALL,
             100,
             R.raw.game_tower_shoot_1,
             false,
-            new ArrayList<>(Arrays.asList(new PointF(0, -80)))),
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, -80)
+            }
+        ),
         DOUBLE_LINEAR(
-            R.mipmap.tower_3_turret,
+            "Double",
+            R.mipmap.tower_double_linear_comb,
+            R.mipmap.tower_double_linear,
             384,
             1.25f,
-            1,
-            1,
             Projectile.Type.BALL,
             175,
             R.raw.game_tower_shoot_1,
             false,
-            new ArrayList<>(Arrays.asList(new PointF(-16, -80),
-                new PointF(14, -80)))),
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(-16, -80),
+                new PointF(14, -80)
+            }
+        ),
         BIG_HOMING(
-            R.mipmap.tower_4_turret,
+            "Big Rocket",
+            R.mipmap.tower_big_homing_comb,
+            R.mipmap.tower_big_homing,
             384,
             2,
-            1,
-            1,
             Projectile.Type.BIG_ROCKET,
             200,
             -1,
             false,
-            new ArrayList<>(Arrays.asList(new PointF(0, -42)))),
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, -42)
+            }
+        ),
         SNIPER(
-            R.mipmap.tower_5_turret,
+            "Sniper",
+            R.mipmap.tower_sniper_comb,
+            R.mipmap.tower_sniper,
             3000,
             2.5f,
-            1,
-            1,
             Projectile.Type.HITSCAN,
             275,
             R.raw.game_tower_shoot_1,
             true,
-            new ArrayList<>(Arrays.asList(new PointF(0, 0)))),
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, 0)
+            }
+        ),
+        TACK_SHOOTER(
+            "Tack Shooter",
+            R.mipmap.tower_tack_comb,
+            R.mipmap.tower_tack,
+            250,
+            0.75f,
+            Projectile.Type.TACK,
+            300,
+            R.raw.game_tower_shoot_1,
+            false,
+            false,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(65, 0),
+                new PointF(65 / (float) Math.sqrt(2), -65 / (float) Math.sqrt(2)),
+                new PointF(0, -65),
+                new PointF(-65 / (float) Math.sqrt(2), -65 / (float) Math.sqrt(2)),
+                new PointF(-65, 0),
+                new PointF(-65 / (float) Math.sqrt(2), 65 / (float) Math.sqrt(2)),
+                new PointF(0, 65),
+                new PointF(65 / (float) Math.sqrt(2), 65 / (float) Math.sqrt(2))
+            }
+        ),
         NESTOR(
-            R.mipmap.tower_6_turret,
+            "Nestor",
+            R.mipmap.tower_nestor_comb,
+            R.mipmap.tower_nestor,
             450,
             0.25f,
-            1,
-            1,
             Projectile.Type.BEAK,
             800,
             R.raw.game_tower_shoot_1,
             false,
-            new ArrayList<>(Arrays.asList(new PointF(0, -50))));
+            true,
+            Behavior.ALL,
+            new PointF[]{
+                new PointF(0, -50)
+            }
+        );
 
+        public final String name;
+        public final int uiResID;
         public final int towerResID;
         public final int range;
         public final float fireRate;
-        public final float projectileSpeed;
-        public final float projectileDamage;
         public final Projectile.Type projectileType;
         public final int cost;
         public final int shootSoundID;
         public final boolean canSeeInvisible;
+        public final boolean turns;
+        public final Behavior behavior;
+
         /*
          Each point in this list represents a projectile spawn point
          relative to the center of the turret image
          */
-        public final List<PointF> projectileSpawnPointOffsets;
+        public final PointF[] spawnPoints;
 
         Type(
+            String name,
+            int uiResID,
             int towerResID,
             int range,
             float fireRate,
-            float projectileSpeed,
-            float projectileDamage,
             Projectile.Type projectileType,
             int cost,
             int shootSoundID,
             boolean canSeeInvisible,
-            List<PointF> projectileSpawnPointOffsets) {
+            boolean turns,
+            Behavior behavior,
+            PointF[] spawnPoints) {
+            this.name = name;
+            this.uiResID = uiResID;
             this.towerResID = towerResID;
             this.range = range;
             this.fireRate = fireRate;
-            this.projectileSpeed = projectileSpeed;
-            this.projectileDamage = projectileDamage;
             this.projectileType = projectileType;
             this.cost = cost;
             this.shootSoundID = shootSoundID;
             this.canSeeInvisible = canSeeInvisible;
-
-            this.projectileSpawnPointOffsets = projectileSpawnPointOffsets;
+            this.turns = turns;
+            this.behavior = behavior;
+            this.spawnPoints = spawnPoints;
         }
     }
 
@@ -148,6 +211,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
     private transient AdvancedSoundPlayer audioShoot;
 
+    private int killCount = 0;
     private transient Enemy target;   // The Enemy this Tower will shoot at
     private final Type type;
     private transient List<Projectile> projectiles;   // A list of the locations of projectiles shot by this Tower
@@ -156,8 +220,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
     private final TowerStats stats;
 
     private transient float angle;
-    private transient List<PointF> projectileSpawnPoints;
-    private boolean fireRight = false;
+    private transient int cycle;
 
     /**
      * A Tower is a stationary Map object. Towers will target an Enemy that enters their range,
@@ -175,14 +238,11 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
         this.angle = START_ANGLE - IMAGE_ANGLE;
 
-        this.projectileSpawnPoints = new ArrayList<>();
-        for (PointF offset : type.projectileSpawnPointOffsets) {
-            projectileSpawnPoints.add(new PointF(location.x + offset.x, location.y + offset.y));
-        }
-
         this.audioShoot = type.shootSoundID >= 0
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
             : null;
+
+        this.cycle = 0;
     }
 
     /**
@@ -217,16 +277,13 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         // Calculate change in time since last projectile was fired
         timeSinceShot += delta;
 
-        if (target != null) {
+        if (this.type.turns && target != null) {
             angle = (float) Util.getAngleBetweenPoints(location, target.getLocation());
         }
 
         // Shoot another projectile if there is a target and enough time has passed
         if (target != null && timeSinceShot >= stats.getFireRate()) {
-            // Rotate the projectile spawn point(s) to align with the target
-            rotateProjectileSpawnPoints();
-
-            addProjectiles(game.getContext());
+            shootProjectiles(game.getContext());
 
             timeSinceShot = 0;
 
@@ -335,84 +392,47 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
         return this.type.range;
     }
 
-    private PointF getCenterSpawnPoint() {
-        if (projectileSpawnPoints.size() > 0) {
-            float x = 0, y = 0;
-            for (PointF p : projectileSpawnPoints) {
-                x += p.x;
-                y += p.y;
-            }
-            x /= projectileSpawnPoints.size();
-            y /= projectileSpawnPoints.size();
-            return new PointF(x, y);
-        }
-        return null;
-    }
-
-    private void addProjectiles(Context context) {
-        switch (type) {
-            case BIG_HOMING:
-            case BASIC_LINEAR:
-            case SNIPER:
-            case NESTOR:
-                projectiles.add(
-                    new Projectile(context,
-                        new PointF(projectileSpawnPoints.get(0).x, projectileSpawnPoints.get(0).y),
-                        stats.getProjectileType(),
-                        target,
-                        angle,
-                        stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
-                    ));
-                break;
-            case BASIC_HOMING:
-                int index = fireRight ? 1 : 0;
-                projectiles.add(
-                    new Projectile(context,
-                        new PointF(projectileSpawnPoints.get(index).x,
-                            projectileSpawnPoints.get(index).y),
-                        stats.getProjectileType(),
-                        target,
-                        angle,
-                        stats.getProjectileSpeed(),
-                        stats.getProjectileDamage()
-                    ));
-                fireRight = !fireRight;
-                break;
-            case DOUBLE_LINEAR:
-                for (PointF point : projectileSpawnPoints) {
-                    projectiles.add(
-                        new Projectile(context,
-                            new PointF(point.x, point.y),
-                            stats.getProjectileType(),
-                            target,
-                            angle,
-                            stats.getProjectileSpeed(),
-                            stats.getProjectileDamage()
-                        ));
+    private void shootProjectiles(Context context) {
+        switch (type.behavior) {
+            case ALL: {
+                for (PointF basePoint : type.spawnPoints) {
+                    shootProjectile(context, basePoint);
                 }
+                break;
+            }
+            case CYCLING: {
+                PointF basePoint = new PointF(
+                    type.spawnPoints[cycle].x,
+                    type.spawnPoints[cycle].y
+                );
+                shootProjectile(context, basePoint);
+
+                cycle = (cycle + 1) % type.spawnPoints.length;
+                break;
+            }
             default:
                 break;
         }
     }
 
-    private void rotateProjectileSpawnPoints() {
-        if (projectileSpawnPoints.size() > 0) {
-            PointF centerSpawnPoint = getCenterSpawnPoint();
+    private void shootProjectile(Context context, PointF basePoint) {
+        PointF rotatedPoint = Util.rotatePoint(basePoint, angle + IMAGE_ANGLE);
+        PointF spawnPoint = new PointF(
+            this.location.x + rotatedPoint.x,
+            this.location.y + rotatedPoint.y
+        );
+        double angle = Util.getAngleBetweenPoints(this.location, spawnPoint);
 
-            // Get angle from center spawn point to target
-            double spawnAngle = Util.getAngleBetweenPoints(location, centerSpawnPoint);
-            double rotAngle = Math.toRadians(angle - spawnAngle);
-
-            for (PointF p : projectileSpawnPoints) {
-                float rotX = (float) (
-                    Math.cos(rotAngle) * (p.x - location.x) - Math.sin(rotAngle) * (p.y
-                        - location.y) + location.x);
-                float rotY = (float) (Math.sin(rotAngle) * (p.x - location.x)
-                    + Math.cos(rotAngle) * (p.y - location.y) + location.y);
-                p.set(rotX, rotY);
-            }
-        }
+        projectiles.add(
+            new Projectile(context, this,
+                spawnPoint,
+                stats.getProjectileType(),
+                target,
+                (float) angle,
+                stats.getProjectileSpeed(),
+                stats.getProjectileDamage(),
+                stats.getProjectileRange()
+            ));
     }
 
     @Override
@@ -433,13 +453,17 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
 
         this.angle = START_ANGLE - IMAGE_ANGLE;
 
-        this.projectileSpawnPoints = new ArrayList<>();
-        for (PointF offset : type.projectileSpawnPointOffsets) {
-            projectileSpawnPoints.add(new PointF(location.x + offset.x, location.y + offset.y));
-        }
-
         this.audioShoot = type.shootSoundID >= 0
             ? new AdvancedSoundPlayer(this.type.shootSoundID)
             : null;
     }
+
+    public int getKillCount() {
+        return killCount;
+    }
+
+    public void incrementKillCount() {
+        this.killCount++;
+    }
+
 }

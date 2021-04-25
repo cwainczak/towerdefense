@@ -1,33 +1,33 @@
 {
   "path1": [
     {
-      "displayName": "Damage 1",
+      "displayName": "Projectile range 1",
       "description": "",
-      "cost": "250",
-      "image": "tower_nestor_1",
+      "cost": "50",
+      "image": "tower_tack_1",
       "effect": {
-        "type": "PROJECTILE_DAMAGE",
-        "value": 0.1
-      }
-    },
-    {
-      "displayName": "Damage 2",
-      "description": "",
-      "cost": "400",
-      "image": "tower_nestor_2",
-      "effect": {
-        "type": "PROJECTILE_DAMAGE",
+        "type": "PROJECTILE_RANGE",
         "value": 0.2
       }
     },
     {
-      "displayName": "Speed",
+      "displayName": "Projectile range 2",
       "description": "",
-      "cost": "650",
-      "image": "tower_nestor_3",
+      "cost": "100",
+      "image": "tower_tack_2",
       "effect": {
-        "type": "PROJECTILE_SPEED",
-        "value": 0.5
+        "type": "PROJECTILE_RANGE",
+        "value": 0.2
+      }
+    },
+    {
+      "displayName": "Projectile range 3",
+      "description": "",
+      "cost": "200",
+      "image": "tower_tack_3",
+      "effect": {
+        "type": "PROJECTILE_RANGE",
+        "value": 0.3
       }
     }
   ],
@@ -35,8 +35,8 @@
     {
       "displayName": "Fire rate 1",
       "description": "",
-      "cost": "250",
-      "image": "tower_nestor_1",
+      "cost": "50",
+      "image": "tower_tack_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -45,8 +45,8 @@
     {
       "displayName": "Fire rate 2",
       "description": "",
-      "cost": "450",
-      "image": "tower_nestor_2",
+      "cost": "100",
+      "image": "tower_tack_2",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
@@ -55,8 +55,8 @@
     {
       "displayName": "Fire rate 3",
       "description": "",
-      "cost": "600",
-      "image": "tower_nestor_3",
+      "cost": "200",
+      "image": "tower_tack_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -67,28 +67,28 @@
     {
       "displayName": "Range 1",
       "description": "",
-      "cost": "300",
-      "image": "tower_nestor_1",
+      "cost": "50",
+      "image": "tower_tack_1",
       "effect": {
         "type": "RANGE",
         "value": 0.1
       }
     },
     {
-      "displayName": "See Invisible",
+      "displayName": "Range 2",
       "description": "",
-      "cost": "400",
-      "image": "tower_nestor_2",
+      "cost": "100",
+      "image": "tower_tack_2",
       "effect": {
-        "type": "SEE_INVISIBLE",
-        "value": "True"
+        "type": "RANGE",
+        "value": 0.1
       }
     },
     {
       "displayName": "Range 3",
       "description": "",
-      "cost": "600",
-      "image": "tower_nestor_3",
+      "cost": "200",
+      "image": "tower_tack_3",
       "effect": {
         "type": "RANGE",
         "value": 0.2
