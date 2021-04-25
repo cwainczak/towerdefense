@@ -11,6 +11,7 @@ import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.Model.Highscores.HighScore;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -92,7 +93,7 @@ public class ScoresActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }

@@ -13,6 +13,7 @@ import com.mysql.jdbc.StringUtils;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
 
+import com.wsu.towerdefense.Util;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -118,7 +119,7 @@ public class UpdateScoresActivity extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }
