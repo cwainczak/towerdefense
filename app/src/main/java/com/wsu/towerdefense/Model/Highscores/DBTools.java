@@ -34,7 +34,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     protected ResultSet doInBackground(String... strings) {
         try {
             if (listener == null || (testMode && testWrite)){
-                addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
+                addScoreToDB("EASY", this.currentUsername, this.currentScore);
             }
 
             if(testMode && testStmt != null) {
@@ -42,7 +42,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
                 executeStatement(testStmt);
             }
 
-            rs = getResultSet("HIGHSCORES");
+            rs = getResultSet("EASY");
             return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -65,7 +65,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
         stmt = DBCon.createStatement();
         // SQL query to get all data from DB sorted by score in descending order
         // and limiting the result to 5
-        String query = "SELECT * FROM " + tableName + " ORDER BY Score DESC LIMIT 5;";
+        String query = "SELECT * FROM " + tableName + " ORDER BY Score DESC;";
         rs = stmt.executeQuery(query);
         return rs;
     }

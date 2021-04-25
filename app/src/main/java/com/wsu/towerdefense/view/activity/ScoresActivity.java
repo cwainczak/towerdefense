@@ -1,10 +1,10 @@
 package com.wsu.towerdefense.view.activity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.gridlayout.widget.GridLayout;
-
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,15 +17,12 @@ import com.wsu.towerdefense.Settings;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ScoresActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
-    private GridLayout grd_scores;
     private TextView txt_loadingScores;
-
+    private LinearLayout scoresContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +32,8 @@ public class ScoresActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        grd_scores = findViewById(R.id.grd_scores);
         txt_loadingScores = findViewById(R.id.txt_loadingScores);
-
-        List<TextView> txt_names = Arrays.asList(
-                findViewById(R.id.txt_name1),
-                findViewById(R.id.txt_name2),
-                findViewById(R.id.txt_name3),
-                findViewById(R.id.txt_name4),
-                findViewById(R.id.txt_name5)
-        );
-        List<TextView> txt_scores = Arrays.asList(
-                findViewById(R.id.txt_score1),
-                findViewById(R.id.txt_score2),
-                findViewById(R.id.txt_score3),
-                findViewById(R.id.txt_score4),
-                findViewById(R.id.txt_score5)
-        );
+        scoresContainer = findViewById(R.id.scoresContainer);
 
 
         DBTools dbt = new DBTools(rs -> {
@@ -66,13 +48,23 @@ public class ScoresActivity extends AppCompatActivity {
                     highScores.add(hs);
                 }
 
-                // removing the loading scores text view and displaying the gridlayout of scores
+                // removing the loading scores text view and displaying the scores
                 txt_loadingScores.setVisibility(View.INVISIBLE);
-                grd_scores.setVisibility(View.VISIBLE);
 
                 for (int i = 0; i < highScores.size(); i++) {
-                    txt_names.get(i).setText(highScores.get(i).getName());
-                    txt_scores.get(i).setText(String.valueOf(highScores.get(i).getScore()));
+
+                    // new textView to hold the name and score
+                    TextView nameAndScore = new TextView(this);
+                    nameAndScore.setText(highScores.get(i).getName() + " " + highScores.get(i).getScore());
+                    nameAndScore.setTextColor(Color.BLACK);
+                    nameAndScore.setTextSize(18);
+                    scoresContainer.addView(nameAndScore);
+
+                    // empty textView to used as spaces between rows
+                    TextView emptySpace = new TextView(this);
+                    emptySpace.setText("");
+                    emptySpace.setTextSize(5);
+                    scoresContainer.addView(emptySpace);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
