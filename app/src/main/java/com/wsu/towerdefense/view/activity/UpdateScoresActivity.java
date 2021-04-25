@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.mysql.jdbc.StringUtils;
+import com.wsu.towerdefense.Controller.audio.Music;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
 
@@ -103,8 +104,15 @@ public class UpdateScoresActivity extends Activity {
     private void displayWinOrLoss(boolean display, boolean hasWon) {
         tint.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
         submitButton.setVisibility(display ? View.INVISIBLE : View.VISIBLE);
+
         // when you win or you lose should be displayed
         if (display) {
+            if (hasWon) {
+                Music.getInstance(this).playWin(this);
+            } else {
+                Music.getInstance(this).playLose(this);
+            }
+
             gifImageView.setBackgroundResource(
                 hasWon ? R.drawable.you_win : R.drawable.you_lose_pickle
             );

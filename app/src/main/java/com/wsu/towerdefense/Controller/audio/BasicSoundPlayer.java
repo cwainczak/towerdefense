@@ -42,10 +42,15 @@ public class BasicSoundPlayer extends AbstractSoundPlayer {
         }
     }
 
+    public void stop() {
+        this.player.stop();
+    }
+
     @Override
     public void release() {
         if (this.player != null) {
             this.player.release();
+            this.player = null;
         }
     }
 }

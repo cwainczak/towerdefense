@@ -459,8 +459,6 @@ public class GameActivity extends AppCompatActivity {
      * activity, including the extra Game thread.
      */
     private void gameOver() {
-        Music.getInstance(this).playMenu();
-
         Intent intent = new Intent().setClass(this, GameSelectionActivity.class);
         startActivity(intent);
     }
