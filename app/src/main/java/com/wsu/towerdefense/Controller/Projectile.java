@@ -5,15 +5,16 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
+import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.SoundSource;
+import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
-import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-
 import java.util.List;
 
 public class Projectile extends AbstractMapObject implements SoundSource {
@@ -32,96 +33,117 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
     public enum Type {
         BALL(
+            R.mipmap.projectile_ball,
+            Behavior.LINEAR,
             1000f,
-            10,
-            false,
-            0.0,
-            1.0,
-            R.mipmap.projectile_1,
-            -1,
-            -1,
-            Behavior.LINEAR
+            10
         ),
+
         ROCKET(
+            R.mipmap.projectile_rocket,
+            Behavior.HOMING,
             750f,
-            15,
-            true,
-            0.0,
-            1.0,
-            R.mipmap.projectile_2,
-            R.raw.game_rocket_travel,
-            R.raw.game_rocket_explode,
-            Behavior.HOMING
-        ),
+            15
+        ) {{
+            piercing();
+            sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
+        }},
+
         BIG_ROCKET(
+            R.mipmap.projectile_big_rocket,
+            Behavior.HOMING,
             550f,
-            20,
-            true,
-            0.0,
-            1.0,
-            R.mipmap.projectile_3,
-            R.raw.game_rocket_travel,
-            R.raw.game_rocket_explode,
-            Behavior.HOMING
-        ),
+            20
+        ) {{
+            piercing();
+            sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
+        }},
+
         HITSCAN(
-            0f,
-            20,
-            true,
-            0.0,
-            1.0,
-            R.mipmap.projectile_1, // image has no effect
+            R.mipmap.projectile_ball, // image has no effect
+            Behavior.HITSCAN,
             -1,
-            -1,
-            Behavior.HITSCAN
-        ),
-        SLOW(
-            1000f,
-            2,
-            false,
-            2.0,
-            0.5,
-            R.mipmap.projectile_5,
-            -1,
-            -1,
-            Behavior.LINEAR
-            );
+            20
+        ) {{
+            piercing();
+        }},
 
-        final float speed;
-        final int damage;
-        final int imageID;
-        final int travelSoundID;
-        final int impactSoundID;
-        final boolean armorPiercing;
-        public final double slowEnemyTime;
-        public final double slowRate;
-        final Behavior behavior;
+        TACK(
+            R.mipmap.projectile_ball,
+            Behavior.LINEAR,
+            500,
+            8
+        ) {{
+            range(120);
+        }},
 
-        /**
-         * @param speed         The speed of the projectile
-         * @param damage        Damage done to an Enemy hit by this projectile
-         * @param armorPiercing Whether or not this {@link Type } can pierce {@link Enemy} armor
-         * @param slowEnemyTime How long this {@link Type } will reduce {@link Enemy} speed for
-         * @param slowRate      The value {@link Enemy} speed will be mulitplied by
-         * @param imageID       The Resource ID of the image of the projectile
-         */
-        Type(float speed, int damage, boolean armorPiercing, double slowEnemyTime, double slowRate, int imageID, int travelSoundID,
-             int impactSoundID, Behavior behavior) {
+        BEAK(
+            R.mipmap.projectile_beak,
+            Behavior.LINEAR,
+            750f,
+            5
+        ) {{
+            piercing();
+        }},
+
+        SNOWFLAKE(
+            R.mipmap.projectile_snowflake,
+            Behavior.LINEAR,
+            1000,
+            2
+        ) {{
+            slow(2.0, 0.5);
+        }};
+
+        public final int imageID;
+        public final Behavior behavior;
+        public final float speed;
+        public final int damage;
+        public int range;
+        public boolean armorPiercing;
+        public double slowEnemyTime;
+        public double slowRate;
+        public int travelSoundID;
+        public int impactSoundID;
+
+        Type(
+            int imageID,
+            Behavior behavior,
+            float speed,
+            int damage
+        ) {
+            this.imageID = imageID;
+            this.behavior = behavior;
             this.speed = speed;
             this.damage = damage;
-            this.armorPiercing = armorPiercing;
-            this.slowEnemyTime = slowEnemyTime;
-            this.slowRate = slowRate;
-            this.imageID = imageID;
-            this.travelSoundID = travelSoundID;
-            this.impactSoundID = impactSoundID;
-            this.behavior = behavior;
+
+            this.range = -1;
+            this.armorPiercing = false;
+            this.slowEnemyTime = 0.0;
+            this.slowRate = 1.0;
+            this.travelSoundID = -1;
+            this.impactSoundID = -1;
         }
 
-        public boolean isArmorPiercing(){
-            return armorPiercing;
+        public void range(int range) {
+            this.range = range;
+        }
+
+        public void piercing() {
+            this.armorPiercing = true;
+        }
+
+        public void slow(double slowEnemyTime, double slowRate) {
+            this.slowEnemyTime = slowEnemyTime;
+            this.slowRate = slowRate;
+        }
+
+        public void sound(int travelSoundID, int impactSoundID) {
+            this.travelSoundID = travelSoundID;
+            this.impactSoundID = impactSoundID;
         }
     }
+
 
     private static final int IMAGE_ANGLE = 90;
 
@@ -129,32 +151,47 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final BasicSoundPlayer audioImpact;
 
     public final Type type;
+    final private Tower parentTower;
     private final Enemy target;
     private float velX;
     private float velY;
     public boolean remove;
+    private final PointF initialLocation;
 
     private final float speedModifier;
     private final float damageModifier;
+    private final float rangeModifier;
+
     private final double slowTime;
     private final double slowRate;
 
-    public Projectile(Context context, PointF location, Type type, Enemy target, float angle,
+    public Projectile(
+        Context context,
+        Tower parentTower,
+        PointF location,
+        Type type,
+        Enemy target,
+        float angle,
         float speedModifier,
         float damageModifier,
+        float rangeModifier,
         double slowTime,
         double slowRate) {
         super(context, location, type.imageID);
 
         this.type = type;
+        this.parentTower = parentTower;
         this.target = target;
+        this.remove = false;
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
+        this.rangeModifier = rangeModifier;
         this.slowTime = slowTime;
         this.slowRate = slowRate;
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
+        this.initialLocation = new PointF(location.x, location.y);
 
         this.audioTravel = this.type.travelSoundID >= 0
             ? new BasicSoundPlayer(context, this.type.travelSoundID, true)
@@ -169,10 +206,18 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     }
 
     public void update(Game game, double delta) {
+        if (!isInRange()) {
+            this.remove(game.getContext());
+            return;
+        }
+
         switch (this.type.behavior) {
             case HOMING: {
                 if (this.target.isAlive()) {
-                    double angle = Util.getAngleBetweenPoints(this.location, this.target.getLocation());
+                    double angle = Util
+                        .getAngleBetweenPoints(this.location,
+                            this.target.getLocation()
+                        );
 
                     this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
                     this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -187,7 +232,9 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             case HITSCAN: {
                 if (this.target.isAlive()) {
                     this.target.hitByProjectile(this);
+                    this.handleKillCount(target);
                 }
+
                 remove(game.getContext());
                 break;
             }
@@ -196,7 +243,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             }
         }
 
-        checkCollision(game.getContext(), game.getEnemies());
+        handleCollision(game.getContext(), game.getEnemies());
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -226,13 +273,20 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
     }
 
-    private void checkCollision(Context context, List<Enemy> enemies) {
+    /**
+     * Checks to see if there is collision with enemies If there is, handle the collision
+     *
+     * @param context the projectile instance
+     * @param enemies the enemies
+     */
+    private void handleCollision(Context context, List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)
             ) {
                 e.hitByProjectile(this);
+                this.handleKillCount(e);
                 remove(context);
                 break;
             }
@@ -252,9 +306,26 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         return this.type.damage * this.damageModifier;
     }
 
-    public double getSlowTime() { return slowTime; }
+    public double getSlowTime() {
+        return slowTime;
+    }
 
-    public double getSlowRate() { return slowRate; }
+    public double getSlowRate() {
+        return slowRate;
+    }
+
+    public float getEffectiveRange() {
+        return this.type.range == -1 ? -1 : this.type.range * this.rangeModifier;
+    }
+
+    private boolean isInRange() {
+        float range = this.getEffectiveRange();
+
+        return range == -1 || Math.hypot(
+            this.location.x - this.initialLocation.x,
+            this.location.y - this.initialLocation.y
+        ) <= range;
+    }
 
     private void remove(Context context) {
         remove = true;
@@ -270,5 +341,12 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             this.audioTravel.release();
         }
         // don't release audioImpact field to allow sound to play after projectile is removed
+    }
+
+    private void handleKillCount(Enemy enemy) {
+        if (!enemy.isAlive() && !enemy.getHasBeenKilled()) {
+            this.parentTower.incrementKillCount();
+            enemy.setHasBeenKilled(true);
+        }
     }
 }

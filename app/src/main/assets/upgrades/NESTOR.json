@@ -1,33 +1,33 @@
 {
   "path1": [
     {
-      "displayName": "Slow Time",
+      "displayName": "Damage 1",
       "description": "",
-      "cost": "75",
-      "image": "tower_ice_1",
+      "cost": "250",
+      "image": "tower_nestor_1",
       "effect": {
-        "type": "SLOW_TIME",
-        "value": 2.5
+        "type": "PROJECTILE_DAMAGE",
+        "value": 0.1
       }
     },
     {
       "displayName": "Damage 2",
       "description": "",
-      "cost": "100",
-      "image": "tower_ice_2",
+      "cost": "400",
+      "image": "tower_nestor_2",
       "effect": {
         "type": "PROJECTILE_DAMAGE",
         "value": 0.2
       }
     },
     {
-      "displayName": "Slow Time 2",
+      "displayName": "Speed",
       "description": "",
-      "cost": "200",
-      "image": "tower_ice_3",
+      "cost": "650",
+      "image": "tower_nestor_3",
       "effect": {
-        "type": "SLOW_TIME",
-        "value": 3.0
+        "type": "PROJECTILE_SPEED",
+        "value": 0.5
       }
     }
   ],
@@ -35,28 +35,28 @@
     {
       "displayName": "Fire rate 1",
       "description": "",
-      "cost": "50",
-      "image": "tower_ice_1",
+      "cost": "250",
+      "image": "tower_nestor_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
       }
     },
     {
-      "displayName": "Speed Reduction",
+      "displayName": "Fire rate 2",
       "description": "",
-      "cost": "100",
-      "image": "tower_ice_2",
+      "cost": "450",
+      "image": "tower_nestor_2",
       "effect": {
-        "type": "SLOW_RATE",
-        "value": -0.2
+        "type": "FIRE_RATE",
+        "value": -0.1
       }
     },
     {
       "displayName": "Fire rate 3",
       "description": "",
-      "cost": "200",
-      "image": "tower_ice_3",
+      "cost": "600",
+      "image": "tower_nestor_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -67,8 +67,8 @@
     {
       "displayName": "Range 1",
       "description": "",
-      "cost": "50",
-      "image": "tower_ice_1",
+      "cost": "300",
+      "image": "tower_nestor_1",
       "effect": {
         "type": "RANGE",
         "value": 0.1
@@ -77,8 +77,8 @@
     {
       "displayName": "See Invisible",
       "description": "",
-      "cost": "100",
-      "image": "tower_ice_2",
+      "cost": "400",
+      "image": "tower_nestor_2",
       "effect": {
         "type": "SEE_INVISIBLE",
         "value": "True"
@@ -87,8 +87,8 @@
     {
       "displayName": "Range 3",
       "description": "",
-      "cost": "200",
-      "image": "tower_ice_3",
+      "cost": "600",
+      "image": "tower_nestor_3",
       "effect": {
         "type": "RANGE",
         "value": 0.2

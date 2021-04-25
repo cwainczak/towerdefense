@@ -2,8 +2,8 @@ package com.wsu.towerdefense;
 
 import android.content.Context;
 import android.util.Log;
-import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Controller.tower.UpgradeReader;
+import com.wsu.towerdefense.Model.MapReader;
 import java.io.IOException;
 
 public class Application extends android.app.Application {

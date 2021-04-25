@@ -2,13 +2,11 @@ package com.wsu.towerdefense.Controller.tower;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-
 import com.wsu.towerdefense.Application;
 import com.wsu.towerdefense.Controller.Projectile;
-import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.Controller.tower.Upgrade.Effect;
 import com.wsu.towerdefense.Controller.tower.Upgrade.StatType;
-
+import com.wsu.towerdefense.Util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -43,6 +41,7 @@ public class TowerStats implements Serializable {
     private float fireRate;
     private float projectileSpeed;
     private float projectileDamage;
+    private float projectileRange;
     private double projectileSlowTime;
     private double projectileSlowRate;
     private boolean canSeeInvisible;
@@ -59,8 +58,9 @@ public class TowerStats implements Serializable {
 
         this.range = type.range;
         this.fireRate = type.fireRate;
-        this.projectileSpeed = type.projectileSpeed;
-        this.projectileDamage = type.projectileDamage;
+        this.projectileSpeed = 1;
+        this.projectileDamage = 1;
+        this.projectileRange = 1;
         this.projectileSlowTime = type.projectileType.slowEnemyTime;
         this.projectileSlowRate = type.projectileType.slowRate;
         this.sellPrice = (int) (type.cost * REFUND_PERCENT);
@@ -127,11 +127,15 @@ public class TowerStats implements Serializable {
                     break;
                 }
                 case PROJECTILE_SPEED: {
-                    this.projectileSpeed = type.projectileSpeed * getModifier(activeEffects);
+                    this.projectileSpeed = getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE_DAMAGE: {
-                    this.projectileDamage = type.projectileDamage * getModifier(activeEffects);
+                    this.projectileDamage = getModifier(activeEffects);
+                    break;
+                }
+                case PROJECTILE_RANGE: {
+                    this.projectileRange = getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE: {
@@ -150,6 +154,7 @@ public class TowerStats implements Serializable {
                 }
                 case SLOW_RATE: {
                     this.projectileSlowRate += getModifier(activeEffects) - 1;
+                    break;
                 }
             }
         }
@@ -240,6 +245,10 @@ public class TowerStats implements Serializable {
         return projectileDamage;
     }
 
+    public float getProjectileRange() {
+        return projectileRange;
+    }
+
     public double getProjectileSlowTime() {
         return projectileSlowTime;
     }
@@ -250,7 +259,9 @@ public class TowerStats implements Serializable {
         return canSeeInvisible;
     }
 
-    public int getSellPrice() { return sellPrice; }
+    public int getSellPrice() {
+        return sellPrice;
+    }
 
     public Projectile.Type getProjectileType() {
         return projectileType;
@@ -284,5 +295,4 @@ public class TowerStats implements Serializable {
         upgradeData = UpgradeReader.get(type);
         turretImage = Util.getBitmapByID(Application.context, turretImageID);
     }
-
 }

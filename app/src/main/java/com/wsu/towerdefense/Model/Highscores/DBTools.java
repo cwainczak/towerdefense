@@ -1,9 +1,7 @@
 package com.wsu.towerdefense.Model.Highscores;
 
 import android.os.AsyncTask;
-
 import com.wsu.towerdefense.Highscores.DBListener;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +33,6 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     @Override
     protected ResultSet doInBackground(String... strings) {
         try {
-            DBCon = DBConnection.getDBCon();
             if (listener == null || (testMode && testWrite)){
                 addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
             }
@@ -62,7 +59,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
 
     public ResultSet getResultSet(String tableName) throws SQLException {
         if (DBCon == null) {
-            DBCon = DBConnection.getDBCon();
+            DBCon = DBConnection.getDBCon(false);
         }
 
         stmt = DBCon.createStatement();
@@ -75,7 +72,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
 
     public void addScoreToDB(String tableName, String username, int score) throws SQLException {
         if (DBCon == null) {
-            DBCon = DBConnection.getDBCon();
+            DBCon = DBConnection.getDBCon(false);
         }
 
         PreparedStatement query = DBCon.prepareStatement("INSERT INTO " + tableName + " values(?, ?);");
@@ -120,7 +117,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
      */
     public void executeStatement(String statement) throws SQLException {
         if (DBCon == null) {
-            DBCon = DBConnection.getDBCon();
+            DBCon = DBConnection.getDBCon(false);
         }
 
         PreparedStatement query = DBCon.prepareStatement(statement);

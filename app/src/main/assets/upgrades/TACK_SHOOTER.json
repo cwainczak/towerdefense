@@ -1,33 +1,33 @@
 {
   "path1": [
     {
-      "displayName": "Slow Time",
+      "displayName": "Projectile range 1",
       "description": "",
-      "cost": "75",
-      "image": "tower_ice_1",
+      "cost": "50",
+      "image": "tower_tack_1",
       "effect": {
-        "type": "SLOW_TIME",
-        "value": 2.5
-      }
-    },
-    {
-      "displayName": "Damage 2",
-      "description": "",
-      "cost": "100",
-      "image": "tower_ice_2",
-      "effect": {
-        "type": "PROJECTILE_DAMAGE",
+        "type": "PROJECTILE_RANGE",
         "value": 0.2
       }
     },
     {
-      "displayName": "Slow Time 2",
+      "displayName": "Projectile range 2",
+      "description": "",
+      "cost": "100",
+      "image": "tower_tack_2",
+      "effect": {
+        "type": "PROJECTILE_RANGE",
+        "value": 0.2
+      }
+    },
+    {
+      "displayName": "Projectile range 3",
       "description": "",
       "cost": "200",
-      "image": "tower_ice_3",
+      "image": "tower_tack_3",
       "effect": {
-        "type": "SLOW_TIME",
-        "value": 3.0
+        "type": "PROJECTILE_RANGE",
+        "value": 0.3
       }
     }
   ],
@@ -36,27 +36,27 @@
       "displayName": "Fire rate 1",
       "description": "",
       "cost": "50",
-      "image": "tower_ice_1",
+      "image": "tower_tack_1",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.1
       }
     },
     {
-      "displayName": "Speed Reduction",
+      "displayName": "Fire rate 2",
       "description": "",
       "cost": "100",
-      "image": "tower_ice_2",
+      "image": "tower_tack_2",
       "effect": {
-        "type": "SLOW_RATE",
-        "value": -0.2
+        "type": "FIRE_RATE",
+        "value": -0.1
       }
     },
     {
       "displayName": "Fire rate 3",
       "description": "",
       "cost": "200",
-      "image": "tower_ice_3",
+      "image": "tower_tack_3",
       "effect": {
         "type": "FIRE_RATE",
         "value": -0.2
@@ -68,27 +68,27 @@
       "displayName": "Range 1",
       "description": "",
       "cost": "50",
-      "image": "tower_ice_1",
+      "image": "tower_tack_1",
       "effect": {
         "type": "RANGE",
         "value": 0.1
       }
     },
     {
-      "displayName": "See Invisible",
+      "displayName": "Range 2",
       "description": "",
       "cost": "100",
-      "image": "tower_ice_2",
+      "image": "tower_tack_2",
       "effect": {
-        "type": "SEE_INVISIBLE",
-        "value": "True"
+        "type": "RANGE",
+        "value": 0.1
       }
     },
     {
       "displayName": "Range 3",
       "description": "",
       "cost": "200",
-      "image": "tower_ice_3",
+      "image": "tower_tack_3",
       "effect": {
         "type": "RANGE",
         "value": 0.2

@@ -6,12 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-
 import com.wsu.towerdefense.AbstractMapObject;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Util;
-
 import java.util.List;
 import java.util.ListIterator;
 
@@ -21,7 +19,7 @@ public class Enemy extends AbstractMapObject {
         // Standard enemy types
         S1(200, 10, 10, 1, false, R.mipmap.standard_slime_1, -1),
         S2(250, 15, 20, 2, false, R.mipmap.standard_slime_2, -1),
-        S3(350, 25 , 30, 3, false, R.mipmap.standard_slime_3, -1),
+        S3(350, 25, 30, 3, false, R.mipmap.standard_slime_3, -1),
 
         // Armored enemy types
         A1(200, 10, 20, 1, false, R.mipmap.armored_slime_1, R.mipmap.armor_1),
@@ -32,7 +30,7 @@ public class Enemy extends AbstractMapObject {
         I1(200, 10, 25, 1, true, R.mipmap.invisible_slime_1, -1),
         I2(300, 10, 35, 2, true, R.mipmap.invisible_slime_2, -1),
         I3(200, 50, 40, 3, true, R.mipmap.invisible_slime_3, -1);
-        
+
         final float speed;
         final int hp;
         final int price;
@@ -41,7 +39,8 @@ public class Enemy extends AbstractMapObject {
         final int resource;
         final int armorResource;
 
-        Type(float speed, int hp, int price, int damage, boolean invisible, int resource, int armorResource) {
+        Type(float speed, int hp, int price, int damage, boolean invisible, int resource,
+            int armorResource) {
             this.speed = speed;
             this.hp = hp;
             this.price = price;
@@ -51,16 +50,23 @@ public class Enemy extends AbstractMapObject {
             this.armorResource = armorResource;
         }
 
-        public int getDamage(){
+        public int getDamage() {
             return this.damage;
         }
     }
+
+    private static final float HEALTH_BAR_Y_OFFSET = -70;
+    private static final float HEALTH_BAR_WIDTH = 90;
+    private static final float HEALTH_BAR_HEIGHT = 15;
+    private static final int HEALTH_BAR_BG_COLOR = Color.RED;
+    private static final int HEALTH_BAR_FG_COLOR = Color.GREEN;
 
     private final Type type;
 
     private int hp;
     private boolean isAlive;
-    private boolean isInvisible;
+    private boolean hasBeenKilled = false;
+    private final boolean isInvisible;
 
     private float velX;
     private float velY;
@@ -114,7 +120,6 @@ public class Enemy extends AbstractMapObject {
         // target, and there are more Points in path, set location to target instead and set target to
         // next Point in path.
 
-
         // Update the time left for this Enemy to be slowed
         if (slowTime > 0) {
             if (slowTime > delta) {
@@ -167,18 +172,33 @@ public class Enemy extends AbstractMapObject {
 
             // Draw Enemy armor, if present
             if (armor != null) {
-                canvas.drawBitmap(armor,x - bitmap.getWidth() / 2f,
-                        y - bitmap.getHeight() / 2f, null);
+                canvas.drawBitmap(armor, x - bitmap.getWidth() / 2f,
+                    y - bitmap.getHeight() / 2f, null);
             }
 
-            // Draw the Enemy hp above the bitmap
-            int offset = 10;
+            // show health bar if damaged
+            if (this.hp < this.type.hp) {
+                paint.reset();
 
-            paint.reset();
-            paint.setColor(Color.WHITE);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(50);
-            canvas.drawText("HP: " + hp, x, y - offset - bitmap.getHeight() / 2f, paint);
+                paint.setColor(HEALTH_BAR_BG_COLOR);
+                canvas.drawRect(
+                    x - HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET,
+                    x + HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET + HEALTH_BAR_HEIGHT,
+                    paint
+                );
+
+                float remainingHealth = (float) this.hp / this.type.hp;
+                paint.setColor(HEALTH_BAR_FG_COLOR);
+                canvas.drawRect(
+                    x - HEALTH_BAR_WIDTH / 2,
+                    y + HEALTH_BAR_Y_OFFSET,
+                    x - HEALTH_BAR_WIDTH / 2 + remainingHealth * HEALTH_BAR_WIDTH,
+                    y + HEALTH_BAR_Y_OFFSET + HEALTH_BAR_HEIGHT,
+                    paint
+                );
+            }
         }
     }
 
@@ -207,8 +227,7 @@ public class Enemy extends AbstractMapObject {
             if (hp <= 0) {
                 isAlive = false;
             }
-        }
-        else if (projectile.type.isArmorPiercing()) {
+        } else if (projectile.type.armorPiercing) {
             armor = null;
         }
     }
@@ -260,6 +279,15 @@ public class Enemy extends AbstractMapObject {
         return type;
     }
 
-    public boolean isInvisible() { return isInvisible; }
+    public boolean isInvisible() {
+        return isInvisible;
+    }
 
+    public boolean getHasBeenKilled() {
+        return hasBeenKilled;
+    }
+
+    public void setHasBeenKilled(boolean hasBeenKilled) {
+        this.hasBeenKilled = hasBeenKilled;
+    }
 }

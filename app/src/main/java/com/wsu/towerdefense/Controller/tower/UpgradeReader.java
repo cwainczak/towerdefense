@@ -3,10 +3,10 @@ package com.wsu.towerdefense.Controller.tower;
 import android.content.Context;
 import android.util.Log;
 import com.wsu.towerdefense.Controller.Projectile;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Util;
 import com.wsu.towerdefense.Controller.tower.Upgrade.Effect;
 import com.wsu.towerdefense.Controller.tower.Upgrade.StatType;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -133,7 +133,7 @@ public class UpgradeReader {
         String description = upgrade.getString("description");
         int cost = upgrade.getInt("cost");
         String image = upgrade.getString("image");
-        int imageID = Util.getResourceByName(context,"mipmap", image);
+        int imageID = Util.getResourceByName(context, "mipmap", image);
         if (imageID == 0) {
             throw new FileNotFoundException("Upgrade image '" + image + "' not found");
         }
@@ -178,6 +178,7 @@ public class UpgradeReader {
             case FIRE_RATE:
             case PROJECTILE_SPEED:
             case PROJECTILE_DAMAGE:
+            case PROJECTILE_RANGE:
             case SLOW_TIME:
             case SLOW_RATE: {
                 float value = (float) effect.getDouble("value");

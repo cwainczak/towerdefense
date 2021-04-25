@@ -8,17 +8,17 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
 
-    TextView tv_versionNumber;
-    SeekBar sb_music;
-    SeekBar sb_soundFx;
+    private TextView tv_versionNumber;
+    private SeekBar sb_music;
+    private SeekBar sb_soundFx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         tv_versionNumber = findViewById(R.id.tv_versionNumber);
-
         sb_music = findViewById(R.id.sb_music);
         sb_soundFx = findViewById(R.id.sb_soundFx);
 
@@ -53,8 +52,10 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putLong(getString(R.string.pref_key_sfx_volume), progress);
                 editor.apply();
 
-                audioButtonPress
-                    .play(seekBar.getContext(), Settings.getSFXVolume(seekBar.getContext()));
+                audioButtonPress.play(
+                    seekBar.getContext(),
+                    Settings.getSFXVolume(seekBar.getContext())
+                );
             }
 
             @Override
