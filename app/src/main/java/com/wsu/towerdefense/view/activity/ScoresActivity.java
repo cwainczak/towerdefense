@@ -5,10 +5,14 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Highscores.DBListener;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.Model.Highscores.HighScore;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,17 +22,6 @@ public class ScoresActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
 
-    TextView txt_name1;
-    TextView txt_name2;
-    TextView txt_name3;
-    TextView txt_name4;
-    TextView txt_name5;
-    TextView txt_score1;
-    TextView txt_score2;
-    TextView txt_score3;
-    TextView txt_score4;
-    TextView txt_score5;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,20 +30,20 @@ public class ScoresActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        txt_name1 = findViewById(R.id.txt_name1);
-        txt_name2 = findViewById(R.id.txt_name2);
-        txt_name3 = findViewById(R.id.txt_name3);
-        txt_name4 = findViewById(R.id.txt_name4);
-        txt_name5 = findViewById(R.id.txt_name5);
-
-        txt_score1 = findViewById(R.id.txt_score1);
-        txt_score2 = findViewById(R.id.txt_score2);
-        txt_score3 = findViewById(R.id.txt_score3);
-        txt_score4 = findViewById(R.id.txt_score4);
-        txt_score5 = findViewById(R.id.txt_score5);
-
-        List<TextView> txt_names = Arrays.asList(txt_name1, txt_name2, txt_name3, txt_name4, txt_name5);
-        List<TextView> txt_scores = Arrays.asList(txt_score1, txt_score2, txt_score3, txt_score4, txt_score5);
+        List<TextView> txt_names = Arrays.asList(
+            findViewById(R.id.txt_name1),
+            findViewById(R.id.txt_name2),
+            findViewById(R.id.txt_name3),
+            findViewById(R.id.txt_name4),
+            findViewById(R.id.txt_name5)
+        );
+        List<TextView> txt_scores = Arrays.asList(
+            findViewById(R.id.txt_score1),
+            findViewById(R.id.txt_score2),
+            findViewById(R.id.txt_score3),
+            findViewById(R.id.txt_score4),
+            findViewById(R.id.txt_score5)
+        );
 
 
         DBTools dbt = new DBTools(rs -> {

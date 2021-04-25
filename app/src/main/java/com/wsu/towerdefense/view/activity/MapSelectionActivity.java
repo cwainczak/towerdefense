@@ -18,6 +18,9 @@ import com.wsu.towerdefense.Model.MapReader;
 import com.wsu.towerdefense.Model.save.Serializer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.R;
+import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +65,10 @@ public class MapSelectionActivity extends AppCompatActivity {
     }
 
     private void addImageViews() {
-        final int imageWidth = dpToPixels(275);
-        final int imageHeight = dpToPixels(173);
-        final int marginStart = dpToPixels(10);
-        final int marginEnd = dpToPixels(20);
+        final int imageWidth = Util.dpToPixels(getResources(), 275);
+        final int imageHeight = Util.dpToPixels(getResources(), 173);
+        final int marginStart = Util.dpToPixels(getResources(), 10);
+        final int marginEnd = Util.dpToPixels(getResources(), 20);
 
         mapList = new ArrayList<>();
 

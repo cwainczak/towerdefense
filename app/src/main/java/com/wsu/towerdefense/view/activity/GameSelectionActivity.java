@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 
 public class GameSelectionActivity extends AppCompatActivity {
 
-    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("M-dd-yy HH:mm:ss");
+    private static final DateTimeFormatter format = DateTimeFormatter.ofPattern("M/dd/yy HH:mm:ss");
 
     private AdvancedSoundPlayer audioButtonPress;
 

@@ -59,4 +59,5 @@
   <string name="money">$%1$d</string>
   <string name="blank_username">No username entered</string>
   <string name="username_long">Username too long</string>
+  <string name="fully_upgraded">Tower is fully upgraded in this category!</string>
 </resources>

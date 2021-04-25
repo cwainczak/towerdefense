@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -28,11 +30,20 @@ import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
 import com.wsu.towerdefense.Controller.tower.Upgrade;
+import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.map.AbstractMap;
+import com.wsu.towerdefense.Controller.tower.Tower;
+import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
+import com.wsu.towerdefense.Controller.tower.Upgrade;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.Model.Game.Difficulty;
 import com.wsu.towerdefense.Model.save.SaveState;
+import com.wsu.towerdefense.Model.MapReader;
+import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,21 +65,29 @@ public class GameActivity extends AppCompatActivity {
 
     private ConstraintLayout cl_gameLayout;
     private ConstraintLayout cl_towerInfoLayout;
+    private ConstraintLayout cl_upgradeInfoLayout;
     private ScrollView sv_tower;
     private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
     private Button btn_sellTower;
 
+    private ImageButton btn_upgrade_info;
     private ProgressBar[] progBar;
     private TextView[] txt_upgradeName;
     private Button[] btn_upgrade;
+    private TextView[] txt_upgradeDescriptions;
 
     private ImageButton btn_pause;
     private ImageButton btn_play;
     private ImageButton btn_fast_fwd;
 
+    private ImageView img_selectedTowerBase;
+    private ImageView img_selectedTowerTurret;
+    private TextView txt_selectedTowerKillCount;
+
+    private LinearLayout imageContainer;
+
     private List<ImageView> towerList;
-    private List<Tower.Type> towerTypes;
     private Tower.Type selectedTowerType = null;   // temporarily holds the TowerType of dragged Tower
 
     private Game game;
@@ -84,9 +103,14 @@ public class GameActivity extends AppCompatActivity {
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
+        cl_upgradeInfoLayout = findViewById(R.id.cl_upgradeInfoLayout);
+        img_selectedTowerBase = findViewById(R.id.img_towerImageBase);
+        img_selectedTowerTurret = findViewById(R.id.img_towerImageTurret);
+        txt_selectedTowerKillCount = findViewById(R.id.txt_kill_count);
         sv_tower = findViewById(R.id.sv_tower);
         txt_towerName = findViewById(R.id.txt_towerName);
         btn_sellTower = findViewById(R.id.btn_sell);
+        btn_upgrade_info = findViewById(R.id.btn_upgrade_info);
         progBar = new ProgressBar[]{
             findViewById(R.id.progBar_1),
             findViewById(R.id.progBar_2),
@@ -102,31 +126,27 @@ public class GameActivity extends AppCompatActivity {
             findViewById(R.id.btn_upgrade_2),
             findViewById(R.id.btn_upgrade_3)
         };
-        towerList = Arrays.asList(
-            findViewById(R.id.img_Tower1),
-            findViewById(R.id.img_Tower2),
-            findViewById(R.id.img_Tower3),
-            findViewById(R.id.img_Tower4),
-            findViewById(R.id.img_Tower5),
-            findViewById(R.id.img_Tower6)
-        );
         btn_pause = findViewById(R.id.btn_pause);
         btn_play = findViewById(R.id.btn_play);
-        btn_fast_fwd = findViewById(R.id.btn_fast_forward);
+        btn_fast_fwd = findViewById(R.id.btn_fastForward);
+        txt_upgradeDescriptions = new TextView[]{
+                findViewById(R.id.txt_upgrade_1_info),
+                findViewById(R.id.txt_upgrade_2_info),
+                findViewById(R.id.txt_upgrade_3_info)
+        };
+        btn_pause = findViewById(R.id.btn_pause);
+        btn_play = findViewById(R.id.btn_play);
+        btn_fast_fwd = findViewById(R.id.btn_fastForward);
+        imageContainer = findViewById(R.id.tower_list);
 
-        towerTypes = Arrays.asList(
-            Tower.Type.BASIC_LINEAR,
-            Tower.Type.BASIC_HOMING,
-            Tower.Type.DOUBLE_LINEAR,
-            Tower.Type.BIG_HOMING,
-            Tower.Type.SNIPER,
-            Tower.Type.NESTOR
-        );
         scrollViewInit();
         isTowerMenuScrollable = true;
 
         btn_fast_fwd.setVisibility(View.GONE);
         btn_fast_fwd.setEnabled(false);
+        towerList = new ArrayList<>();
+
+        addTowerViews();
 
         addDragListeners();
 
@@ -156,6 +176,14 @@ public class GameActivity extends AppCompatActivity {
             }
 
             cl_gameLayout.addView(game);
+
+            btn_fast_fwd.setVisibility(View.GONE);
+            btn_fast_fwd.setEnabled(false);
+
+            btn_upgrade_info.setOnClickListener(view -> {
+                audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
+                this.setSelectionInfoMenuVisible(this.cl_upgradeInfoLayout.getVisibility() == View.GONE);
+            });
 
             btn_pause.setOnClickListener(view -> {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
@@ -226,6 +254,7 @@ public class GameActivity extends AppCompatActivity {
                         }
                         isTowerMenuScrollable = true;
                         enableImageViews(towerList, true);
+                        setSelectionInfoMenuVisible(false);
                         setSelectionMenuVisible(false);
                         game.selectTower(null);
                         return true;
@@ -258,6 +287,30 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    private void addTowerViews() {
+        final int margin = Util.dpToPixels(getResources(), 5);
+
+        towerList = new ArrayList<>();
+
+        for (Tower.Type type : Tower.Type.values()) {
+            ImageView image = new ImageView(this);
+            image.setImageResource(type.uiResID);
+            image.setOnClickListener(this::towerSelected);
+            image.setTag(type.name);
+
+            LayoutParams layout = new LayoutParams(new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT)
+            );
+            layout.setMarginStart(margin);
+            layout.setMarginEnd(margin);
+            image.setLayoutParams(layout);
+
+            towerList.add(image);
+            imageContainer.addView(image);
+        }
+    }
+
     private void addDragListeners() {
         // add drag listeners to towers
         for (int i = 0; i < towerList.size(); i++) {
@@ -272,7 +325,7 @@ public class GameActivity extends AppCompatActivity {
                 v.startDragAndDrop(data, dragshadow, v, 0);
 
                 // Get the tower Type using the image
-                selectedTowerType = towerTypes.get(_i);
+                selectedTowerType = Tower.Type.values()[_i];
                 return true;
             });
             image.setOnDragListener((view, event) -> {
@@ -363,7 +416,7 @@ public class GameActivity extends AppCompatActivity {
 
             // Enable towers (in menu) with cost equal to or lower
             // than cost of their respective Type
-            if (money >= towerTypes.get(i).cost) {
+            if (money >= Tower.Type.values()[i].cost) {
                 image.setColorFilter(null);
                 final int _i = i;
                 image.setOnLongClickListener(view -> {
@@ -374,7 +427,7 @@ public class GameActivity extends AppCompatActivity {
                     view.startDragAndDrop(data, dragshadow, view, 0);
 
                     // Get the tower Type using the image
-                    selectedTowerType = towerTypes.get(_i);
+                    selectedTowerType = Tower.Type.values()[_i];
                     return true;
                 });
             }
@@ -412,6 +465,7 @@ public class GameActivity extends AppCompatActivity {
 
         game.removeSelectedTower();
         setSelectionMenuVisible(false);
+        setSelectionInfoMenuVisible(false);
         enableImageViews(towerList, true);
         isTowerMenuScrollable = true;
     }
@@ -421,6 +475,13 @@ public class GameActivity extends AppCompatActivity {
      */
     private void setSelectionMenuVisible(boolean visible) {
         cl_towerInfoLayout.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    /**
+     * Shows/hides selected tower info menu
+     */
+    private void setSelectionInfoMenuVisible(boolean visible) {
+        cl_upgradeInfoLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -465,13 +526,24 @@ public class GameActivity extends AppCompatActivity {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
     }
 
+    /**
+     * Sets the kill count label respective to the selected tower
+     *
+     * @tower The tower that will provide the kill count value to the label
+     */
+    private void setTowerKillCountLabel(Tower tower){
+        this.txt_selectedTowerKillCount.setText(String.valueOf(tower.getKillCount()));
+    }
+
     private void updateUpgradeUI() {
         Tower tower = game.getSelectedTower();
-
         if (tower != null) {
+            this.updateSelectedTowerImage(tower);
+            this.setTowerKillCountLabel(tower);
             for (int path = 0; path < TowerUpgradeData.NUM_PATHS; path++) {
                 TextView text = txt_upgradeName[path];
                 Button button = btn_upgrade[path];
+                TextView description = txt_upgradeDescriptions[path];
 
                 // setting the upgrade names and costs
                 if (!tower.getStats().isMaxUpgraded(path)) {
@@ -491,8 +563,13 @@ public class GameActivity extends AppCompatActivity {
                         button.setAlpha(0.5f);
                         button.setEnabled(false);
                     }
+
+                    // set upgrade description
+                    description.setText(tower.getStats().getUpgrade(path, true).description);
+
                 } else {
                     text.setText(R.string.max);
+                    description.setText(R.string.fully_upgraded);
                     button.setVisibility(View.INVISIBLE);
                     button.setEnabled(false);
                     button.setText("");
@@ -508,6 +585,16 @@ public class GameActivity extends AppCompatActivity {
                 tower.getStats().getSellPrice()
             ));
         }
+    }
+
+    /**
+     * Sets the image in the cl_upgradeInfoLayout to the selected tower.
+     *
+     * @param tower represents the current selected tower
+     */
+    private void updateSelectedTowerImage(Tower tower){
+        this.img_selectedTowerBase.setImageBitmap(tower.getBitmap());
+        this.img_selectedTowerTurret.setImageBitmap(tower.getStats().getTurretImage());
     }
 
     @Override

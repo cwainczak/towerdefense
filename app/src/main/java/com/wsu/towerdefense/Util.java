@@ -1,9 +1,11 @@
 package com.wsu.towerdefense;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
+import android.util.TypedValue;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,6 +90,30 @@ public class Util {
         return BitmapFactory.decodeResource(
             context.getResources(),
             resourceID
+        );
+    }
+
+    public static int dpToPixels(Resources resources, int dp) {
+        return (int) TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            resources.getDisplayMetrics()
+        );
+    }
+
+    public static PointF rotatePoint(PointF point, double angle) {
+        return rotatePoint(point, new PointF(0, 0), angle);
+    }
+
+    public static PointF rotatePoint(PointF point, PointF origin, double angle) {
+        double a = Math.toRadians(angle);
+
+        float dx = point.x - origin.x;
+        float dy = point.y - origin.y;
+
+        return new PointF(
+            (float) (Math.cos(a) * dx - Math.sin(a) * dy + origin.x),
+            (float) (Math.sin(a) * dx + Math.cos(a) * dy + origin.y)
         );
     }
 }

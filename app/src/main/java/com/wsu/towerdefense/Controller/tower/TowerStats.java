@@ -41,6 +41,7 @@ public class TowerStats implements Serializable {
     private float fireRate;
     private float projectileSpeed;
     private float projectileDamage;
+    private float projectileRange;
     private boolean canSeeInvisible;
     private int sellPrice;
     private Projectile.Type projectileType;
@@ -55,8 +56,9 @@ public class TowerStats implements Serializable {
 
         this.range = type.range;
         this.fireRate = type.fireRate;
-        this.projectileSpeed = type.projectileSpeed;
-        this.projectileDamage = type.projectileDamage;
+        this.projectileSpeed = 1;
+        this.projectileDamage = 1;
+        this.projectileRange = 1;
         this.sellPrice = (int) (type.cost * REFUND_PERCENT);
         this.canSeeInvisible = type.canSeeInvisible;
         this.projectileType = type.projectileType;
@@ -121,11 +123,15 @@ public class TowerStats implements Serializable {
                     break;
                 }
                 case PROJECTILE_SPEED: {
-                    this.projectileSpeed = type.projectileSpeed * getModifier(activeEffects);
+                    this.projectileSpeed = getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE_DAMAGE: {
-                    this.projectileDamage = type.projectileDamage * getModifier(activeEffects);
+                    this.projectileDamage = getModifier(activeEffects);
+                    break;
+                }
+                case PROJECTILE_RANGE: {
+                    this.projectileRange = getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE: {
@@ -134,6 +140,7 @@ public class TowerStats implements Serializable {
                 }
                 case SEE_INVISIBLE: {
                     this.canSeeInvisible = (Boolean) effect.value;
+                    break;
                 }
             }
         }
@@ -224,11 +231,17 @@ public class TowerStats implements Serializable {
         return projectileDamage;
     }
 
+    public float getProjectileRange() {
+        return projectileRange;
+    }
+
     public boolean canSeeInvisible() {
         return canSeeInvisible;
     }
 
-    public int getSellPrice() { return sellPrice; }
+    public int getSellPrice() {
+        return sellPrice;
+    }
 
     public Projectile.Type getProjectileType() {
         return projectileType;
@@ -262,5 +275,4 @@ public class TowerStats implements Serializable {
         upgradeData = UpgradeReader.get(type);
         turretImage = Util.getBitmapByID(Application.context, turretImageID);
     }
-
 }

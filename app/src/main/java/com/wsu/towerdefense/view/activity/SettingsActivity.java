@@ -16,9 +16,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
 
-    TextView tv_versionNumber;
-    SeekBar sb_music;
-    SeekBar sb_soundFx;
+    private TextView tv_versionNumber;
+    private SeekBar sb_music;
+    private SeekBar sb_soundFx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,10 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putLong(getString(R.string.pref_key_sfx_volume), progress);
                 editor.apply();
 
-                audioButtonPress
-                    .play(seekBar.getContext(), Settings.getSFXVolume(seekBar.getContext()));
+                audioButtonPress.play(
+                    seekBar.getContext(),
+                    Settings.getSFXVolume(seekBar.getContext())
+                );
             }
 
             @Override
