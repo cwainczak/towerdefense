@@ -38,6 +38,7 @@
         android:id="@+id/cl_towerLayout"
         android:layout_width="93dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="200dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,8 +73,7 @@
                 android:id="@+id/tower_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
         </ScrollView>
 
         <ImageButton
