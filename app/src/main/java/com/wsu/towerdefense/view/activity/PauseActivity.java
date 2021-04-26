@@ -45,7 +45,7 @@ public class PauseActivity extends Activity {
         Music.getInstance(this).playMenu();
 
         // Close Game and go back to game selection
-        Intent intent = new Intent().setClass(PauseActivity.this, GameSelectionActivity.class);
+        Intent intent = new Intent().setClass(PauseActivity.this, MainActivity.class);
         startActivity(intent);
         finishAffinity();
         Log.i(getString(R.string.logcatKey), "Exiting game");

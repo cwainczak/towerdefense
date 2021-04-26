@@ -136,7 +136,6 @@ public class GameSelectionActivity extends AppCompatActivity {
         finish();
     }
 
-
     public void btnSettingsClicked(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
