@@ -1,8 +1,8 @@
 {
   "path1": [
     {
-      "displayName": "Slow Time",
-      "description": "",
+      "displayName": "Slow Time 1",
+      "description": "Increases the time this tower slows enemies for to Level 1!",
       "cost": "75",
       "image": "tower_ice_1",
       "effect": {
@@ -11,8 +11,8 @@
       }
     },
     {
-      "displayName": "Damage 2",
-      "description": "",
+      "displayName": "Damage 1",
+      "description": "Increases this tower's damage strength to Level 1! ",
       "cost": "100",
       "image": "tower_ice_2",
       "effect": {
@@ -22,7 +22,7 @@
     },
     {
       "displayName": "Slow Time 2",
-      "description": "",
+      "description": "Increases the time this tower slows enemies for to Level 2!",
       "cost": "200",
       "image": "tower_ice_3",
       "effect": {
@@ -34,7 +34,7 @@
   "path2": [
     {
       "displayName": "Fire rate 1",
-      "description": "",
+      "description": "Increases the pace at which this tower shoots projectiles to Level 1!",
       "cost": "50",
       "image": "tower_ice_1",
       "effect": {
@@ -44,7 +44,7 @@
     },
     {
       "displayName": "Speed Reduction",
-      "description": "",
+      "description": "Increases the intensity of this tower's projectiles' slowing ability!",
       "cost": "100",
       "image": "tower_ice_2",
       "effect": {
@@ -53,8 +53,8 @@
       }
     },
     {
-      "displayName": "Fire rate 3",
-      "description": "",
+      "displayName": "Fire rate 2",
+      "description": "Increases the pace at which this tower shoots projectiles to Level 2!",
       "cost": "200",
       "image": "tower_ice_3",
       "effect": {
@@ -66,7 +66,7 @@
   "path3": [
     {
       "displayName": "Range 1",
-      "description": "",
+      "description": "Increases the range in which this tower sees and shoots enemies to Level 1!",
       "cost": "50",
       "image": "tower_ice_1",
       "effect": {
@@ -76,7 +76,7 @@
     },
     {
       "displayName": "See Invisible",
-      "description": "",
+      "description": "Unlocks the ability for this tower to see invisible enemies! (Level 2)",
       "cost": "100",
       "image": "tower_ice_2",
       "effect": {
@@ -86,7 +86,7 @@
     },
     {
       "displayName": "Range 3",
-      "description": "",
+      "description": "Increases the range in which this tower sees and shoots enemies to Level 3!",
       "cost": "200",
       "image": "tower_ice_3",
       "effect": {

@@ -99,8 +99,10 @@ public class TowerStats implements Serializable {
                 Upgrade upgrade = getUpgrade(pathNumber, false);
                 recache(upgrade);
 
-                turretImageID = upgrade.imageID;
-                turretImage = upgrade.image;
+                if (upgrade.imageID > turretImageID){
+                    turretImageID = upgrade.imageID;
+                    turretImage = upgrade.image;
+                }
 
                 sellPrice += (int) (upgrade.cost * REFUND_PERCENT);
 

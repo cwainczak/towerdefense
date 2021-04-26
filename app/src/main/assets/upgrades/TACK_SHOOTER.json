@@ -2,7 +2,7 @@
   "path1": [
     {
       "displayName": "Projectile range 1",
-      "description": "",
+      "description": "Increases the distance this tower's projectiles can travel to Level 1!",
       "cost": "50",
       "image": "tower_tack_1",
       "effect": {
@@ -12,7 +12,7 @@
     },
     {
       "displayName": "Projectile range 2",
-      "description": "",
+      "description": "Increases the distance this tower's projectiles can travel to Level 2!",
       "cost": "100",
       "image": "tower_tack_2",
       "effect": {
@@ -22,7 +22,7 @@
     },
     {
       "displayName": "Projectile range 3",
-      "description": "",
+      "description": "Increases the distance this tower's projectiles can travel to Level 3!",
       "cost": "200",
       "image": "tower_tack_3",
       "effect": {
@@ -34,7 +34,7 @@
   "path2": [
     {
       "displayName": "Fire rate 1",
-      "description": "",
+      "description": "Increases the pace at which this tower shoots projectiles to Level 1!",
       "cost": "50",
       "image": "tower_tack_1",
       "effect": {
@@ -44,7 +44,7 @@
     },
     {
       "displayName": "Fire rate 2",
-      "description": "",
+      "description": "Increases the pace at which this tower shoots projectiles to Level 2!",
       "cost": "100",
       "image": "tower_tack_2",
       "effect": {
@@ -54,7 +54,7 @@
     },
     {
       "displayName": "Fire rate 3",
-      "description": "",
+      "description": "Increases the pace at which this tower shoots projectiles to Level 3!",
       "cost": "200",
       "image": "tower_tack_3",
       "effect": {
@@ -66,7 +66,7 @@
   "path3": [
     {
       "displayName": "Range 1",
-      "description": "",
+      "description": "Increases the range in which this tower sees and shoots enemies to Level 1!",
       "cost": "50",
       "image": "tower_tack_1",
       "effect": {
@@ -76,7 +76,7 @@
     },
     {
       "displayName": "Range 2",
-      "description": "",
+      "description": "Increases the range in which this tower sees and shoots enemies to Level 2!",
       "cost": "100",
       "image": "tower_tack_2",
       "effect": {
@@ -86,7 +86,7 @@
     },
     {
       "displayName": "Range 3",
-      "description": "",
+      "description": "Increases the range in which this tower sees and shoots enemies to Level 3!",
       "cost": "200",
       "image": "tower_tack_3",
       "effect": {
