@@ -70,7 +70,7 @@ public class UpdateScoresActivity extends Activity {
             public void run() {
                 runOnUiThread(() -> displayWinOrLossGIF(false, hasWon));
             }
-        }, 7000);
+        }, 10000);
     }
 
     public void btnSubmitOnClick(View view) {
