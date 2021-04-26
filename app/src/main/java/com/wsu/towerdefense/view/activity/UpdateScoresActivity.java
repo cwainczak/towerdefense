@@ -87,7 +87,7 @@ public class UpdateScoresActivity extends Activity {
             return;
         }
         if (this.playerUsername.toUpperCase().equals("THE BIG MAN")){
-            new BasicSoundPlayer(this, R.raw.thebigman, true).play(this, Settings.getSFXVolume(this));
+            new BasicSoundPlayer(this, R.raw.thebigman, true).play(this, 100);
         }
         DBTools dbt = new DBTools();
         dbt.initUsernameAndScore(this.playerUsername, this.playerScore, this.playerDifficulty);
