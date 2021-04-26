@@ -21,13 +21,13 @@
       }
     },
     {
-      "displayName": "Speed",
-      "description": "Increases the speed of your tower's projectiles!",
-      "cost": "200",
+      "displayName": "Pierce",
+      "description": "Increases the amount of enemies each ball can hit",
+      "cost": "250",
       "image": "tower_basic_linear_3",
       "effect": {
-        "type": "PROJECTILE_SPEED",
-        "value": 0.5
+        "type": "PROJECTILE_PIERCE",
+        "value": 2
       }
     }
   ],
@@ -49,7 +49,7 @@
       "image": "tower_basic_linear_2",
       "effect": {
         "type": "FIRE_RATE",
-        "value": -0.1
+        "value": -0.2
       }
     },
     {

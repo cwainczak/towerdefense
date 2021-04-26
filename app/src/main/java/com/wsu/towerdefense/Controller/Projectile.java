@@ -4,10 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import com.wsu.towerdefense.AbstractMapObject;
-import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.Controller.audio.SoundSource;
 import com.wsu.towerdefense.Controller.tower.Tower;
@@ -28,7 +27,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     public enum Behavior {
         LINEAR,
         HOMING,
-        HITSCAN
+        HITSCAN,
+        STATIC
     }
 
     public enum Type {
@@ -55,7 +55,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_big_rocket,
             Behavior.HOMING,
             550f,
-            20,
+            40,
             1
         ) {{
             piercing();
@@ -66,7 +66,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball, // image has no effect
             Behavior.HITSCAN,
             -1,
-            20,
+            50,
             1
         ) {{
             piercing();
@@ -100,6 +100,16 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             1
         ) {{
             slow(2.0, 0.5);
+        }},
+
+        SPIKE(
+                R.mipmap.projectile_spike,
+                Behavior.STATIC,
+                1000,
+                5,
+                5
+        ) {{
+            piercing();
         }};
 
         public final int imageID;
@@ -164,6 +174,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     public final Type type;
     final private Tower parentTower;
     private final Enemy target;
+    private final PointF initTargetLocation;
     private float velX;
     private float velY;
     private boolean isActive = true;
@@ -175,22 +186,24 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final float speedModifier;
     private final float damageModifier;
     private final float rangeModifier;
+    private final int pierceModifier;
 
     private final double slowTime;
     private final double slowRate;
 
     public Projectile(
-        Context context,
-        Tower parentTower,
-        PointF location,
-        Type type,
-        Enemy target,
-        float angle,
-        float speedModifier,
-        float damageModifier,
-        float rangeModifier,
-        double slowTime,
-        double slowRate) {
+            Context context,
+            Tower parentTower,
+            PointF location,
+            Type type,
+            Enemy target,
+            float angle,
+            float speedModifier,
+            float damageModifier,
+            float rangeModifier,
+            int pierceModifier,
+            double slowTime,
+            double slowRate) {
         super(context, location, type.imageID);
 
         this.type = type;
@@ -200,8 +213,10 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         this.speedModifier = speedModifier;
         this.damageModifier = damageModifier;
         this.rangeModifier = rangeModifier;
+        this.pierceModifier = pierceModifier;
         this.slowTime = slowTime;
         this.slowRate = slowRate;
+        initTargetLocation = target.getLocation();
 
         this.velX = (float) (getEffectiveSpeed() * Math.cos(Math.toRadians(angle)));
         this.velY = (float) (getEffectiveSpeed() * Math.sin(Math.toRadians(angle)));
@@ -251,13 +266,38 @@ public class Projectile extends AbstractMapObject implements SoundSource {
                 remove(game.getContext());
                 break;
             }
+            case STATIC:
+                float xDir = initialLocation.x - initTargetLocation.x;
+                float yDir = initialLocation.y - initTargetLocation.y;
+                // moving right
+                if(xDir < 0){
+                    if(location.x - initTargetLocation.x > 0){
+                        this.velX = 0;
+                    }
+                } else{
+                    if(location.x - initTargetLocation.x < 0){
+                        this.velX = 0;
+                    }
+                }
+                //moving down
+                if(yDir < 0){
+                    if(location.y - initTargetLocation.y > 0){
+                        this.velY = 0;
+                    }
+                } else {
+                    if(location.y - initTargetLocation.y < 0){
+                        this.velY = 0;
+                    }
+                }
+                this.location.offset((float) (this.velX * delta), (float) (this.velY * delta));
+                break;
             default: {
                 return;
             }
         }
 
         updateActive(delta);
-        runCollision(game.getContext(), checkCollision(game.getEnemies()));
+        handleCollision(game.getContext(), checkCollision(game.getEnemies()));
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -299,11 +339,11 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         return null;
     }
 
-    private void runCollision(Context context, Enemy e){
+    private void handleCollision(Context context, Enemy e){
         if(e != null && isActive){
             e.hitByProjectile(this);
             handleKillCount(e);
-            if(++hits >= type.pierce){
+            if(++hits >= getEffectivePierce()){
                 remove(context);
             } else {
                 isActive = false;
@@ -331,6 +371,10 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
     public float getEffectiveDamage() {
         return this.type.damage * this.damageModifier;
+    }
+
+    public int getEffectivePierce() {
+        return this.type.pierce + this.pierceModifier;
     }
 
     public double getSlowTime() {

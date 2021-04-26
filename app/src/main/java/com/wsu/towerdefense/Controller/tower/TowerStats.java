@@ -45,6 +45,7 @@ public class TowerStats implements Serializable {
     private double projectileSlowTime;
     private double projectileSlowRate;
     private boolean canSeeInvisible;
+    private int projectilePierce;
     private int sellPrice;
     private Projectile.Type projectileType;
     private int turretImageID;
@@ -61,6 +62,7 @@ public class TowerStats implements Serializable {
         this.projectileSpeed = 1;
         this.projectileDamage = 1;
         this.projectileRange = 1;
+        this.projectilePierce = 0;
         this.projectileSlowTime = type.projectileType.slowEnemyTime;
         this.projectileSlowRate = type.projectileType.slowRate;
         this.sellPrice = (int) (type.cost * REFUND_PERCENT);
@@ -136,6 +138,10 @@ public class TowerStats implements Serializable {
                 }
                 case PROJECTILE_RANGE: {
                     this.projectileRange = getModifier(activeEffects);
+                    break;
+                }
+                case PROJECTILE_PIERCE: {
+                    this.projectilePierce += getModifier(activeEffects);
                     break;
                 }
                 case PROJECTILE: {
@@ -254,6 +260,10 @@ public class TowerStats implements Serializable {
     }
 
     public double getProjectileSlowRate() { return projectileSlowRate; }
+
+    public int getProjectilePierce(){
+        return projectilePierce;
+    }
 
     public boolean canSeeInvisible() {
         return canSeeInvisible;

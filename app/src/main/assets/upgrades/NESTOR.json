@@ -85,13 +85,13 @@
       }
     },
     {
-      "displayName": "Range 3",
-      "description": "",
-      "cost": "600",
+      "displayName": "Pierce",
+      "description": "Increases the amount of enemies each beak can hit",
+      "cost": "800",
       "image": "tower_nestor_3",
       "effect": {
-        "type": "RANGE",
-        "value": 0.2
+        "type": "PROJECTILE_PIERCE",
+        "value": 3
       }
     }
   ]

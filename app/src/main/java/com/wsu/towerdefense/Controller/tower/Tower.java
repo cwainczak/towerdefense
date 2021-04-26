@@ -57,7 +57,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             384,
             1,
             Projectile.Type.BALL,
-            200,
+            150,
             R.raw.game_tower_shoot_1,
             false,
             true,
@@ -73,7 +73,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             384,
             1.25f,
             Projectile.Type.BALL,
-            400,
+            300,
             R.raw.game_tower_shoot_1,
             false,
             true,
@@ -88,7 +88,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             R.mipmap.tower_big_homing_comb,
             R.mipmap.tower_big_homing,
             384,
-            2,
+            2.5f,
             Projectile.Type.BIG_ROCKET,
             400,
             -1,
@@ -104,7 +104,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             R.mipmap.tower_sniper_comb,
             R.mipmap.tower_sniper,
             3000,
-            2.5f,
+            3f,
             Projectile.Type.HITSCAN,
             350,
             R.raw.game_tower_shoot_1,
@@ -169,6 +169,22 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
             new PointF[]{
                 new PointF(0, -80)
             }
+        ),
+        SPIKE(
+                "Spike Thrower",
+                R.mipmap.tower_spike_thrower_comb,
+                R.mipmap.tower_spike_thrower,
+                384,
+                1.5f,
+                Projectile.Type.SPIKE,
+                350,
+                R.raw.game_tower_shoot_1,
+                false,
+                true,
+                Behavior.ALL,
+                new PointF[]{
+                        new PointF(0, -10)
+                }
         );
 
         public final String name;
@@ -448,6 +464,7 @@ public class Tower extends AbstractMapObject implements Serializable, SoundSourc
                 stats.getProjectileSpeed(),
                 stats.getProjectileDamage(),
                 stats.getProjectileRange(),
+                stats.getProjectilePierce(),
                 stats.getProjectileSlowTime(),
                 stats.getProjectileSlowRate()
             ));

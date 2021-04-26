@@ -180,7 +180,8 @@ public class UpgradeReader {
             case PROJECTILE_DAMAGE:
             case PROJECTILE_RANGE:
             case SLOW_TIME:
-            case SLOW_RATE: {
+            case SLOW_RATE:
+            case PROJECTILE_PIERCE: {
                 float value = (float) effect.getDouble("value");
                 return new Effect<>(type, value);
             }
