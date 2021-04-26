@@ -14,7 +14,7 @@
   <string name="delete_game">delete game</string>
   <string name="volume">Volume</string>
   <string name="music">Music</string>
-  <string name="sound_fx">Sound Fx</string>
+  <string name="sound_fx">Sound FX</string>
   <string name="credits">Credits</string>
   <string name="amir_elrahep">Amir Elrahep</string>
   <string name="christopher_mee">Christopher Mee</string>
@@ -29,7 +29,7 @@
   <string name="exit">Exit</string>
   <string name="save">Save</string>
   <string name="resume">Resume</string>
-  <string name="version">Version 2.0</string>
+  <string name="version">Version 4.0</string>
   <string name="option_1">Option 1</string>
   <string name="buy">Buy</string>
   <string name="option_2">option_2</string>

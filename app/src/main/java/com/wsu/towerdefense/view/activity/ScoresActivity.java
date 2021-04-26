@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.wsu.towerdefense.Model.Game.Difficulty;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
@@ -49,61 +50,55 @@ public class ScoresActivity extends AppCompatActivity {
         // OnClickListeners for the buttons
         btn_easyScores.setOnClickListener(view -> {
             audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-
-            btn_easyScores.setTextColor(getResources().getColor(android.R.color.white, null));
-            btn_mediumScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-            btn_hardScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-
-            tbl_scores.removeAllViews();
-            getEasyHighScores();
+            changeDifficulty(Difficulty.EASY);
         });
 
         btn_mediumScores.setOnClickListener(view -> {
             audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-
-            btn_easyScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-            btn_mediumScores.setTextColor(getResources().getColor(android.R.color.white, null));
-            btn_hardScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-
-            tbl_scores.removeAllViews();
-            getMediumHighScores();
+            changeDifficulty(Difficulty.MEDIUM);
         });
 
         btn_hardScores.setOnClickListener(view -> {
             audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-
-            btn_easyScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-            btn_mediumScores.setTextColor(getResources().getColor(R.color.not_selected_text, null));
-            btn_hardScores.setTextColor(getResources().getColor(android.R.color.white, null));
-
-            tbl_scores.removeAllViews();
-            getHardHighScores();
+            changeDifficulty(Difficulty.HARD);
         });
 
-        btn_easyScores.callOnClick();
+        changeDifficulty(Difficulty.EASY);
     }
 
+    private void changeDifficulty(Difficulty difficulty) {
+        btn_easyScores.setTextColor(
+            difficulty == Difficulty.EASY
+                ? getColor(android.R.color.white)
+                : getColor(R.color.not_selected_text)
+        );
+        btn_mediumScores.setTextColor(
+            difficulty == Difficulty.MEDIUM
+                ? getColor(android.R.color.white)
+                : getColor(R.color.not_selected_text)
+        );
+        btn_hardScores.setTextColor(
+            difficulty == Difficulty.HARD
+                ? getColor(android.R.color.white)
+                : getColor(R.color.not_selected_text)
+        );
 
-    /**
-     * These methods are for when the difficulty buttons are pressed. Sets the table name variable
-     * in the DBTools class to the selected difficulty. Calls the getScore method.
-     */
-    private void getEasyHighScores() {
-        DBTools.tableName = "EASY";
+        tbl_scores.removeAllViews();
+        DBTools.tableName = getTableName(difficulty);
         txt_loadingScores.setVisibility(View.VISIBLE);
         getScores();
     }
 
-    private void getMediumHighScores() {
-        DBTools.tableName = "MEDIUM";
-        txt_loadingScores.setVisibility(View.VISIBLE);
-        getScores();
-    }
-
-    private void getHardHighScores() {
-        DBTools.tableName = "HARD";
-        txt_loadingScores.setVisibility(View.VISIBLE);
-        getScores();
+    private static String getTableName(Difficulty difficulty) {
+        switch (difficulty) {
+            case EASY:
+            default:
+                return "EASY";
+            case MEDIUM:
+                return "MEDIUM";
+            case HARD:
+                return "HARD";
+        }
     }
 
     /**
@@ -121,18 +116,17 @@ public class ScoresActivity extends AppCompatActivity {
 
                     TextView txt_name = new TextView(this);
                     txt_name.setText(name);
-                    txt_name.setTextColor(Color.BLACK);
+                    txt_name.setTextColor(Color.WHITE);
                     txt_name.setTextSize(18);
 
                     TextView txt_score = new TextView(this);
                     txt_score.setText(score);
-                    txt_score.setTextColor(Color.BLACK);
+                    txt_score.setTextColor(Color.WHITE);
                     txt_score.setTextSize(18);
 
                     // empty space
                     TextView txt_empty = new TextView(this);
                     txt_empty.setText("                           ");
-
 
                     TableRow tableRow = new TableRow(this);
                     tableRow.setPadding(0, 20, 0, 20);

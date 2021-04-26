@@ -10,6 +10,7 @@ import android.util.Log;
 import com.wsu.towerdefense.AbstractGame;
 import com.wsu.towerdefense.MapReader;
 import com.wsu.towerdefense.Model.Enemy.Type;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.SoundSource;
 import com.wsu.towerdefense.map.Map;
@@ -36,6 +37,7 @@ public class Game extends AbstractGame implements SoundSource {
     public final int invalidRangeColor;
 
     private final BasicSoundPlayer audioPlaceTower;
+    private final AdvancedSoundPlayer audioLoseLife;
 
     private final List<Tower> towers;
     private final List<Enemy> enemies;
@@ -64,6 +66,7 @@ public class Game extends AbstractGame implements SoundSource {
         super(context, gameWidth, gameHeight);
 
         audioPlaceTower = new BasicSoundPlayer(context, R.raw.game_tower_place, false);
+        audioLoseLife = new AdvancedSoundPlayer(R.raw.ui_button_deny);
 
         mapEvents = new ArrayList<>();
 
@@ -143,6 +146,7 @@ public class Game extends AbstractGame implements SoundSource {
                         lives = 0;
                         gameOver(false);
                     }
+                    audioLoseLife.play(getContext(), Settings.getSFXVolume(getContext()));
                 }
             } else {
                 // Add enemy's value to game balance and score
@@ -158,10 +162,9 @@ public class Game extends AbstractGame implements SoundSource {
         waves.update(this, delta);
         if (!waves.isRunning() && enemies.isEmpty() && waveRunning) {
             waveRunning = false;
-            if(waves.isGameEnded()){
+            if (waves.isGameEnded()) {
                 listener.onGameOver(true);
-            }
-            else{
+            } else {
                 listener.onWaveEnd();
             }
         }
@@ -463,6 +466,7 @@ public class Game extends AbstractGame implements SoundSource {
     @Override
     public void release() {
         this.audioPlaceTower.release();
+        this.audioLoseLife.release();
     }
 
     public void setWaveRunning(boolean waveRunning) {

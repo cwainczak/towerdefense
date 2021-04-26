@@ -37,6 +37,8 @@ public class Music {
 
         this.audioWin = new BasicSoundPlayer(context, winResID, false);
         this.audioLose = new BasicSoundPlayer(context, loseResID, false);
+
+        updateVolume(context);
     }
 
     public void playMenu() {
@@ -81,9 +83,8 @@ public class Music {
         this.audioGame.setVolume(v, v);
     }
 
-    public void stopWinLoss() {
+    public void stopWinLose() {
         this.audioWin.stop();
         this.audioLose.stop();
     }
-
 }
