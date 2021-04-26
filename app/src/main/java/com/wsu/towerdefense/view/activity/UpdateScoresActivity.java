@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.mysql.jdbc.StringUtils;
-import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.audio.BasicSoundPlayer;
 import com.wsu.towerdefense.audio.Music;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
@@ -86,12 +85,17 @@ public class UpdateScoresActivity extends Activity {
             displayError(ErrorType.OVER_CAPACITY);
             return;
         }
+
         if (this.playerUsername.toUpperCase().equals("THE BIG MAN")){
             new BasicSoundPlayer(this, R.raw.thebigman, true).play(this, 100);
         }
+
         DBTools dbt = new DBTools();
         dbt.initUsernameAndScore(this.playerUsername, this.playerScore, this.playerDifficulty);
         dbt.execute();
+
+        Music.getInstance(this).stopWinLose();
+
         finishAffinity();
         Intent intent = new Intent(UpdateScoresActivity.this, MainActivity.class);
         startActivity(intent);
@@ -137,7 +141,6 @@ public class UpdateScoresActivity extends Activity {
         // when you win or you lose should not be displayed
         else {
             gifImageView.setVisibility(View.INVISIBLE);
-            Music.getInstance(this).stopWinLoss();
         }
     }
 
