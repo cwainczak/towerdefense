@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.Music;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
+
+        Music.getInstance(this).playMenu();
     }
 
     /**
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }

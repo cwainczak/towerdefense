@@ -12,6 +12,14 @@ public class Settings {
         );
     }
 
+    public static float getMusicVolume(Context context) {
+        return getSharedPreferences(context)
+            .getLong(
+                context.getString(R.string.pref_key_music_volume),
+                context.getResources().getInteger(R.integer.pref_def_volume)
+            );
+    }
+
     public static float getSFXVolume(Context context) {
         return getSharedPreferences(context)
             .getLong(

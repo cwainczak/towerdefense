@@ -2,6 +2,7 @@ package com.wsu.towerdefense.Controller.audio;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import com.wsu.towerdefense.Util;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class AdvancedSoundPlayer extends AbstractSoundPlayer {
     public void play(Context context, float volume) {
         MediaPlayer player = MediaPlayer.create(context, sourceID);
 
-        float v = adjustVolume(volume);
+        float v = Util.adjustVolume(volume);
         player.setVolume(v, v);
 
         player.setOnCompletionListener(mp -> {

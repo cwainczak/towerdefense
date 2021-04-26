@@ -27,6 +27,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
+import com.wsu.towerdefense.Controller.audio.Music;
 import com.wsu.towerdefense.Controller.tower.Tower;
 import com.wsu.towerdefense.Controller.tower.TowerUpgradeData;
 import com.wsu.towerdefense.Controller.tower.Upgrade;
@@ -100,6 +101,8 @@ public class GameActivity extends AppCompatActivity {
         onWindowFocusChanged(true);
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
+
+        Music.getInstance(this).playGame();
 
         cl_gameLayout = findViewById(R.id.cl_gameLayout);
         cl_towerInfoLayout = findViewById(R.id.cl_upgradeLayout);
@@ -610,7 +613,7 @@ public class GameActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }
