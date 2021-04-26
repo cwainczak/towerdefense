@@ -86,7 +86,7 @@ public class GameActivity extends AppCompatActivity {
 
     private Game game;
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,10 +235,7 @@ public class GameActivity extends AppCompatActivity {
                                 setSelectionMenuVisible(true);
 
                                 // setting sell button text
-                                btn_sellTower.setText(String.format(
-                                    getString(R.string.sell_for),
-                                    tower.getStats().getSellPrice()
-                                ));
+                                btn_sellTower.setText("Sell For\n" + tower.getStats().getSellPrice());
 
                                 // Notify game of selected tower
                                 game.selectTower(tower);
