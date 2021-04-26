@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ public class UpdateScoresActivity extends Activity {
     private ImageView tint;
     private Button submitButton;
     private GifImageView gifImageView;
+    private ImageButton xBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,20 +55,22 @@ public class UpdateScoresActivity extends Activity {
         tint = findViewById(R.id.img_tint);
         submitButton = findViewById(R.id.btn_submit);
         gifImageView = findViewById(R.id.gifImageView);
+        xBtn = findViewById(R.id.btn_x);
+        xBtn.setImageResource(R.mipmap.x_button);
 
         this.playerScore = getIntent().getIntExtra("score", 0);
         boolean hasWon = getIntent().getBooleanExtra("won", false);
 
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
 
-        displayWinOrLoss(true, hasWon);
+        displayWinOrLossGIF(true, hasWon);
         Timer overlayTimer = new Timer();
         overlayTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                runOnUiThread(() -> displayWinOrLoss(false, hasWon));
+                runOnUiThread(() -> displayWinOrLossGIF(false, hasWon));
             }
-        }, 7000);
+        }, 10000);
     }
 
     public void btnSubmitOnClick(View view) {
@@ -86,6 +90,10 @@ public class UpdateScoresActivity extends Activity {
         startActivity(intent);
     }
 
+    public void btnX(View view){
+        displayWinOrLossGIF(false, false);
+    }
+
     public void displayError(ErrorType errorType) {
         img_error_symbol.setBackgroundResource(R.mipmap.error_symbol);
 
@@ -101,9 +109,10 @@ public class UpdateScoresActivity extends Activity {
         txv_error_msg.setText(errorMessage);
     }
 
-    private void displayWinOrLoss(boolean display, boolean hasWon) {
+    private void displayWinOrLossGIF(boolean display, boolean hasWon) {
         tint.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
         submitButton.setVisibility(display ? View.INVISIBLE : View.VISIBLE);
+        xBtn.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
 
         // when you win or you lose should be displayed
         if (display) {
@@ -116,10 +125,12 @@ public class UpdateScoresActivity extends Activity {
             gifImageView.setBackgroundResource(
                 hasWon ? R.drawable.you_win : R.drawable.you_lose_pickle
             );
+
         }
         // when you win or you lose should not be displayed
         else {
             gifImageView.setVisibility(View.INVISIBLE);
+            Music.getInstance(this).stopAll(this);
         }
     }
 
