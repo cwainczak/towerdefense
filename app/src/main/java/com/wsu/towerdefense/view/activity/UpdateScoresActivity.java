@@ -54,7 +54,7 @@ public class UpdateScoresActivity extends Activity {
         textField = findViewById(R.id.plt_username);
         scoreDisplayer = findViewById(R.id.txv_score);
         tint = findViewById(R.id.img_tint);
-        submitButton = findViewById(R.id.btn_submit);
+        submitButton = findViewById(R.id.btn_exit_gamePasue);
         gifImageView = findViewById(R.id.gifImageView);
         xBtn = findViewById(R.id.btn_x);
         xBtn.setImageResource(R.mipmap.x_button);
