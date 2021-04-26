@@ -20,7 +20,7 @@
       app:srcCompat="@mipmap/main_menu_background" />
 
   <ImageButton
-    android:id="@+id/btn_pause5"
+    android:id="@+id/btn_pause_gameSelection"
     android:layout_width="45dp"
     android:layout_height="39dp"
     android:layout_marginBottom="20dp"
@@ -33,7 +33,7 @@
     app:layout_constraintStart_toStartOf="parent" />
 
   <ImageButton
-    android:id="@+id/btn_pause4"
+    android:id="@+id/btn_settings_gameSelection"
     android:layout_width="45dp"
     android:layout_height="39dp"
     android:layout_marginBottom="20dp"
@@ -54,20 +54,21 @@
     app:layout_constraintTop_toTopOf="parent">
 
     <Button
-      android:id="@+id/resumeGame"
-      android:layout_width="320dp"
-      android:layout_height="wrap_content"
-      android:backgroundTint="#4CAF50"
-      android:onClick="btnResumeGameClicked"
-      android:text="@string/resume_game"
-      android:textSize="30sp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/newGame"
-      app:layout_constraintVertical_bias="0.57" />
+        android:id="@+id/btn_newGame"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:onClick="btnNewGameClicked"
+        android:text="@string/new_game"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
-      android:id="@+id/textView12"
+      android:id="@+id/txt_saveGameTitle"
       android:textStyle="bold"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -75,38 +76,40 @@
       android:text="@string/saved_game"
       android:textColor="@android:color/black"
       android:textSize="20sp"
-      app:layout_constraintBottom_toTopOf="@+id/txt_saveInfo"
+      app:layout_constraintBottom_toTopOf="@+id/txt_saveGameInfo"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/newGame"
+      app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
       app:layout_constraintVertical_bias="1.0" />
     <TextView
-      android:id="@+id/txt_saveInfo"
+      android:id="@+id/txt_saveGameInfo"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginBottom="4dp"
       android:textColor="@android:color/black"
       android:textSize="20sp"
-      app:layout_constraintBottom_toTopOf="@+id/resumeGame"
+      app:layout_constraintBottom_toTopOf="@+id/btn_resumeGame"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/newGame"
+      app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
       app:layout_constraintVertical_bias="1.0" />
+
     <Button
-      android:id="@+id/newGame"
-      android:layout_width="320dp"
-      android:layout_height="wrap_content"
-      android:backgroundTint="#4CAF50"
-      android:onClick="btnNewGameClicked"
-      android:text="@string/new_game"
-      android:textSize="30sp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.0" />
+        android:id="@+id/btn_resumeGame"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#4CAF50"
+        android:onClick="btnResumeGameClicked"
+        android:text="@string/resume_game"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
+        app:layout_constraintVertical_bias="0.57" />
+
     <Button
-      android:id="@+id/deleteGame"
+      android:id="@+id/btn_deleteGame"
       android:layout_width="320dp"
       android:layout_height="wrap_content"
       android:backgroundTint="#4CAF50"
@@ -116,7 +119,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/resumeGame"
+      app:layout_constraintTop_toBottomOf="@+id/btn_resumeGame"
       app:layout_constraintVertical_bias="0.0" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 
