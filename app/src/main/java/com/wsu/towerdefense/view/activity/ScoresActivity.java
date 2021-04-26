@@ -118,11 +118,13 @@ public class ScoresActivity extends AppCompatActivity {
                     txt_name.setText(name);
                     txt_name.setTextColor(Color.WHITE);
                     txt_name.setTextSize(18);
+                    txt_name.setShadowLayer(5, 5, 5, Color.BLACK);
 
                     TextView txt_score = new TextView(this);
                     txt_score.setText(score);
                     txt_score.setTextColor(Color.WHITE);
                     txt_score.setTextSize(18);
+                    txt_name.setShadowLayer(5, 5, 5, Color.BLACK);
 
                     // empty space
                     TextView txt_empty = new TextView(this);

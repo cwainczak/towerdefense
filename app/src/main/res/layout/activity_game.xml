@@ -29,7 +29,7 @@
       android:backgroundTint="#009688"
       android:contentDescription="@string/todo"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="@+id/cl_gameLayout"
+      app:layout_constraintEnd_toStartOf="@+id/cl_upgradeLayout"
       app:layout_constraintHorizontal_bias="1.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
