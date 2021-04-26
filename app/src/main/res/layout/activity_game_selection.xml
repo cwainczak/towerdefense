@@ -45,82 +45,70 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent" />
 
-  <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-
-    <Button
-        android:id="@+id/btn_newGame"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#4CAF50"
-        android:onClick="btnNewGameClicked"
-        android:text="@string/new_game"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-      android:id="@+id/txt_saveGameTitle"
-      android:textStyle="bold"
-      android:layout_width="wrap_content"
+  <Button
+      android:id="@+id/btn_newGame"
+      android:layout_width="320dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="4dp"
-      android:text="@string/saved_game"
-      android:textColor="@android:color/black"
-      android:textSize="20sp"
-      app:layout_constraintBottom_toTopOf="@+id/txt_saveGameInfo"
+      android:layout_marginTop="130dp"
+      android:backgroundTint="#4CAF50"
+      android:onClick="btnNewGameClicked"
+      android:text="@string/new_game"
+      android:textSize="30sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.501"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
-      app:layout_constraintVertical_bias="1.0" />
-    <TextView
-      android:id="@+id/txt_saveGameInfo"
-      android:layout_width="wrap_content"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <Button
+      android:id="@+id/btn_resumeGame"
+      android:layout_width="320dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="4dp"
-      android:textColor="@android:color/black"
-      android:textSize="20sp"
-      app:layout_constraintBottom_toTopOf="@+id/btn_resumeGame"
+      android:layout_marginTop="15dp"
+      android:backgroundTint="#4CAF50"
+      android:onClick="btnResumeGameClicked"
+      android:text="@string/resume_game"
+      android:textSize="30sp"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
-      app:layout_constraintVertical_bias="1.0" />
+      app:layout_constraintTop_toBottomOf="@+id/btn_newGame" />
 
-    <Button
-        android:id="@+id/btn_resumeGame"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#4CAF50"
-        android:onClick="btnResumeGameClicked"
-        android:text="@string/resume_game"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_newGame"
-        app:layout_constraintVertical_bias="0.57" />
-
-    <Button
+  <Button
       android:id="@+id/btn_deleteGame"
       android:layout_width="320dp"
       android:layout_height="wrap_content"
+      android:layout_marginTop="15dp"
       android:backgroundTint="#4CAF50"
       android:onClick="btnDeleteGameClicked"
       android:text="@string/delete_game"
       android:textSize="30sp"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btn_resumeGame"
-      app:layout_constraintVertical_bias="0.0" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      app:layout_constraintTop_toBottomOf="@+id/btn_resumeGame" />
+
+  <TextView
+      android:id="@+id/txt_saveGameTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="40dp"
+      android:text="@string/saved_game"
+      android:textColor="@android:color/black"
+      android:textSize="20sp"
+      android:textStyle="bold"
+      app:layout_constraintEnd_toEndOf="@+id/img_background_gameSelection"
+      app:layout_constraintHorizontal_bias="0.499"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/img_background_gameSelection" />
+
+  <TextView
+      android:id="@+id/txt_saveGameInfo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="10dp"
+      android:textColor="@android:color/black"
+      android:textSize="20sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/txt_saveGameTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
