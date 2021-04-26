@@ -36,14 +36,16 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball,
             Behavior.LINEAR,
             1000f,
-            10
+            10,
+            2
         ),
 
         ROCKET(
             R.mipmap.projectile_rocket,
             Behavior.HOMING,
             750f,
-            15
+            15,
+            1
         ) {{
             piercing();
             sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
@@ -53,7 +55,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_big_rocket,
             Behavior.HOMING,
             550f,
-            20
+            20,
+            1
         ) {{
             piercing();
             sound(R.raw.game_rocket_travel, R.raw.game_rocket_explode);
@@ -63,7 +66,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball, // image has no effect
             Behavior.HITSCAN,
             -1,
-            20
+            20,
+            1
         ) {{
             piercing();
         }},
@@ -72,7 +76,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_ball,
             Behavior.LINEAR,
             500,
-            8
+            8,
+            1
         ) {{
             range(120);
         }},
@@ -81,7 +86,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_beak,
             Behavior.LINEAR,
             750f,
-            5
+            5,
+            3
         ) {{
             piercing();
         }},
@@ -90,7 +96,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             R.mipmap.projectile_snowflake,
             Behavior.LINEAR,
             1000,
-            2
+            2,
+            1
         ) {{
             slow(2.0, 0.5);
         }};
@@ -99,6 +106,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         public final Behavior behavior;
         public final float speed;
         public final int damage;
+        public int pierce;
         public int range;
         public boolean armorPiercing;
         public double slowEnemyTime;
@@ -110,12 +118,14 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             int imageID,
             Behavior behavior,
             float speed,
-            int damage
+            int damage,
+            int pierce
         ) {
             this.imageID = imageID;
             this.behavior = behavior;
             this.speed = speed;
             this.damage = damage;
+            this.pierce = pierce;
 
             this.range = -1;
             this.armorPiercing = false;
@@ -146,6 +156,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
 
 
     private static final int IMAGE_ANGLE = 90;
+    private final double TIME_BETWEEN_HITS = 0.12;
 
     private final BasicSoundPlayer audioTravel;
     private final BasicSoundPlayer audioImpact;
@@ -155,8 +166,11 @@ public class Projectile extends AbstractMapObject implements SoundSource {
     private final Enemy target;
     private float velX;
     private float velY;
+    private boolean isActive = true;
     public boolean remove;
     private final PointF initialLocation;
+    private int hits = 0;
+    private double timeSinceHit = 0;
 
     private final float speedModifier;
     private final float damageModifier;
@@ -214,8 +228,7 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         switch (this.type.behavior) {
             case HOMING: {
                 if (this.target.isAlive()) {
-                    double angle = Util
-                        .getAngleBetweenPoints(this.location,
+                    double angle = Util.getAngleBetweenPoints(this.location,
                             this.target.getLocation()
                         );
 
@@ -243,7 +256,8 @@ public class Projectile extends AbstractMapObject implements SoundSource {
             }
         }
 
-        handleCollision(game.getContext(), game.getEnemies());
+        updateActive(delta);
+        runCollision(game.getContext(), checkCollision(game.getEnemies()));
 
         if (isOffScreen(game.getGameWidth(), game.getGameHeight())) {
             remove(game.getContext());
@@ -273,23 +287,36 @@ public class Projectile extends AbstractMapObject implements SoundSource {
         }
     }
 
-    /**
-     * Checks to see if there is collision with enemies If there is, handle the collision
-     *
-     * @param context the projectile instance
-     * @param enemies the enemies
-     */
-    private void handleCollision(Context context, List<Enemy> enemies) {
+    private Enemy checkCollision(List<Enemy> enemies) {
         for (Enemy e : enemies) {
             if (e.collides(location.x, location.y,
                 bitmap.getWidth() * hitboxScaleX,
                 bitmap.getHeight() * hitboxScaleY)
             ) {
-                e.hitByProjectile(this);
-                this.handleKillCount(e);
-                remove(context);
-                break;
+                return(e);
             }
+        }
+        return null;
+    }
+
+    private void runCollision(Context context, Enemy e){
+        if(e != null && isActive){
+            e.hitByProjectile(this);
+            handleKillCount(e);
+            if(++hits >= type.pierce){
+                remove(context);
+            } else {
+                isActive = false;
+                timeSinceHit = 0;
+            }
+        }
+    }
+
+    private void updateActive(double delta) {
+        timeSinceHit += delta;
+
+        if(timeSinceHit > TIME_BETWEEN_HITS) {
+            isActive = true;
         }
     }
 

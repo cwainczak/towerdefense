@@ -17,20 +17,20 @@ public class Enemy extends AbstractMapObject {
 
     public enum Type {
         // Standard enemy types
-        S1(200, 10, 10, 1, false, R.mipmap.standard_slime_1, -1),
-        S2(250, 15, 20, 2, false, R.mipmap.standard_slime_2, -1),
-        S3(350, 25, 30, 3, false, R.mipmap.standard_slime_3, -1),
+        S1(200, 20, 10, 1, false, R.mipmap.standard_slime_1, -1),
+        S2(250, 30, 15, 2, false, R.mipmap.standard_slime_2, -1),
+        S3(350, 30 , 25, 3, false, R.mipmap.standard_slime_3, -1),
 
         // Armored enemy types
-        A1(200, 10, 20, 1, false, R.mipmap.armored_slime_1, R.mipmap.armor_1),
-        A2(200, 20, 30, 2, false, R.mipmap.armored_slime_2, R.mipmap.armor_2),
-        A3(200, 40, 35, 3, false, R.mipmap.armored_slime_3, R.mipmap.armor_3),
+        A1(100, 40, 20, 1, false, R.mipmap.armored_slime_1, R.mipmap.armor_1),
+        A2(100, 150, 25, 2, false, R.mipmap.armored_slime_2, R.mipmap.armor_2),
+        A3(50, 300, 40, 3, false, R.mipmap.armored_slime_3, R.mipmap.armor_3),
 
         // Invisible enemy types
-        I1(200, 10, 25, 1, true, R.mipmap.invisible_slime_1, -1),
-        I2(300, 10, 35, 2, true, R.mipmap.invisible_slime_2, -1),
-        I3(200, 50, 40, 3, true, R.mipmap.invisible_slime_3, -1);
-
+        I1(200, 20, 15, 1, true, R.mipmap.invisible_slime_1, -1),
+        I2(300, 20, 20, 2, true, R.mipmap.invisible_slime_2, -1),
+        I3(200, 50, 35, 3, true, R.mipmap.invisible_slime_3, -1);
+        
         final float speed;
         final int hp;
         final int price;
