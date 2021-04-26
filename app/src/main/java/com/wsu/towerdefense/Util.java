@@ -6,16 +6,42 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.Window;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
-/**
- * Util class for calculations
- */
 public class Util {
+
+    /**
+     * Hides the systemUi navigator bar
+     *
+     * @param window
+     */
+    public static void hideNavigator(Window window) {
+        window.getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    public static float adjustVolume(float volume) {
+        final float MAX_VOLUME = 100.0f;
+        float adj = (float) (1 - (Math.log(MAX_VOLUME - volume) / Math.log(MAX_VOLUME)));
+        if (adj > 2) {
+            adj = 2;
+        }
+        return adj;
+    }
 
     /**
      * Gets new location based on the velocity and delta (time passed since last update)

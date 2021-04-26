@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -45,6 +46,25 @@ public class SettingsActivity extends AppCompatActivity {
             getString(R.string.pref_key_sfx_volume),
             getResources().getInteger(R.integer.pref_def_volume)
         ));
+
+        sb_music.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                editor.putLong(getString(R.string.pref_key_music_volume), progress);
+                editor.apply();
+
+                Music.getInstance(seekBar.getContext()).updateVolume(seekBar.getContext());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         sb_soundFx.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
@@ -91,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }

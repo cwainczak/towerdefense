@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 
 public class PauseActivity extends Activity {
 
@@ -40,6 +41,8 @@ public class PauseActivity extends Activity {
     public void btnExitOnClick(View view) {
         audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
+        Music.getInstance(this).playMenu();
+
         // Close Game and go back to game selection
         Intent intent = new Intent().setClass(PauseActivity.this, GameSelectionActivity.class);
         startActivity(intent);
@@ -63,7 +66,7 @@ public class PauseActivity extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 }

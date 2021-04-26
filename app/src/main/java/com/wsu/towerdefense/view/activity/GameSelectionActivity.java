@@ -14,6 +14,7 @@ import com.wsu.towerdefense.Model.save.SaveState;
 import com.wsu.towerdefense.Model.save.Serializer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
+import com.wsu.towerdefense.Util;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
@@ -147,7 +148,7 @@ public class GameSelectionActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            ActivityUtil.hideNavigator(getWindow());
+            Util.hideNavigator(getWindow());
         }
     }
 
