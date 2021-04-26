@@ -24,7 +24,7 @@
         android:layout_width="45dp"
         android:layout_height="39dp"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="26dp"
         android:background="@mipmap/back"
         android:backgroundTint="#009688"
         android:contentDescription="@string/todo"
@@ -91,18 +91,6 @@
     </androidx.gridlayout.widget.GridLayout>
 
     <TextView
-        android:id="@+id/tv_versionNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="@string/version"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -117,9 +105,9 @@
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="170dp"
+        android:layout_marginStart="150dp"
         android:layout_marginTop="260dp"
-        android:layout_marginEnd="170dp"
+        android:layout_marginEnd="150dp"
         app:columnCount="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -132,16 +120,6 @@
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
             android:text="@string/amir_elrahep"
-            android:textColor="#000000"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:text="@string/christopher_mee"
             android:textColor="#000000"
             android:textSize="18sp" />
 
