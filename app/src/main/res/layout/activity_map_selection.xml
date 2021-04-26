@@ -68,7 +68,7 @@
         android:layout_width="45dp"
         android:layout_height="39dp"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="26dp"
         android:background="@mipmap/back"
         android:backgroundTint="#009688"
         android:contentDescription="@string/todo"
@@ -78,9 +78,9 @@
 
     <Button
         android:id="@+id/btn_easyMapSelection"
-        android:layout_width="105dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="200dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#4CA3AF"
         android:onClick="btnEasyClicked"
@@ -89,11 +89,11 @@
         app:icon="@mipmap/play"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_backMapSelection" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_mediumMapSelection"
-        android:layout_width="105dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#4CA3AF"
@@ -108,9 +108,9 @@
 
     <Button
         android:id="@+id/btn_hardMapSelection"
-        android:layout_width="105dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="75dp"
+        android:layout_marginEnd="200dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="#4CA3AF"
         android:onClick="btnHardClicked"
@@ -119,11 +119,11 @@
         app:icon="@mipmap/play"
         app:iconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_playMapSelection" />
+        app:layout_constraintEnd_toEndOf="@+id/img_background_mapSelection" />
 
     <Button
         android:id="@+id/btn_playMapSelection"
-        android:layout_width="150dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
