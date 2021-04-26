@@ -2,27 +2,27 @@ package com.wsu.towerdefense.view.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
-import com.wsu.towerdefense.Model.Highscores.HighScore;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class ScoresActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
     private TextView txt_loadingScores;
-    private LinearLayout scoresContainer;
+    private TableLayout tbl_scores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,39 +33,43 @@ public class ScoresActivity extends AppCompatActivity {
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
         txt_loadingScores = findViewById(R.id.txt_loadingScores);
-        scoresContainer = findViewById(R.id.scoresContainer);
+        tbl_scores = findViewById(R.id.tbl_scores);
 
 
         DBTools dbt = new DBTools(rs -> {
             try {
-                ArrayList<HighScore> highScores = new ArrayList<>();
-                while (rs.next()) {
-                    String name = rs.getString(1);
-                    int score = rs.getInt(2);
-
-                    // create new HighScore object and add it to an arrayList
-                    HighScore hs = new HighScore(name, score);
-                    highScores.add(hs);
-                }
-
                 // removing the loading scores text view and displaying the scores
                 txt_loadingScores.setVisibility(View.INVISIBLE);
 
-                for (int i = 0; i < highScores.size(); i++) {
+                while (rs.next()) {
+                    String name = rs.getString(1);
+                    String score = rs.getString(2);
 
-                    // new textView to hold the name and score
-                    TextView nameAndScore = new TextView(this);
-                    nameAndScore.setText(highScores.get(i).getName() + " " + highScores.get(i).getScore());
-                    nameAndScore.setTextColor(Color.BLACK);
-                    nameAndScore.setTextSize(18);
-                    scoresContainer.addView(nameAndScore);
+                    TextView txt_name = new TextView(this);
+                    txt_name.setText(name);
+                    txt_name.setTextColor(Color.BLACK);
+                    txt_name.setTextSize(18);
 
-                    // empty textView to used as spaces between rows
-                    TextView emptySpace = new TextView(this);
-                    emptySpace.setText("");
-                    emptySpace.setTextSize(5);
-                    scoresContainer.addView(emptySpace);
+                    TextView txt_score = new TextView(this);
+                    txt_score.setText(score);
+                    txt_score.setTextColor(Color.BLACK);
+                    txt_score.setTextSize(18);
+
+                    // empty space
+                    TextView txt_empty = new TextView(this);
+                    txt_empty.setText("                           ");
+
+
+                    TableRow tableRow = new TableRow(this);
+                    tableRow.setPadding(0, 20, 0, 20);
+                    tableRow.addView(txt_name);
+                    tableRow.addView(txt_empty);
+                    tableRow.addView(txt_score);
+
+                    tableRow.setGravity(Gravity.CENTER);
+                    tbl_scores.addView(tableRow);
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
