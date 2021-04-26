@@ -444,6 +444,7 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = new Intent(GameActivity.this, UpdateScoresActivity.class);
         intent.putExtra("score", game.getScore());
         intent.putExtra("won", won);
+        intent.putExtra("difficulty", game.getDifficulty().toString().toUpperCase());
         startActivity(intent);
     }
 

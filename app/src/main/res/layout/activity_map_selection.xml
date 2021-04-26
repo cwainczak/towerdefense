@@ -9,7 +9,7 @@
     tools:context=".view.activity.MapSelectionActivity">
 
     <ImageView
-        android:id="@+id/img_background"
+        android:id="@+id/img_background_mapSelection"
         android:layout_width="731dp"
         android:layout_height="411dp"
         android:contentDescription="@string/todo"
@@ -20,7 +20,7 @@
         app:srcCompat="@mipmap/main_menu_background" />
 
     <TextView
-        android:id="@+id/txt_mapSelectionTitle"
+        android:id="@+id/txt_title_mapSelection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -29,10 +29,10 @@
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_background" />
+        app:layout_constraintTop_toTopOf="@+id/img_background_mapSelection" />
 
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
+        android:id="@+id/hsv_maps"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
