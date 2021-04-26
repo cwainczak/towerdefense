@@ -27,7 +27,7 @@ import java.util.List;
 
 public class Game extends AbstractGame implements SoundSource {
 
-    private static final int START_LIVES = 1;
+    private static final int START_LIVES = 25;
     private static final int START_MONEY = 400;
     private static final int START_SCORE = 0;
 
