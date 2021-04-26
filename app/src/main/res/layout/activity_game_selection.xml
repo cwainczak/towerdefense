@@ -7,7 +7,7 @@
   tools:context=".view.activity.GameSelectionActivity">
 
   <ImageView
-      android:id="@+id/imageView3"
+      android:id="@+id/img_background_gameSelection"
       android:layout_width="731dp"
       android:layout_height="411dp"
       android:contentDescription="@string/todo"
