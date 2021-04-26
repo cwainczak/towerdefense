@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.Model.Highscores.DBTools;
 import com.wsu.towerdefense.R;
@@ -20,8 +19,7 @@ import com.wsu.towerdefense.Settings;
 
 
 import com.wsu.towerdefense.Util;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+
 import java.sql.SQLException;
 
 public class ScoresActivity extends AppCompatActivity {
@@ -85,18 +83,6 @@ public class ScoresActivity extends AppCompatActivity {
         btn_easyScores.callOnClick();
     }
 
-
-    /**
-     * This method is for when the back button is clicked. When the back button is clicked, it goes
-     * to the MainActivity.
-     *
-     * @param view view
-     */
-    public void btnBackClicked(View view) {
-        audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
-
-        finish();
-    }
 
     /**
      * These methods are for when the difficulty buttons are pressed. Sets the table name variable
