@@ -22,6 +22,7 @@ public class UpdateScoresActivity extends Activity {
 
     private String playerUsername;
     private int playerScore;
+    private String playerDifficulty;
 
     private final int MAX_USERNAME_LENGTH = 25;
 
@@ -54,6 +55,7 @@ public class UpdateScoresActivity extends Activity {
 
         this.playerScore = getIntent().getIntExtra("score", 0);
         boolean hasWon = getIntent().getBooleanExtra("won", false);
+        this.playerDifficulty = getIntent().getStringExtra("difficulty");
 
         scoreDisplayer.setText(scoreDisplayer.getText() + " " + this.playerScore);
 
@@ -77,7 +79,7 @@ public class UpdateScoresActivity extends Activity {
             return;
         }
         DBTools dbt = new DBTools();
-        dbt.initUsernameAndScore(this.playerUsername, this.playerScore);
+        dbt.initUsernameAndScore(this.playerUsername, this.playerScore, this.playerDifficulty);
         dbt.execute();
         finishAffinity();
         Intent intent = new Intent(UpdateScoresActivity.this, MainActivity.class);

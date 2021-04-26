@@ -79,6 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="200dp"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="#4CA3AF"
         android:text="@string/easy"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/img_background_highScores" />
@@ -88,6 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="#4CA3AF"
         android:text="@string/medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_hardScores"
@@ -99,6 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="200dp"
         android:layout_marginBottom="20dp"
+        android:backgroundTint="#4CA3AF"
         android:text="@string/hard"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
