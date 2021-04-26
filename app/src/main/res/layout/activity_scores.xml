@@ -15,7 +15,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@mipmap/menu_bg1" />
+      app:srcCompat="@mipmap/menu_bg2" />
 
     <TextView
       android:id="@+id/txt_title_highScores"
