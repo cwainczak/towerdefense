@@ -63,4 +63,5 @@
   <string name="submit">submit</string>
     <string name="loading_scores">Loading Scores</string>
     <string name="price">Price</string>
+    <string name="wsu_tower_defense">WSU Tower Defense</string>
 </resources>
