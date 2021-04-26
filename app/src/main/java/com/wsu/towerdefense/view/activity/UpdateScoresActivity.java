@@ -113,7 +113,6 @@ public class UpdateScoresActivity extends Activity {
         tint.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
         submitButton.setVisibility(display ? View.INVISIBLE : View.VISIBLE);
         xBtn.setVisibility(display ? View.VISIBLE : View.INVISIBLE);
-        System.out.println("i am here");
 
         // when you win or you lose should be displayed
         if (display) {
