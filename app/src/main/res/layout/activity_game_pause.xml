@@ -17,7 +17,21 @@
     app:layout_constraintWidth_percent="0.7">
 
     <Button
-      android:id="@+id/btn_pause_settings"
+        android:id="@+id/btn_resume_gamePasue"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#009688"
+        android:onClick="btnResumeOnClick"
+        android:text="@string/resume"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_settings_gamePause"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <Button
+      android:id="@+id/btn_settings_gamePause"
       android:layout_width="170dp"
       android:layout_height="wrap_content"
       android:backgroundTint="#009688"
@@ -32,7 +46,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
     <Button
-      android:id="@+id/btn_submit"
+      android:id="@+id/btn_exit_gamePasue"
       android:layout_width="170dp"
       android:layout_height="wrap_content"
       android:backgroundTint="#009688"
@@ -42,21 +56,8 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/btn_pause_settings"
+      app:layout_constraintTop_toBottomOf="@+id/btn_settings_gamePause"
       app:layout_constraintVertical_bias="0.15" />
-    <Button
-      android:id="@+id/btn_resume"
-      android:layout_width="170dp"
-      android:layout_height="wrap_content"
-      android:backgroundTint="#009688"
-      android:onClick="btnResumeOnClick"
-      android:text="@string/resume"
-      android:textSize="18sp"
-      app:layout_constraintBottom_toTopOf="@+id/btn_pause_settings"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.85" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

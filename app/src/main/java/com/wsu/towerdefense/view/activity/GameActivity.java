@@ -63,6 +63,7 @@ public class GameActivity extends AppCompatActivity {
     private ScrollView sv_tower;
     private boolean isTowerMenuScrollable;
     private TextView txt_towerName;
+    private TextView txt_towerPurchasePrice;
     private Button btn_sellTower;
 
     private ImageButton btn_upgrade_info;
@@ -105,6 +106,7 @@ public class GameActivity extends AppCompatActivity {
         txt_selectedTowerKillCount = findViewById(R.id.txt_kill_count);
         sv_tower = findViewById(R.id.sv_tower);
         txt_towerName = findViewById(R.id.txt_towerName);
+        txt_towerPurchasePrice = findViewById(R.id.txt_towerPurchasePrice);
         btn_sellTower = findViewById(R.id.btn_sell);
         btn_upgrade_info = findViewById(R.id.btn_upgrade_info);
         progBar = new ProgressBar[]{
@@ -289,7 +291,7 @@ public class GameActivity extends AppCompatActivity {
             ImageView image = new ImageView(this);
             image.setImageResource(type.uiResID);
             image.setOnClickListener(this::towerSelected);
-            image.setTag(type.name);
+            image.setTag(type.name + "-" + type.cost);
 
             LayoutParams layout = new LayoutParams(new LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -383,8 +385,11 @@ public class GameActivity extends AppCompatActivity {
             if (towerList.get(i).isPressed()) {
                 audioButtonPress.play(view.getContext(), Settings.getSFXVolume(view.getContext()));
 
-                String imageName = String.valueOf(view.getTag());
+                String[] tag = String.valueOf(view.getTag()).split("-");
+                String imageName = tag[0];
+                String towerCost = tag[1];
                 txt_towerName.setText(imageName);
+                txt_towerPurchasePrice.setText("$" + towerCost);
 
                 break;
             }

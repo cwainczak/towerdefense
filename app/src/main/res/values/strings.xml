@@ -61,5 +61,7 @@
   <string name="username_long">Username too long</string>
   <string name="fully_upgraded">Tower is fully upgraded in this category!</string>
   <string name="submit">submit</string>
-    <string name="loading_scores">Loading Scores</string>
+  <string name="price">Price</string>
+  <string name="wsu_tower_defense">WSU Tower Defense</string>
+  <string name="loading_scores">Loading Scores</string>
 </resources>

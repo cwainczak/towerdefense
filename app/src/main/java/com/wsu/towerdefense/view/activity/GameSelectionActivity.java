@@ -38,9 +38,9 @@ public class GameSelectionActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        btn_resume = findViewById(R.id.resumeGame);
-        btn_delete = findViewById(R.id.deleteGame);
-        txt_saveInfo = findViewById(R.id.txt_saveInfo);
+        btn_resume = findViewById(R.id.btn_resumeGame);
+        btn_delete = findViewById(R.id.btn_deleteGame);
+        txt_saveInfo = findViewById(R.id.txt_saveGameInfo);
 
         // load save game if it exists
         boolean hasSave = Serializer.exists(GameSelectionActivity.this, Serializer.SAVEFILE);

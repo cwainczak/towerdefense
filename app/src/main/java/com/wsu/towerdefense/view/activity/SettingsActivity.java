@@ -18,7 +18,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private AdvancedSoundPlayer audioButtonPress;
 
-    private TextView tv_versionNumber;
     private SeekBar sb_music;
     private SeekBar sb_soundFx;
 
@@ -30,7 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         audioButtonPress = new AdvancedSoundPlayer(R.raw.ui_button_press);
 
-        tv_versionNumber = findViewById(R.id.tv_versionNumber);
         sb_music = findViewById(R.id.sb_music);
         sb_soundFx = findViewById(R.id.sb_soundFx);
 
