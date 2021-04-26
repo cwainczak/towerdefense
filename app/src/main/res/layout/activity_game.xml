@@ -156,18 +156,18 @@
             app:srcCompat="@mipmap/tower_menu_background2" />
 
         <TextView
-          android:id="@+id/txt_upgrades"
-          android:textStyle="bold"
-          android:layout_width="wrap_content"
-          android:layout_height="25dp"
-          android:layout_marginTop="5dp"
-          android:layout_marginStart="15dp"
-          android:gravity="center_horizontal"
-          android:text="@string/upgrades"
-          android:textColor="#000"
-          android:textSize="16sp"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/txt_upgrades"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:text="@string/upgrades"
+            android:textColor="#000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btn_upgrade_info"
@@ -401,7 +401,7 @@
         android:id="@+id/cl_upgradeInfoLayout"
         android:layout_width="150dp"
         android:layout_height="245dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="105dp"
         android:background="#987032"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/cl_upgradeLayout"
