@@ -12,6 +12,7 @@ import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.audio.Music;
 
 public class SettingsActivity extends AppCompatActivity {
 
