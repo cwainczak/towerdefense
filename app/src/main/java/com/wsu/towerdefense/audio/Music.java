@@ -81,9 +81,7 @@ public class Music {
         this.audioGame.setVolume(v, v);
     }
 
-    public void stopAll(Context context) {
-        this.audioGame.stop();
-        this.audioMenu.stop();
+    public void stopWinLoss() {
         this.audioWin.stop();
         this.audioLose.stop();
     }
