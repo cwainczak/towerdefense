@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
-import com.wsu.towerdefense.Controller.audio.AdvancedSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.Music;
+import com.wsu.towerdefense.audio.AdvancedSoundPlayer;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.audio.Music;
 
 public class PauseActivity extends Activity {
 

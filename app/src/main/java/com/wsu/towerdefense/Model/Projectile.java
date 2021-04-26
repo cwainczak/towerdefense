@@ -1,16 +1,14 @@
-package com.wsu.towerdefense.Controller;
+package com.wsu.towerdefense.Model;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import com.wsu.towerdefense.AbstractMapObject;
-import com.wsu.towerdefense.Controller.audio.BasicSoundPlayer;
-import com.wsu.towerdefense.Controller.audio.SoundSource;
-import com.wsu.towerdefense.Controller.tower.Tower;
-import com.wsu.towerdefense.Model.Game;
+import com.wsu.towerdefense.audio.BasicSoundPlayer;
+import com.wsu.towerdefense.audio.SoundSource;
+import com.wsu.towerdefense.Model.tower.Tower;
 import com.wsu.towerdefense.R;
 import com.wsu.towerdefense.Settings;
 import com.wsu.towerdefense.Util;

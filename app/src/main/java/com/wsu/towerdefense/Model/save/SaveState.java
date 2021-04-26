@@ -1,7 +1,7 @@
 package com.wsu.towerdefense.Model.save;
 
-import com.wsu.towerdefense.Controller.Waves;
-import com.wsu.towerdefense.Controller.tower.Tower;
+import com.wsu.towerdefense.Model.Waves;
+import com.wsu.towerdefense.Model.tower.Tower;
 import com.wsu.towerdefense.Model.Game;
 import com.wsu.towerdefense.Model.Game.Difficulty;
 import java.io.Serializable;

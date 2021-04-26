@@ -1,12 +1,11 @@
-package com.wsu.towerdefense.Model;
+package com.wsu.towerdefense;
 
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
-import com.wsu.towerdefense.Controller.map.AbstractMap;
-import com.wsu.towerdefense.Controller.map.Map;
-import com.wsu.towerdefense.R;
-import com.wsu.towerdefense.Util;
+import com.wsu.towerdefense.map.AbstractMap;
+import com.wsu.towerdefense.map.Map;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;

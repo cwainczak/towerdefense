@@ -1,7 +1,7 @@
 package com.wsu.towerdefense.Model.Highscores;
 
 import android.os.AsyncTask;
-import com.wsu.towerdefense.Highscores.DBListener;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +34,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
     protected ResultSet doInBackground(String... strings) {
         try {
             if (listener == null || (testMode && testWrite)){
-                addScoreToDB("HIGHSCORES", this.currentUsername, this.currentScore);
+                addScoreToDB("EASY", this.currentUsername, this.currentScore);
             }
 
             if(testMode && testStmt != null) {
@@ -42,7 +42,7 @@ public class DBTools extends AsyncTask<String, Integer, ResultSet> {
                 executeStatement(testStmt);
             }
 
-            rs = getResultSet("HIGHSCORES");
+            rs = getResultSet("EASY");
             return rs;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

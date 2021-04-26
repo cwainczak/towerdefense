@@ -1,4 +1,4 @@
-package com.wsu.towerdefense.Controller.audio;
+package com.wsu.towerdefense.audio;
 
 import android.content.Context;
 import android.media.MediaPlayer;
