@@ -11,7 +11,7 @@ Players are able to place down WSU Towers to defend against waves of incoming en
 
 # Features
 * Provides a fully-function Java Tower Defense game to Android users.
-* Uses MySQL to store player highscores in the AWS cloud.
+* Uses a MySQL database to store player highscores in the AWS cloud.
 * Designed with multi-threading to separate logical and graphical interfaces.
 
 # Demonstration
